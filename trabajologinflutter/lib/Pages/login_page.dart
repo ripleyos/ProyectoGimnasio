@@ -31,14 +31,14 @@ class _LoginPageState extends State<LoginPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Error de inicio de sesión'),
+            title: const Text('Error de inicio de sesión'),
             content: Text(errorMessage),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );
@@ -50,103 +50,39 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 10),
-                const Icon(
-                  Icons.lock,
-                  size: 100,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Bienvenido de nuevo!',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 25),
-                TextFormField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(labelText: 'Username'),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 25),
-                ElevatedButton(
-                  onPressed: _signIn,
-                  child: Text('Iniciar Sesión'),
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                          'O continuar con',
-                          style: TextStyle(color: Colors.grey[700]),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    SquareTile(imagePath: 'lib/images/google.png'),
-                    SizedBox(width: 25),
-                    SquareTile(imagePath: 'lib/images/apple.png')
-                  ],
-                ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegistroPage()),
-                    );
-                  },
-                  child: Text(
-                    '¿No eres miembro? Registrate ahora',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+      body: Container(
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            colors: [
+              Color(0xFFB71C1C),
+              Color(0xFFC62828),
+              Color(0xFFEF5350)
+            ]
+          )
         ),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 80,),
+            Padding(
+              padding: EdgeInsets.all(20),
+                child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start, // Corrección aquí
+                  children: <Widget>[
+                    Text("Login",style: TextStyle(color: Colors.white, fontSize: 40),),
+                    SizedBox(height: 10),
+                    Text("Bienvenido de vuelta",style: TextStyle(color: Colors.white, fontSize: 18),),
+                ],
+               ),
+              )
+          ]
+        )
       ),
     );
-  }
+      
 }
 
 
@@ -155,9 +91,9 @@ class NewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Página Nueva'),
+        title: const Text('Página Nueva'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('Has iniciado sesión correctamente!'),
       ),
     );
