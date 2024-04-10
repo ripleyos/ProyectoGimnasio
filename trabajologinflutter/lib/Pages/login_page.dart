@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
     if (errorMessage == null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => NewPage()), // Cambia "NewPage" al nombre de tu nueva página
+        MaterialPageRoute(builder: (context) => RegistroPage()), // Cambia "NewPage" al nombre de tu nueva página
       );
     } else {
       showDialog(
@@ -63,10 +63,10 @@ class _LoginPageState extends State<LoginPage> {
             ]
           )
         ),
-        child: const Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 80,),
+            SizedBox(height: 40,),
             Padding(
               padding: EdgeInsets.all(20),
                 child: Column(
@@ -77,25 +77,111 @@ class _LoginPageState extends State<LoginPage> {
                     Text("Bienvenido de vuelta",style: TextStyle(color: Colors.white, fontSize: 18),),
                 ],
                ),
+              ),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(60),topRight: Radius.circular(60))
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 60,),
+                        Container(
+                          
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [BoxShadow(
+                              color: Color.fromRGBO(225, 95, 27, .3),
+                              blurRadius: 20,
+                              offset: Offset(0, 10)
+                            )]
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.grey[200] ?? Colors.transparent))
+                                ),
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    hintText: "Email",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.grey[200] ?? Colors.transparent))
+                                ),
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    hintText: "Contraseña",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 40,),
+                        Text("¿Te olvidaste de la contraseña?",style: TextStyle(color: Colors.grey),),
+                        SizedBox(height: 40,),
+                        Container(
+                          height: 50,
+                          margin: EdgeInsets.symmetric(horizontal: 50),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.orange[900]
+                          ),
+                          child: Center(
+                            child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),)
+                            ),
+                        ),
+                        SizedBox(height: 30,),
+                        Text("Iniciar sesion con redes sociales",style: TextStyle(color: Colors.grey),),
+                        SizedBox(height: 30,),
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                            child:Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Colors.blue
+                              ),
+                            ),
+                            ),
+                            SizedBox(width: 30,),
+                            Expanded(
+                            child:Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Colors.black
+                              ),
+                            ),
+                            )
+                          ],
+                        )
+                      ],
+                      ),
+                    ),
+                ),
               )
-          ]
-        )
+          ],
+        ),
       ),
     );
       
 }
 
-
-class NewPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Página Nueva'),
-      ),
-      body: const Center(
-        child: Text('Has iniciado sesión correctamente!'),
-      ),
-    );
-  }
 }
+
