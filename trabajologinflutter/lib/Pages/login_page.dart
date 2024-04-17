@@ -50,8 +50,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 30),
+        padding: EdgeInsets.zero,
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -72,6 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                  crossAxisAlignment: CrossAxisAlignment.start, // Corrección aquí
                   children: <Widget>[
+                    
                     Text("Login",style: TextStyle(color: Colors.white, fontSize: 40),),
                     SizedBox(height: 10),
                     Text("Bienvenido de vuelta",style: TextStyle(color: Colors.white, fontSize: 18),),
@@ -108,6 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                                   border: Border(bottom: BorderSide(color: Colors.grey[200] ?? Colors.transparent))
                                 ),
                                 child: TextField(
+                                  controller: _usernameController,
                                   decoration: InputDecoration(
                                     hintText: "Email",
                                     hintStyle: TextStyle(color: Colors.grey),
@@ -121,6 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                                   border: Border(bottom: BorderSide(color: Colors.grey[200] ?? Colors.transparent))
                                 ),
                                 child: TextField(
+                                  controller: _passwordController,
                                   decoration: InputDecoration(
                                     hintText: "Contraseña",
                                     hintStyle: TextStyle(color: Colors.grey),
@@ -137,12 +141,19 @@ class _LoginPageState extends State<LoginPage> {
                         Container(
                           height: 50,
                           margin: EdgeInsets.symmetric(horizontal: 50),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: Colors.orange[900]
-                          ),
                           child: Center(
-                            child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),)
+                            child: ElevatedButton(
+                              onPressed: _signIn,
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                 padding: EdgeInsets.symmetric(vertical: 15,horizontal: 50),
+                                 elevation: 8,
+                                 backgroundColor: Colors.orange[900],
+                              ),
+                              child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                              ),
                             ),
                         ),
                         SizedBox(height: 30,),
@@ -153,22 +164,26 @@ class _LoginPageState extends State<LoginPage> {
                             Expanded(
                             child:Container(
                               height: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.blue
+                              child: Center(
+                            child: ElevatedButton(
+                              onPressed:  () {
+                                 setState(() {
+                                  var mensaje = 'javier maricon no toques k no funciona pringado';
+                                  });
+                                  },
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                 padding: EdgeInsets.symmetric(vertical: 15,horizontal: 50),
+                                 elevation: 8,
+                                 backgroundColor: Colors.blue,
+                              ),
+                              child: Text("Google", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                               ),
                             ),
                             ),
-                            SizedBox(width: 30,),
-                            Expanded(
-                            child:Container(
-                              height: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.black
-                              ),
                             ),
-                            )
                           ],
                         )
                       ],
