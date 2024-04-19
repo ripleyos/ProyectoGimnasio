@@ -168,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: ElevatedButton(
                               onPressed:  () {
                                  setState(() {
-                                  var mensaje = 'javier maricon no toques k no funciona pringado';
+                                  var mensaje = 'javier no toques k no funciona pringado';
                                   });
                                   },
                               style: ElevatedButton.styleFrom(
