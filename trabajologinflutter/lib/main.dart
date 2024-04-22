@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Ejemplo Provider',
       initialRoute: 'login',
       routes: {
-        'login': ( _ ) => LoginPage(),
+        'login': ( _ ) => RegistroPage(),
         'home' : ( _ ) => RegistroPage(),
       },
       theme: ThemeData.light().copyWith(
