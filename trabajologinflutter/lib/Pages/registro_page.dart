@@ -58,7 +58,6 @@ class _RegistroPageState extends State<RegistroPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true, // Para evitar el hueco amarillo
       body: SafeArea(
         child: Container(
           decoration: BoxDecoration(
@@ -72,12 +71,20 @@ class _RegistroPageState extends State<RegistroPage> {
               ],
             ),
           ),
-          child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _buildHeader(),
-                _buildForm(),
+                SizedBox(height: 20),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: _buildForm(),
+                  ),
+                ),
+                SizedBox(height: 20),
                 _buildFooter(),
               ],
             ),
@@ -88,88 +95,81 @@ class _RegistroPageState extends State<RegistroPage> {
   }
 
   Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30),
-      child: Column(
-        children: [
-          Icon(
-            Icons.fitness_center, // Icono de gimnasio
+    return Column(
+      children: [
+        Icon(
+          Icons.fitness_center,
+          color: Colors.white,
+          size: 80,
+        ),
+        SizedBox(height: 10),
+        Text(
+          'Registro al Gimnasio',
+          style: TextStyle(
             color: Colors.white,
-            size: 80,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
           ),
-          SizedBox(height: 10),
-          Text(
-            'Registro al Gimnasio',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildForm() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        color: Colors.white.withOpacity(0.8),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              _buildInputField(
-                controller: _emailController,
-                labelText: 'Correo electrónico',
-                icon: Icons.email,
-              ),
-              SizedBox(height: 16),
-              _buildInputField(
-                controller: _passwordController,
-                labelText: 'Contraseña',
-                icon: Icons.lock,
-                isPassword: true,
-              ),
-              SizedBox(height: 16),
-              _buildInputField(
-                controller: _confirmPasswordController,
-                labelText: 'Confirmar Contraseña',
-                icon: Icons.lock,
-                isPassword: true,
-              ),
-              SizedBox(height: 32),
-              _isLoading
-                  ? CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC62828)), // Rojo medio
-              )
-                  : ElevatedButton(
-                onPressed: _register,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  child: Text(
-                    'Registrarse',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.normal ,
-                      color: Color(0xFFB71C1C), // Rojo oscuro
-                    ),
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFEF5350), // Rojo claro
-                  onPrimary: Color(0xFFB71C1C), // Rojo oscuro
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            _buildInputField(
+              controller: _emailController,
+              labelText: 'Correo electrónico',
+              icon: Icons.email,
+            ),
+            SizedBox(height: 16),
+            _buildInputField(
+              controller: _passwordController,
+              labelText: 'Contraseña',
+              icon: Icons.lock,
+              isPassword: true,
+            ),
+            SizedBox(height: 16),
+            _buildInputField(
+              controller: _confirmPasswordController,
+              labelText: 'Confirmar Contraseña',
+              icon: Icons.lock,
+              isPassword: true,
+            ),
+            SizedBox(height: 32),
+            _isLoading
+                ? CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC62828)), // Rojo medio
+            )
+                : ElevatedButton(
+              onPressed: _register,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  'Registrarse',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFB71C1C), // Rojo oscuro
                   ),
                 ),
               ),
-            ],
-          ),
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xFFEF5350), // Rojo claro
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -182,7 +182,7 @@ class _RegistroPageState extends State<RegistroPage> {
         '¡Comienza tu viaje hacia un cuerpo más fuerte!',
         style: TextStyle(
           fontSize: 18,
-          fontWeight: FontWeight.normal,
+          fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
       ),
@@ -196,7 +196,7 @@ class _RegistroPageState extends State<RegistroPage> {
     bool isPassword = false,
   }) {
     return TextFormField(
-      controller: controller,
+      controller: controller, // Aquí se especifica el controlador
       decoration: InputDecoration(
         labelText: labelText,
         prefixIcon: Icon(icon, color: Color(0xFFB71C1C)), // Rojo oscuro
