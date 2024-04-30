@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trabajologinflutter/Pages/SettingsPage.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -18,15 +19,22 @@ class _MainPageState extends State<MainPage> {
       style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
     ),
     Text(
-      'Profile Page',
+      'Settings Page',
       style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
     ),
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SettingsPage()),
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -83,8 +91,8 @@ class CurvedNavigationBar extends StatelessWidget {
               label: 'Search',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
+              icon: Icon(Icons.settings),
+              label: 'Ajustes',
             ),
           ],
           currentIndex: currentIndex,
