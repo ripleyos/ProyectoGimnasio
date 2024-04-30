@@ -24,21 +24,21 @@ class _LoginPageState extends State<LoginPage> {
     if (errorMessage == null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => NewPage()), // Cambia "NewPage" al nombre de tu nueva página
+        MaterialPageRoute(builder: (context) => RegistroPage()), // Cambia "NewPage" al nombre de tu nueva página
       );
     } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Error de inicio de sesión'),
+            title: const Text('Error de inicio de sesión'),
             content: Text(errorMessage),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('OK'),
+                child: const Text('OK'),
               ),
             ],
           );
@@ -50,116 +50,153 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 10),
-                const Icon(
-                  Icons.lock,
-                  size: 100,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Bienvenido de nuevo!',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 16,
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        padding: EdgeInsets.zero,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            colors: [
+              Color(0xFFB71C1C),
+              Color(0xFFC62828),
+              Color(0xFFEF5350)
+            ]
+          )
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 40,),
+            Padding(
+              padding: EdgeInsets.all(20),
+                child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start, // Corrección aquí
+                  children: <Widget>[
+                    
+                    Text("Login",style: TextStyle(color: Colors.white, fontSize: 40),),
+                    SizedBox(height: 10),
+                    Text("Bienvenido de vuelta",style: TextStyle(color: Colors.white, fontSize: 18),),
+                ],
+               ),
+              ),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(60),topRight: Radius.circular(60))
                   ),
-                ),
-                const SizedBox(height: 25),
-                TextFormField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(labelText: 'Username'),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 10),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 25),
-                ElevatedButton(
-                  onPressed: _signIn,
-                  child: Text('Iniciar Sesión'),
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey[400],
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 60,),
+                        Container(
+                          
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [BoxShadow(
+                              color: Color.fromRGBO(225, 95, 27, .3),
+                              blurRadius: 20,
+                              offset: Offset(0, 10)
+                            )]
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.grey[200] ?? Colors.transparent))
+                                ),
+                                child: TextField(
+                                  controller: _usernameController,
+                                  decoration: InputDecoration(
+                                    hintText: "Email",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: Colors.grey[200] ?? Colors.transparent))
+                                ),
+                                child: TextField(
+                                  controller: _passwordController,
+                                  decoration: InputDecoration(
+                                    hintText: "Contraseña",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                          'O continuar con',
-                          style: TextStyle(color: Colors.grey[700]),
+                        SizedBox(height: 40,),
+                        Text("¿Te olvidaste de la contraseña?",style: TextStyle(color: Colors.grey),),
+                        SizedBox(height: 40,),
+                        Container(
+                          height: 50,
+                          margin: EdgeInsets.symmetric(horizontal: 50),
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: _signIn,
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                 padding: EdgeInsets.symmetric(vertical: 15,horizontal: 50),
+                                 elevation: 8,
+                                 backgroundColor: Colors.orange[900],
+                              ),
+                              child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                              ),
+                            ),
                         ),
+                        SizedBox(height: 30,),
+                        Text("Iniciar sesion con redes sociales",style: TextStyle(color: Colors.grey),),
+                        SizedBox(height: 30,),
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                            child:Container(
+                              height: 50,
+                              child: Center(
+                            child: ElevatedButton(
+                              onPressed:  () {
+                                 setState(() {
+                                  var mensaje = 'javier no toques k no funciona pringado';
+                                  });
+                                  },
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                 padding: EdgeInsets.symmetric(vertical: 15,horizontal: 50),
+                                 elevation: 8,
+                                 backgroundColor: Colors.blue,
+                              ),
+                              child: Text("Google", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                            ),
+                            ),
+                          ],
+                        )
+                      ],
                       ),
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    SquareTile(imagePath: 'lib/images/google.png'),
-                    SizedBox(width: 25),
-                    SquareTile(imagePath: 'lib/images/apple.png')
-                  ],
-                ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegistroPage()),
-                    );
-                  },
-                  child: Text(
-                    '¿No eres miembro? Registrate ahora',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
                     ),
-                  ),
                 ),
-              ],
-            ),
-          ),
+              )
+          ],
         ),
       ),
     );
-  }
+      
 }
 
-
-class NewPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Página Nueva'),
-      ),
-      body: Center(
-        child: Text('Has iniciado sesión correctamente!'),
-      ),
-    );
-  }
 }
+
