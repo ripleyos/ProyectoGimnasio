@@ -1,3 +1,4 @@
+import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:trabajologinflutter/Pages/registro_page.dart';
 import 'package:trabajologinflutter/providers/cart_provider.dart';
 import 'package:trabajologinflutter/providers/login_form_provider.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
       title: 'Ejemplo Provider',
       initialRoute: 'login',
       routes: {
-        'login': ( _ ) => LoginPage(),
+        'login': ( _ ) => MainPage(),
         'home' : ( _ ) => RegistroPage(),
       },
       theme: ThemeData.light().copyWith(

@@ -1,7 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
 
 class RegistroPage extends StatefulWidget {
@@ -15,71 +12,200 @@ class _RegistroPageState extends State<RegistroPage> {
   final _confirmPasswordController = TextEditingController();
   final _authService = AuthService();
 
+  bool _isLoading = false;
+
   Future<void> _register() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     String? errorMessage = await _authService.signup(
       _emailController.text,
       _passwordController.text,
     );
 
+    setState(() {
+      _isLoading = false;
+    });
+
     if (errorMessage == null) {
-      print('Usuario registrado con éxito');
+      // Navegar a la página de éxito o realizar otra acción
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error de registro'),
-            content: Text(errorMessage),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      _mostrarErrorDialog(errorMessage);
     }
+  }
+
+  void _mostrarErrorDialog(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error en el registro'),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Registro'),
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFFB71C1C), // Rojo oscuro
+                Color(0xFFC62828), // Rojo medio
+                Color(0xFFEF5350), // Rojo claro
+              ],
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildHeader(),
+                SizedBox(height: 20),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: _buildForm(),
+                  ),
+                ),
+                SizedBox(height: 20),
+                _buildFooter(),
+              ],
+            ),
+          ),
+        ),
       ),
-      body: Padding(
+    );
+  }
+
+  Widget _buildHeader() {
+    return Column(
+      children: [
+        Icon(
+          Icons.fitness_center,
+          color: Colors.white,
+          size: 80,
+        ),
+        SizedBox(height: 10),
+        Text(
+          'Registro al Gimnasio',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildForm() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      color: Colors.white,
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextFormField(
+            _buildInputField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Correo electrónico'),
-              keyboardType: TextInputType.emailAddress,
+              labelText: 'Correo electrónico',
+              icon: Icons.email,
             ),
             SizedBox(height: 16),
-            TextFormField(
+            _buildInputField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Contraseña'),
-              obscureText: true,
+              labelText: 'Contraseña',
+              icon: Icons.lock,
+              isPassword: true,
             ),
             SizedBox(height: 16),
-            TextFormField(
+            _buildInputField(
               controller: _confirmPasswordController,
-              decoration: InputDecoration(labelText: 'Confirmar Contraseña'),
-              obscureText: true,
+              labelText: 'Confirmar Contraseña',
+              icon: Icons.lock,
+              isPassword: true,
             ),
             SizedBox(height: 32),
-            ElevatedButton(
+            _isLoading
+                ? CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC62828)), // Rojo medio
+            )
+                : ElevatedButton(
               onPressed: _register,
-              child: Text('Registrarse'),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  'Registrarse',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFB71C1C), // Rojo oscuro
+                  ),
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xFFEF5350), // Rojo claro
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildFooter() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Text(
+        '¡Comienza tu viaje hacia un cuerpo más fuerte!',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String labelText,
+    required IconData icon,
+    bool isPassword = false,
+  }) {
+    return TextFormField(
+      controller: controller, // Aquí se especifica el controlador
+      decoration: InputDecoration(
+        labelText: labelText,
+        prefixIcon: Icon(icon, color: Color(0xFFB71C1C)), // Rojo oscuro
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+      obscureText: isPassword,
+      keyboardType: TextInputType.emailAddress,
     );
   }
 }
