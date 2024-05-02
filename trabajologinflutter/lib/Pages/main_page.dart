@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trabajologinflutter/Pages/SettingsPage.dart';
+import 'package:trabajologinflutter/Pages/pagina_principal.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -9,47 +10,28 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Home Page',
-      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-    ),
-    Text(
-      'Search Page',
-      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-    ),
-    Text(
-      'Settings Page',
-      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-    ),
+  static List<Widget> _widgetOptions = <Widget>[
+    PaginaPrincipal(),
+    Text('Search Page'),
+    Text('Estadísticas'), // Placeholder para la página de estadísticas
+    SettingsPage(),
   ];
-
-  void _onItemTapped(int index) {
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SettingsPage()),
-      );
-    } else {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Main Page'),
-        backgroundColor: Color(0xFFB71C1C), // Rojo oscuro
+        backgroundColor: Color(0xFFB71C1C),
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: CurvedNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
       ),
     );
   }
@@ -67,11 +49,11 @@ class CurvedNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      clipper: CurvedNavClipper(), // ClipPath con forma curva
+      clipper: CurvedNavClipper(),
       child: Container(
-        height: 70, // Altura ajustable para estética
+        height: 70,
         decoration: BoxDecoration(
-          color: Color(0xFFEF5350), // Rojo claro
+          color: Color(0xFFEF5350),
           boxShadow: [
             BoxShadow(
               color: Colors.black26,
@@ -91,6 +73,10 @@ class CurvedNavigationBar extends StatelessWidget {
               label: 'Search',
             ),
             BottomNavigationBarItem(
+              icon: Icon(Icons.insert_chart),
+              label: 'Estadísticas',
+            ), // Icono de estadísticas
+            BottomNavigationBarItem(
               icon: Icon(Icons.settings),
               label: 'Ajustes',
             ),
@@ -99,7 +85,7 @@ class CurvedNavigationBar extends StatelessWidget {
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.black,
           onTap: onTap,
-          backgroundColor: Colors.transparent, // Para el efecto de borde
+          backgroundColor: Colors.transparent,
           elevation: 0,
           showSelectedLabels: false,
         ),
@@ -114,7 +100,6 @@ class CurvedNavClipper extends CustomClipper<Path> {
     Path path = Path();
     double curveHeight = 20;
 
-    // Forma curva con suavidad
     path.lineTo(size.width / 2 - curveHeight, 0);
     path.quadraticBezierTo(
       size.width / 2,
@@ -134,3 +119,4 @@ class CurvedNavClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CurvedNavClipper oldClipper) => false;
 }
+
