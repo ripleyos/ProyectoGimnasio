@@ -1,4 +1,5 @@
 import 'package:trabajologinflutter/Pages/main_page.dart';
+import 'package:trabajologinflutter/Pages/mapa_page.dart';
 import 'package:trabajologinflutter/Pages/registro_page.dart';
 import 'package:trabajologinflutter/pages/main_page.dart';
 import 'package:trabajologinflutter/providers/cart_provider.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
       initialRoute: 'login',
       routes: {
         'login': ( _ ) => RegistroPage(),
-        'home' : ( _ ) => ,
+        'home' : ( _ ) => MapPage(),
       },
       theme: ThemeData.light().copyWith(
           scaffoldBackgroundColor: Color.fromRGBO(234, 249, 200, 1)

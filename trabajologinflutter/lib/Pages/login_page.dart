@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:trabajologinflutter/pages/main_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:trabajologinflutter/Pages/mapa_page.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
 import 'registro_page.dart';
 
@@ -23,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
     if (errorMessage == null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => MainPage()),
+        MaterialPageRoute(builder: (context) => MapPage()), // Cambia "NewPage" al nombre de tu nueva página
       );
     } else {
       showDialog(
