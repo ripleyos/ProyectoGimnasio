@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trabajologinflutter/Pages/Settings/RestablecerContrase%C3%B1a.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -69,7 +70,10 @@ class SettingsPage extends StatelessWidget {
           ),
           leading: Icon(Icons.lock, color: Colors.white), // Icono blanco
           onTap: () {
-            // Acción para cambiar la contraseña
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChangePasswordPage()),
+            );
           },
         ),
         ListTile(

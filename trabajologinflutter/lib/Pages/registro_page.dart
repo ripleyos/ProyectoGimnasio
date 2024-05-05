@@ -19,6 +19,14 @@ class _RegistroPageState extends State<RegistroPage> {
       _isLoading = true;
     });
 
+    if (_passwordController.text != _confirmPasswordController.text) {
+      _mostrarErrorDialog("Las contraseñas no coinciden");
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
     String? errorMessage = await _authService.signup(
       _emailController.text,
       _passwordController.text,
@@ -29,7 +37,7 @@ class _RegistroPageState extends State<RegistroPage> {
     });
 
     if (errorMessage == null) {
-      // Navegar a la página de éxito o realizar otra acción
+      // Acciones posteriores al registro exitoso
     } else {
       _mostrarErrorDialog(errorMessage);
     }
@@ -58,36 +66,30 @@ class _RegistroPageState extends State<RegistroPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Container(
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color(0xFFB71C1C), // Rojo oscuro
-                Color(0xFFC62828), // Rojo medio
-                Color(0xFFEF5350), // Rojo claro
+                Color(0xFF2A0000), // Rojo muy oscuro
+                Color(0xFF460303), // Rojo oscuro profundo
+                Color(0xFF730000), // Rojo medio oscuro
+                Color(0xFFA80000), // Rojo vibrante
               ],
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _buildHeader(),
-                SizedBox(height: 20),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: _buildForm(),
-                  ),
-                ),
-                SizedBox(height: 20),
-                _buildFooter(),
-              ],
-            ),
+          child: Column(
+            children: [
+              SizedBox(height: 80), // Espacio para el encabezado
+              _buildHeader(), // Encabezado con título
+              SizedBox(height: 20),
+              _buildForm(), // Formulario de registro
+              SizedBox(height: 20),
+              _buildFooter(), // Pie de página motivacional
+            ],
           ),
         ),
       ),
@@ -104,7 +106,7 @@ class _RegistroPageState extends State<RegistroPage> {
         ),
         SizedBox(height: 10),
         Text(
-          'Registro al Gimnasio',
+          'Registro en Gimnasio',
           style: TextStyle(
             color: Colors.white,
             fontSize: 30,
@@ -124,6 +126,7 @@ class _RegistroPageState extends State<RegistroPage> {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildInputField(
               controller: _emailController,
@@ -144,28 +147,30 @@ class _RegistroPageState extends State<RegistroPage> {
               icon: Icons.lock,
               isPassword: true,
             ),
-            SizedBox(height: 32),
+            SizedBox(height: 32), // Espacio para separar el botón del formulario
             _isLoading
                 ? CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFC62828)), // Rojo medio
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFA80000)), // Rojo vibrante
             )
-                : ElevatedButton(
-              onPressed: _register,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  'Registrarse',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFB71C1C), // Rojo oscuro
+                : Center( // Centrar el botón de registro
+              child: ElevatedButton(
+                onPressed: _register,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    'Registrarse',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Color(0xFFEF5350), // Rojo claro
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                style: ElevatedButton.styleFrom(
+                  primary: Color(0xFFA80000), // Rojo vibrante
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
                 ),
               ),
             ),
@@ -196,16 +201,17 @@ class _RegistroPageState extends State<RegistroPage> {
     bool isPassword = false,
   }) {
     return TextFormField(
-      controller: controller, // Aquí se especifica el controlador
+      controller: controller,
       decoration: InputDecoration(
-        labelText: labelText,
-        prefixIcon: Icon(icon, color: Color(0xFFB71C1C)), // Rojo oscuro
+        hintText: labelText,
+        hintStyle: TextStyle(color: Colors.grey[700]), // Cambiar el color del hint para mejor contraste
+        prefixIcon: Icon(icon, color: Color(0xFFA80000)), // Rojo vibrante
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
         ),
       ),
       obscureText: isPassword,
-      keyboardType: TextInputType.emailAddress,
+      keyboardType: isPassword ? TextInputType.visiblePassword : TextInputType.emailAddress,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:trabajologinflutter/Pages/registro_page.dart';
+import 'package:trabajologinflutter/pages/main_page.dart';
 import 'package:trabajologinflutter/providers/cart_provider.dart';
 import 'package:trabajologinflutter/providers/login_form_provider.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
@@ -35,8 +36,8 @@ class MyApp extends StatelessWidget {
       title: 'Ejemplo Provider',
       initialRoute: 'login',
       routes: {
-        'login': ( _ ) => MainPage(),
-        'home' : ( _ ) => RegistroPage(),
+        'login': ( _ ) => RegistroPage(),
+        'home' : ( _ ) => ,
       },
       theme: ThemeData.light().copyWith(
           scaffoldBackgroundColor: Color.fromRGBO(234, 249, 200, 1)
