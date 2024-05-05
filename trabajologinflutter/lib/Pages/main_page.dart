@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trabajologinflutter/Pages/SettingsPage.dart';
+import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
 import 'package:trabajologinflutter/Pages/pagina_principal.dart';
 
 class MainPage extends StatefulWidget {
@@ -13,17 +14,13 @@ class _MainPageState extends State<MainPage> {
   static List<Widget> _widgetOptions = <Widget>[
     PaginaPrincipal(),
     Text('Search Page'),
-    Text('Estadísticas'), // Placeholder para la página de estadísticas
+    EstadisticasPage(), // Reemplaza el Placeholder con la página de estadísticas
     SettingsPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Main Page'),
-        backgroundColor: Color(0xFFB71C1C),
-      ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: CurvedNavigationBar(
         currentIndex: _selectedIndex,
@@ -119,4 +116,3 @@ class CurvedNavClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CurvedNavClipper oldClipper) => false;
 }
-
