@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trabajologinflutter/Pages/PerfilPage.dart';
 import 'package:trabajologinflutter/Pages/SettingsPage.dart';
 import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
 import 'package:trabajologinflutter/Pages/pagina_principal.dart';
@@ -13,7 +14,7 @@ class _MainPageState extends State<MainPage> {
 
   static List<Widget> _widgetOptions = <Widget>[
     PaginaPrincipal(),
-    Text('Search Page'),
+    PerfilPage(),
     EstadisticasPage(), // Reemplaza el Placeholder con la página de estadísticas
     SettingsPage(),
   ];
@@ -66,8 +67,8 @@ class CurvedNavigationBar extends StatelessWidget {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
+              icon: Icon(Icons.phone_in_talk),
+              label: 'Perfil',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.insert_chart),
