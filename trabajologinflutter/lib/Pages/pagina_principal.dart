@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'CRUD_maquinas_page.dart';
 
 class PaginaPrincipal extends StatefulWidget {
   @override
@@ -112,8 +113,10 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                 child: RoundedBox(
                   color: Color(0xFF42A5F5), // Azul claro
                   onTap: () {
-                    // Aquí puedes navegar a la página correspondiente
-                    print('Ventana 7');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MaquinasPage()),
+                    );
                   },
                 ),
               ),
