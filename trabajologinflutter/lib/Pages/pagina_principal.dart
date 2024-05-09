@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'CRUD_maquinas_page.dart';
 
 class PaginaPrincipal extends StatefulWidget {
   @override
@@ -104,8 +105,10 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                 flex: 2, // Ocupa el doble de espacio vertical
                 child: RoundedBox(
                   onTap: () {
-                    // Aquí puedes navegar a la página correspondiente
-                    print('Ventana 7');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MaquinasPage()),
+                    );
                   },
                 ),
               ),
