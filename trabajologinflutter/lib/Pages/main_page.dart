@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:trabajologinflutter/Pages/CRUD_reservas_page.dart';
 import 'package:trabajologinflutter/Pages/PerfilPage.dart';
 import 'package:trabajologinflutter/Pages/SettingsPage.dart';
 import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
 import 'package:trabajologinflutter/Pages/pagina_principal.dart';
+import 'package:trabajologinflutter/Pages/reserva_page.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -13,8 +15,8 @@ class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
   static List<Widget> _widgetOptions = <Widget>[
-    PaginaPrincipal(),
-    PerfilPage(),
+    ReservaPage(),
+    GestionReservas(),
     EstadisticasPage(), // Reemplaza el Placeholder con la página de estadísticas
     SettingsPage(),
   ];
