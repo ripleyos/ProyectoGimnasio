@@ -6,6 +6,32 @@ import 'package:trabajologinflutter/providers/reservas.dart';
 class GestionReservas extends StatefulWidget {
   @override
   _GestionReservasState createState() => _GestionReservasState();
+
+    Future<void> insertarReservaExterna(int reserva, int maquina,int gimnasio, String hora_inicio, String hora_fin) async {
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/reservas.json';
+
+    Map<String, dynamic> data = {
+      "id_reserva": reserva ?? 0,
+      "id_maquina": maquina ?? 0,
+      "id_gimnasio": gimnasio ?? 0,
+      "hora_inicio": hora_inicio ?? 0,
+      "hora_fin": hora_fin ?? 0,
+    };
+
+    try {
+      final response =
+          await http.post(Uri.parse(url), body: json.encode(data));
+
+      if (response.statusCode == 200) {
+        print("Reserva insertada: ");
+        print(response.body);
+      } else {
+        print('Error al agregar reserva: ${response.statusCode}');
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+  }
 }
 
 class _GestionReservasState extends State<GestionReservas> {
@@ -61,7 +87,7 @@ class _GestionReservasState extends State<GestionReservas> {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        await insertarReserva();
+                        //await insertarReserva();
                       },
                       child: const Text("INSERTAR"),
                     ),
@@ -106,16 +132,18 @@ class _GestionReservasState extends State<GestionReservas> {
       ),
     );
   }
-
-  Future<void> insertarReserva() async {
-    final String url = 'https://tu-url-de-reservas.com/reservas.json';
+  Future<void> insertarReservaExterna(int reserva, int maquina, int gimnasio, String hora_inicio, String hora_fin) async {
+    await insertarReserva(reserva, maquina, gimnasio, hora_inicio, hora_fin);
+  }
+  Future<void> insertarReserva(int reserva, int maquina,int gimnasio, String hora_inicio, String hora_fin) async {
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/reservas.json';
 
     Map<String, dynamic> data = {
-      "id_reserva": int.tryParse(idReservaController.text) ?? 0,
-      "id_maquina": int.tryParse(idMaquinaController.text) ?? 0,
-      "id_gimnasio": int.tryParse(idGimnasioController.text) ?? 0,
-      "hora_inicio": horaInicioController.text,
-      "hora_fin": horaFinController.text,
+      "id_reserva": reserva ?? 0,
+      "id_maquina": maquina ?? 0,
+      "id_gimnasio": gimnasio ?? 0,
+      "hora_inicio": hora_inicio ?? 0,
+      "hora_fin": hora_fin ?? 0,
     };
 
     try {
@@ -134,7 +162,7 @@ class _GestionReservasState extends State<GestionReservas> {
   }
 
   Future<void> cargarReservas() async {
-    final String url = 'https://tu-url-de-reservas.com/reservas.json';
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/reservas.json';
     final response = await http.get(Uri.parse(url));
     
     if (response.statusCode == 200) {
@@ -154,4 +182,6 @@ class _GestionReservasState extends State<GestionReservas> {
       print('Error al cargar las reservas: ${response.statusCode}');
     }
   }
+  
 }
+

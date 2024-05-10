@@ -1,10 +1,19 @@
 
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:trabajologinflutter/Pages/pagina_principal.dart';
 import 'package:trabajologinflutter/Pages/PerfilPage.dart';
 import 'package:trabajologinflutter/Pages/SettingsPage.dart';
 import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
+=======
+import 'package:trabajologinflutter/Pages/CRUD_reservas_page.dart';
+import 'package:trabajologinflutter/Pages/PerfilPage.dart';
+import 'package:trabajologinflutter/Pages/SettingsPage.dart';
+import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
+import 'package:trabajologinflutter/Pages/pagina_principal.dart';
+import 'package:trabajologinflutter/Pages/reserva_page.dart';
+>>>>>>> 81a2f3e (La reserva va con muchisimas comillas, a dejado de funcionar por la cara, faltan las validaciones para que sea funcional de verdad, despues faltaria los detalles como el dia de la semana y el numero de maquinas que puedes reservar a la vez)
 
 class MainPage extends StatefulWidget {
   final String email;
@@ -18,6 +27,16 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
+<<<<<<< HEAD
+=======
+  static List<Widget> _widgetOptions = <Widget>[
+    ReservaPage(),
+    GestionReservas(),
+    EstadisticasPage(), // Reemplaza el Placeholder con la página de estadísticas
+    SettingsPage(),
+  ];
+
+>>>>>>> 81a2f3e (La reserva va con muchisimas comillas, a dejado de funcionar por la cara, faltan las validaciones para que sea funcional de verdad, despues faltaria los detalles como el dia de la semana y el numero de maquinas que puedes reservar a la vez)
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
