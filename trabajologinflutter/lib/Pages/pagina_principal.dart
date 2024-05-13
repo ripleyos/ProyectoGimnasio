@@ -12,6 +12,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
       home: Scaffold(
         appBar: AppBar(
           title: Text('Página con ventanas emergentes'),
+          backgroundColor: Color(0xFFB71C1C), // Rojo oscuro
         ),
         body: Container(
           color: Colors.white, // Fondo blanco
@@ -26,6 +27,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                     Flexible(
                       flex: 1,
                       child: RoundedBox(
+                        color: Color(0xFFEF5350), // Rojo
                         onTap: () {
                           // Aquí puedes navegar a la página correspondiente
                           print('Ventana 1');
@@ -36,6 +38,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                     Flexible(
                       flex: 1,
                       child: RoundedBox(
+                        color: Color(0xFF5C6BC0), // Azul
                         onTap: () {
                           // Aquí puedes navegar a la página correspondiente
                           print('Ventana 2');
@@ -53,6 +56,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                     Flexible(
                       flex: 1,
                       child: RoundedBox(
+                        color: Color(0xFF66BB6A), // Verde
                         onTap: () {
                           // Aquí puedes navegar a la página correspondiente
                           print('Ventana 3');
@@ -63,6 +67,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                     Flexible(
                       flex: 1,
                       child: RoundedBox(
+                        color: Color(0xFFFFA726), // Naranja
                         onTap: () {
                           // Aquí puedes navegar a la página correspondiente
                           print('Ventana 4');
@@ -80,6 +85,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                     Flexible(
                       flex: 1,
                       child: RoundedBox(
+                        color: Color(0xFFEC407A), // Rosa
                         onTap: () {
                           // Aquí puedes navegar a la página correspondiente
                           print('Ventana 5');
@@ -90,6 +96,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                     Flexible(
                       flex: 1,
                       child: RoundedBox(
+                        color: Color(0xFFAB47BC), // Púrpura
                         onTap: () {
                           // Aquí puedes navegar a la página correspondiente
                           print('Ventana 6');
@@ -103,6 +110,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
               Expanded(
                 flex: 2, // Ocupa el doble de espacio vertical
                 child: RoundedBox(
+                  color: Color(0xFF42A5F5), // Azul claro
                   onTap: () {
                     // Aquí puedes navegar a la página correspondiente
                     print('Ventana 7');
@@ -119,8 +127,9 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
 
 class RoundedBox extends StatelessWidget {
   final VoidCallback? onTap;
+  final Color color;
 
-  const RoundedBox({Key? key, this.onTap}) : super(key: key);
+  const RoundedBox({Key? key, this.onTap, required this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +137,7 @@ class RoundedBox extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.blue, // Color de fondo de las ventanas
+          color: color, // Color de fondo de las ventanas
           borderRadius: BorderRadius.circular(20.0), // Bordes redondos
         ),
         child: Center(
@@ -141,4 +150,3 @@ class RoundedBox extends StatelessWidget {
     );
   }
 }
-

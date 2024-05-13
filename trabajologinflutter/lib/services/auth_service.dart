@@ -1,13 +1,18 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+
+import '../Modelos/Cliente.dart';
 
 class AuthService extends ChangeNotifier{
 
   final String _firebaseToken = 'AIzaSyAjAAC8v3PbVB6T2MF2d2yoGG8qXJ0--qk';
 
   final storage = new FlutterSecureStorage();
+
+
 
 
 //LOGIN
@@ -80,6 +85,10 @@ class AuthService extends ChangeNotifier{
     } else {
       return decodedResp['error']['message'];
     }
+  }
+
+  Future<User?> getCurrentUser() async {
+    return FirebaseAuth.instance.currentUser; // Return the currently authenticated user
   }
 
   Future logout() async {

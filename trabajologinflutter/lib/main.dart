@@ -39,11 +39,11 @@ class MyApp extends StatelessWidget {
       title: 'Ejemplo Provider',
       initialRoute: 'login',
       routes: {
-        'login': ( _ ) => MainPage(),
-        'home' : ( _ ) => PaginaPrincipal(),
+        'login': ( _ ) => LoginPage(),
+        'home' : ( _ ) => MainPage(),
       },
       theme: ThemeData.light().copyWith(
-          scaffoldBackgroundColor: Color.fromRGBO(234, 249, 200, 1)
+          scaffoldBackgroundColor: Colors.blueGrey
       ),
     );
   }
