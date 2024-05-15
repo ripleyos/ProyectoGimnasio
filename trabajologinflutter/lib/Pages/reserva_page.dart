@@ -85,6 +85,31 @@ class _ReservaPageState extends State<ReservaPage> {
     }
   }
 
+ void filtrarReservas() {
+  if (maquinaSeleccion != null && semanaSeleccion != null && diaSeleccion != null) {
+    Set<String> intervalosAEliminar = {};
+
+    for (Reserva reserva in reservas) {
+      if (reserva.idMaquina == maquinaSeleccion.toString() &&
+          reserva.semana == semanaSeleccion.toString() &&
+          reserva.dia == diaSeleccion) {
+        intervalosAEliminar.addAll(reserva.intervalo.split(','));
+      }
+    }
+
+    // Convertir a Set para eliminar duplicados y luego volver a convertir a List
+    List<String> filteredOptionsSet = filteredOptions.toSet().toList();
+
+    // Eliminar los intervalos coincidentes de la lista de opciones filtradas
+    filteredOptionsSet.removeWhere((intervalo) => intervalosAEliminar.contains(intervalo));
+
+    // Asignar la lista filtrada de intervalos nuevamente a filteredOptions
+    filteredOptions = filteredOptionsSet;
+  }
+}
+
+
+
   @override
   void initState() {
     super.initState();
@@ -131,6 +156,7 @@ class _ReservaPageState extends State<ReservaPage> {
                         maquinaSeleccion = newValue!;
                         semanaSeleccion = null;
                         diaSeleccion = null;
+                        filtrarReservas();
                       });
                     },
                     value: maquinaSeleccion,
@@ -158,6 +184,7 @@ class _ReservaPageState extends State<ReservaPage> {
                       setState(() {
                         semanaSeleccion = newValue!;
                         diaSeleccion = null;
+                        filtrarReservas();
                       });
                     } : null,
                     value: semanaSeleccion,
@@ -185,6 +212,7 @@ class _ReservaPageState extends State<ReservaPage> {
                     onChanged: semanaSeleccion != null ? (String? newValue) {
                       setState(() {
                         diaSeleccion = newValue!;
+                        filtrarReservas();
                       });
                     } : null,
                     value: diaSeleccion,
