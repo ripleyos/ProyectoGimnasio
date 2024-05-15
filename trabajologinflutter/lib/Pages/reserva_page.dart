@@ -9,10 +9,11 @@ class ReservaPage extends StatefulWidget {
 }
 
 class _ReservaPageState extends State<ReservaPage> {
-  String? selectedOption1;
-  int? selectedOption2;
-  int? selectedOption3;
-  String? selectedOption4;
+  List<Reserva> reservas = [];
+  String? intervaloSeleccion;
+  int? maquinaSeleccion;
+  int? semanaSeleccion;
+  String? diaSeleccion;
 
   List<String> options1 = [
     '9:00 - 9:15',
@@ -62,7 +63,6 @@ class _ReservaPageState extends State<ReservaPage> {
 
   GestionReservas gestionReservas = GestionReservas();
 
-  // Nuevo método para filtrar las opciones
   void filtrarOpciones() {
     var oneHourLater = DateTime.now().add(Duration(hours: 1));
     var formatter = DateFormat('HH:mm');
@@ -80,22 +80,27 @@ class _ReservaPageState extends State<ReservaPage> {
       }
     }
 
-    if (filteredOptions.isNotEmpty && (selectedOption1 == null || !filteredOptions.contains(selectedOption1))) {
-      selectedOption1 = filteredOptions.first;
+    if (filteredOptions.isNotEmpty && (intervaloSeleccion == null || !filteredOptions.contains(intervaloSeleccion))) {
+      intervaloSeleccion = filteredOptions.first;
     }
   }
 
   @override
   void initState() {
     super.initState();
-    filtrarOpciones(); // Llamar al método para filtrar las opciones cuando se inicie el estado
+    filtrarOpciones(); 
+    cargarReservas();
   }
 
-  void imprimirSeleccion() {
-    print('Opción 2: $selectedOption2');
-    print('Opción 3: $selectedOption3');
-    print('Opción 4: $selectedOption4');
-    print('Opción 1: $selectedOption1');
+    Future<void> cargarReservas() async {
+    try {
+      List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
+      setState(() {
+        reservas = reservasCargadas;
+      });
+    } catch (error) {
+      print('Error al cargar las reservas: $error');
+    }
   }
 
   @override
@@ -123,12 +128,12 @@ class _ReservaPageState extends State<ReservaPage> {
                     }).toList(),
                     onChanged: (int? newValue) {
                       setState(() {
-                        selectedOption2 = newValue!;
-                        selectedOption3 = null;
-                        selectedOption4 = null;
+                        maquinaSeleccion = newValue!;
+                        semanaSeleccion = null;
+                        diaSeleccion = null;
                       });
                     },
-                    value: selectedOption2,
+                    value: maquinaSeleccion,
                     hint: Text('Selecciona opción 2'),
                   ),
                 ),
@@ -138,7 +143,7 @@ class _ReservaPageState extends State<ReservaPage> {
                 width: 150,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: selectedOption2 != null ? Colors.white : Colors.grey[300],
+                  color: maquinaSeleccion != null ? Colors.white : Colors.grey[300],
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
@@ -149,13 +154,13 @@ class _ReservaPageState extends State<ReservaPage> {
                         child: Text(item.toString()),
                       );
                     }).toList(),
-                    onChanged: selectedOption2 != null ? (int? newValue) {
+                    onChanged: maquinaSeleccion != null ? (int? newValue) {
                       setState(() {
-                        selectedOption3 = newValue!;
-                        selectedOption4 = null;
+                        semanaSeleccion = newValue!;
+                        diaSeleccion = null;
                       });
                     } : null,
-                    value: selectedOption3,
+                    value: semanaSeleccion,
                     hint: Text('Selecciona opción 3'),
                     disabledHint: Text('Selecciona opción 2 primero'),
                   ),
@@ -166,7 +171,7 @@ class _ReservaPageState extends State<ReservaPage> {
                 width: 150,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: selectedOption3 != null ? Colors.white : Colors.grey[300],
+                  color: semanaSeleccion != null ? Colors.white : Colors.grey[300],
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
@@ -177,12 +182,12 @@ class _ReservaPageState extends State<ReservaPage> {
                         child: Text(item),
                       );
                     }).toList(),
-                    onChanged: selectedOption3 != null ? (String? newValue) {
+                    onChanged: semanaSeleccion != null ? (String? newValue) {
                       setState(() {
-                        selectedOption4 = newValue!;
+                        diaSeleccion = newValue!;
                       });
                     } : null,
-                    value: selectedOption4,
+                    value: diaSeleccion,
                     hint: Text('Selecciona opción 4'),
                     disabledHint: Text('Selecciona opción 3 primero'),
                   ),
@@ -193,7 +198,7 @@ class _ReservaPageState extends State<ReservaPage> {
                 width: 150,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: selectedOption4 != null ? Colors.white : Colors.grey[300],
+                  color: diaSeleccion != null ? Colors.white : Colors.grey[300],
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
@@ -204,12 +209,12 @@ class _ReservaPageState extends State<ReservaPage> {
                         child: Text(item),
                       );
                     }).toList(),
-                    onChanged: selectedOption4 != null ? (String? newValue) {
+                    onChanged: diaSeleccion != null ? (String? newValue) {
                       setState(() {
-                        selectedOption1 = newValue!;
+                        intervaloSeleccion = newValue!;
                       });
                     } : null,
-                    value: selectedOption1,
+                    value: intervaloSeleccion,
                     hint: Text('Selecciona opción 1'),
                     disabledHint: Text('Selecciona opción 4 primero'),
                   ),
@@ -217,9 +222,14 @@ class _ReservaPageState extends State<ReservaPage> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: (selectedOption2 != null && selectedOption3 != null && selectedOption4 != null)
+                onPressed: (maquinaSeleccion != null && semanaSeleccion != null && diaSeleccion != null)
                     ? () {
-                        imprimirSeleccion();
+                        String maquina= maquinaSeleccion.toString();
+                        String semana= semanaSeleccion.toString();
+                        String? dia= diaSeleccion;
+                        String? intervalo= intervaloSeleccion;
+
+                        gestionReservas.insertarReservaExterna("1", maquina, "2", intervalo!, semana, dia!);
                       }
                     : null,
                 child: Text('Confirmar selección'),

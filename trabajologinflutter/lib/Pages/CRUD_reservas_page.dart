@@ -8,7 +8,7 @@ class GestionReservas extends StatefulWidget {
   _GestionReservasState createState() => _GestionReservasState();
   List<Reserva> reservasExterna = [];
 
-    Future<void> insertarReservaExterna(int reserva, int maquina,int gimnasio, String intervalo, int semana, String dia) async {
+    Future<void> insertarReservaExterna(String reserva, String maquina,String gimnasio, String intervalo, String semana, String dia) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/reservas.json';
 
     Map<String, dynamic> data = {
