@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:trabajologinflutter/Pages/pagina_principal.dart';
 import 'package:trabajologinflutter/Pages/PerfilPage.dart';
 import 'package:trabajologinflutter/Pages/SettingsPage.dart';
 import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:trabajologinflutter/Pages/pagina_principal.dart';
 
 class MainPage extends StatefulWidget {
+  final String email;
+
+  MainPage({required this.email});
+
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -13,15 +17,15 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  static List<Widget> _widgetOptions = <Widget>[
-    PaginaPrincipal(),
-    PerfilPage(),
-    EstadisticasPage(),
-    SettingsPage(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    List<Widget> _widgetOptions = <Widget>[
+      PaginaPrincipal(),
+      PerfilPage(email: widget.email),
+      EstadisticasPage(),
+      SettingsPage(),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.grey[100], // Color de fondo del Scaffold
       body: _widgetOptions.elementAt(_selectedIndex),
@@ -61,7 +65,7 @@ class _MainPageState extends State<MainPage> {
               tabs: [
                 GButton(
                   icon: Icons.home,
-                  text: 'Home',
+                  text: 'Bienvenido, ${widget.email}',
                   iconColor: Colors.grey[700] ?? Colors.black,
                 ),
                 GButton(

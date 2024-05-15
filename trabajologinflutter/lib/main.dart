@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       initialRoute: 'login',
       routes: {
         'login': ( _ ) => LoginPage(),
-        'home' : ( _ ) => MainPage(),
+     //   'home' : ( _ ) => MainPage(),
       },
       theme: ThemeData.light().copyWith(
           scaffoldBackgroundColor: Colors.blueGrey

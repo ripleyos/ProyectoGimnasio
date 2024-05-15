@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PerfilPage extends StatelessWidget {
+  final String email;
+
+  PerfilPage({required this.email});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +68,7 @@ class PerfilPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Nombre de Usuario',
+                      '$email',
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                     SizedBox(height: 5),
@@ -188,11 +191,12 @@ class PerfilPage extends StatelessWidget {
 }
 
 void main() {
+  var email;
   runApp(MaterialApp(
     theme: ThemeData(
       primaryColor: Colors.black,
       scaffoldBackgroundColor: Colors.grey[200],
     ),
-    home: PerfilPage(),
+    home: PerfilPage(email: email),
   ));
 }

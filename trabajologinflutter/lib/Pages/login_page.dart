@@ -19,30 +19,51 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    print(' 1 SharedPreferences cargadas correctamente');
+
     _loadSavedData();
   }
 
+
   Future<void> _clearUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('email');
-    await prefs.remove('password');
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('email');
+      await prefs.remove('password');
+      await prefs.setBool('rememberMe', false);
+    } catch (e) {
+      print('Error al limpiar datos en SharedPreferences: $e');
+    }
   }
 
   Future<void> _loadSavedData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _rememberMe = prefs.getBool('rememberMe') ?? false;
-      if (_rememberMe) {
-        _emailController.text = prefs.getString('email') ?? '';
-        _passwordController.text = prefs.getString('password') ?? '';
-      }
-    });
+    try {
+      print('2 SharedPreferences cargadas correctamente');
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        _rememberMe = prefs.getBool('rememberMe') ?? false;
+        if (_rememberMe) {
+          _emailController.text = prefs.getString('email') ?? '';
+          _passwordController.text = prefs.getString('password') ?? '';
+          print('inal SharedPreferences cargadas correctamente');
+
+        }
+      });
+    } catch (e) {
+      print('Error al cargar datos desde SharedPreferences: $e');
+    }
   }
 
   Future<void> _saveUserData(String email, String password) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('email', email);
-    await prefs.setString('password', password);
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('email', email);
+      await prefs.setString('password', password);
+      await prefs.setBool('rememberMe', true);
+    } catch (e) {
+      print('Error al guardar datos en SharedPreferences: $e');
+    }
   }
 
   Future<void> _signIn() async {
@@ -52,9 +73,10 @@ class _LoginPageState extends State<LoginPage> {
     String? errorMessage = await _authService.signin(email, password);
 
     if (errorMessage == null) {
+      print('SharedPreferences cargadas correctamente');
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => MainPage()),
+        MaterialPageRoute(builder: (context) => MainPage(email: email)),
       );
     } else {
       showDialog(
