@@ -1,9 +1,9 @@
 class Reserva {
-  final int idReserva;
-  final int idMaquina;
-  final int idGimnasio;
+  final String idReserva;
+  final String idMaquina;
+  final String idGimnasio;
   final String intervalo;
-  final int semana;
+  final String semana;
   final String dia;
 
   Reserva({
