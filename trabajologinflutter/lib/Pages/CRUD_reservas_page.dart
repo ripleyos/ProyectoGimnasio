@@ -6,16 +6,18 @@ import 'package:trabajologinflutter/providers/reservas.dart';
 class GestionReservas extends StatefulWidget {
   @override
   _GestionReservasState createState() => _GestionReservasState();
+  List<Reserva> reservasExterna = [];
 
-    Future<void> insertarReservaExterna(int reserva, int maquina,int gimnasio, String hora_inicio, String hora_fin) async {
+    Future<void> insertarReservaExterna(int reserva, int maquina,int gimnasio, String intervalo, int semana, String dia) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/reservas.json';
 
     Map<String, dynamic> data = {
       "id_reserva": reserva ?? 0,
       "id_maquina": maquina ?? 0,
       "id_gimnasio": gimnasio ?? 0,
-      "hora_inicio": hora_inicio ?? 0,
-      "hora_fin": hora_fin ?? 0,
+      "intervalo": intervalo ?? 0,
+      "semana": semana ?? 0,
+      "dia": dia ?? 0,
     };
 
     try {
@@ -32,14 +34,41 @@ class GestionReservas extends StatefulWidget {
       print("Error: $error");
     }
   }
+
+  Future<List<Reserva>> cargarReservasExterna() async {
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/reservas.json';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      List<Reserva> reservas = [];
+
+      data.forEach((key, value) {
+        if (value is Map<String, dynamic>) {
+          reservas.add(Reserva.fromJson(value));
+          print(reservas);
+        }
+      });
+
+      return reservas;
+    } else {
+      print('Error al cargar las reservas: ${response.statusCode}');
+    }
+    return [];
+  }
+
+    Future<List<Reserva>> get reservas async {
+    return cargarReservasExterna();
+  }
+
 }
 
 class _GestionReservasState extends State<GestionReservas> {
   final TextEditingController idReservaController = TextEditingController();
   final TextEditingController idMaquinaController = TextEditingController();
   final TextEditingController idGimnasioController = TextEditingController();
-  final TextEditingController horaInicioController = TextEditingController();
-  final TextEditingController horaFinController = TextEditingController();
+  final TextEditingController intervaloController = TextEditingController();
+  final TextEditingController semanaController = TextEditingController();
 
   List<Reserva> reservas = [];
 
@@ -74,11 +103,11 @@ class _GestionReservasState extends State<GestionReservas> {
                   decoration: InputDecoration(labelText: 'ID Gimnasio'),
                 ),
                 TextFormField(
-                  controller: horaInicioController,
+                  controller: intervaloController,
                   decoration: InputDecoration(labelText: 'Hora de inicio'),
                 ),
                 TextFormField(
-                  controller: horaFinController,
+                  controller: semanaController,
                   decoration: InputDecoration(labelText: 'Hora de fin'),
                 ),
                 const SizedBox(height: 20),
@@ -117,8 +146,8 @@ class _GestionReservasState extends State<GestionReservas> {
                           children: [
                             Text('ID Máquina: ${reservas[index].idMaquina}'), 
                             Text('ID Gimnasio: ${reservas[index].idGimnasio}'), 
-                            Text('Hora de inicio: ${reservas[index].horaInicio}'), 
-                            Text('Hora de fin: ${reservas[index].horaFin}'), 
+                            Text('intervalo: ${reservas[index].intervalo}'), 
+                            Text('semana: ${reservas[index].semana}'), 
                           ],
                         ),
                       );
