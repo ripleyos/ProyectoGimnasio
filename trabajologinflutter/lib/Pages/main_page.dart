@@ -16,8 +16,8 @@ class _MainPageState extends State<MainPage> {
 
   static List<Widget> _widgetOptions = <Widget>[
     ReservaPage(),
-    GestionReservas(),
-    EstadisticasPage(), // Reemplaza el Placeholder con la página de estadísticas
+    PaginaPrincipal(),
+    EstadisticasPage(), 
     SettingsPage(),
   ];
 

@@ -62,11 +62,10 @@ class _ReservaPageState extends State<ReservaPage> {
   List<String> filteredOptions = [];
 
   GestionReservas gestionReservas = GestionReservas();
-
+  
   void filtrarOpciones() {
     var oneHourLater = DateTime.now().add(Duration(hours: 1));
     var formatter = DateFormat('HH:mm');
-    
     filteredOptions.clear();
 
     for (String interval in options1) {
@@ -97,10 +96,10 @@ class _ReservaPageState extends State<ReservaPage> {
       }
     }
 
-    // Convertir a Set para eliminar duplicados y luego volver a convertir a List
+    
     List<String> filteredOptionsSet = filteredOptions.toSet().toList();
 
-    // Eliminar los intervalos coincidentes de la lista de opciones filtradas
+   
     filteredOptionsSet.removeWhere((intervalo) => intervalosAEliminar.contains(intervalo));
 
     // Asignar la lista filtrada de intervalos nuevamente a filteredOptions
@@ -108,7 +107,7 @@ class _ReservaPageState extends State<ReservaPage> {
   }
 }
 
-
+  
 
   @override
   void initState() {
@@ -137,7 +136,7 @@ class _ReservaPageState extends State<ReservaPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 150,
+                width: 230,
                 height: 80,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -166,7 +165,7 @@ class _ReservaPageState extends State<ReservaPage> {
               ),
               SizedBox(height: 10),
               Container(
-                width: 150,
+                width: 230,
                 height: 80,
                 decoration: BoxDecoration(
                   color: maquinaSeleccion != null ? Colors.white : Colors.grey[300],
@@ -195,7 +194,7 @@ class _ReservaPageState extends State<ReservaPage> {
               ),
               SizedBox(height: 10),
               Container(
-                width: 150,
+                width: 230,
                 height: 80,
                 decoration: BoxDecoration(
                   color: semanaSeleccion != null ? Colors.white : Colors.grey[300],
@@ -223,7 +222,7 @@ class _ReservaPageState extends State<ReservaPage> {
               ),
               SizedBox(height: 10),
               Container(
-                width: 150,
+                width: 230,
                 height: 80,
                 decoration: BoxDecoration(
                   color: diaSeleccion != null ? Colors.white : Colors.grey[300],
