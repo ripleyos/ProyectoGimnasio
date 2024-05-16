@@ -1,4 +1,5 @@
 import 'package:trabajologinflutter/Pages/PerfilPage.dart';
+import 'package:trabajologinflutter/Pages/TestGestionClientes.dart';
 import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:trabajologinflutter/Pages/mapa_page.dart';
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
       title: 'Ejemplo Provider',
       initialRoute: 'login',
       routes: {
-        'login': ( _ ) => LoginPage(),
+        'login': ( _ ) => TestGestionClientes(),
      //   'home' : ( _ ) => MainPage(),
       },
       theme: ThemeData.light().copyWith(

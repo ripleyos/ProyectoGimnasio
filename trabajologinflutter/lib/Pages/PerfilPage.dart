@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import '../Gestores/GestorClientes.dart';
+import '../Modelos/Cliente.dart';
 
 class PerfilPage extends StatelessWidget {
   final String email;
+
 
   PerfilPage({required this.email});
 
   @override
   Widget build(BuildContext context) {
+  //  Cliente? cliente = GestionClientes.buscarClientePorEmail(email, GestionClientes.getClientes());
+   // String nombreCliente = cliente != null ? cliente.nombre : email;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Mi Perfil'),
@@ -16,7 +22,7 @@ class PerfilPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildPerfilHeader(),
+            _buildPerfilHeader(email),
             SizedBox(height: 20),
             _buildAgregarAmigos(),
             SizedBox(height: 20),
@@ -34,7 +40,7 @@ class PerfilPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPerfilHeader() {
+  Widget _buildPerfilHeader(String nombreCliente) {
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -68,7 +74,7 @@ class PerfilPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '$email',
+                      nombreCliente,
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                     SizedBox(height: 5),
@@ -188,15 +194,4 @@ class PerfilPage extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  var email;
-  runApp(MaterialApp(
-    theme: ThemeData(
-      primaryColor: Colors.black,
-      scaffoldBackgroundColor: Colors.grey[200],
-    ),
-    home: PerfilPage(email: email),
-  ));
 }

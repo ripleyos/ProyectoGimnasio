@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -7,13 +8,17 @@ import '../Modelos/Cliente.dart';
 class GestionClientes extends StatefulWidget {
   @override
   _GestionClientesState createState() => _GestionClientesState();
+
+  static Cliente? buscarClientePorEmail(String email, List<Cliente> clientes) {
+    return clientes.firstWhere((cliente) => cliente.correo == email);
+  }
   static List<Cliente> getClientes() {
     return _GestionClientesState().clientes;
   }
 }
 
 class _GestionClientesState extends State<GestionClientes> {
-  List<Cliente> clientes = []; // Declarar la lista de clientes aquí
+  List<Cliente> clientes = [];
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +110,71 @@ class _GestionClientesState extends State<GestionClientes> {
     }
   }
 
+
+
   Future<void> insertarClienteExterno(int id, String correo, String nombre, double peso) async {
     await insertarCliente(id, correo, nombre, peso);
   }
+
+  Cliente? buscarClientePorEmail(String email) {
+    print('Buscando cliente con email: $email');
+    print('Clientes disponibles: ${clientes.length}');
+    try {
+      Cliente? cliente = clientes.firstWhere((cliente) =>
+      cliente.correo == email);
+      print('Cliente encontrado: ${cliente?.nombre}');
+      return cliente;
+    } catch (e) {
+      print('Error al buscar cliente: $e');
+      return null;
+    }
+  }
+
+  Future<void> mostrarPerfil(String email) async {
+    // Buscar cliente por email
+    Cliente? cliente = buscarClientePorEmail(email);
+
+    if (cliente != null) {
+      // Mostrar el nombre del cliente en la página de perfil
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Perfil de ${cliente.nombre}'),
+            content: Text('Email: ${cliente.correo}\nID: ${cliente.id}\nPeso: ${cliente.peso}'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cerrar'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Si no se encuentra el cliente, mostrar un mensaje de error
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('El cliente con el email $email no se encontró en la base de datos.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cerrar'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
 
   Future<void> insertarCliente(int id, String correo, String nombre, double peso) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes'; // Reemplaza 'URL_DE_TU_BASE_DE_DATOS' con la URL real de tu base de datos
@@ -133,4 +200,3 @@ class _GestionClientesState extends State<GestionClientes> {
     }
   }
 }
-
