@@ -32,6 +32,9 @@ dependencies:
     sdk: flutter
   firebase_core: ^2.7.0
   firebase_auth: ^4.7.0
+  google_nav_bar: ^5.0.6
+  shared_preferences: ^2.0.0
+  google_sign_in: ^5.2.1
   fl_chart: ^0.35.0
   http: ^1.2.0
   

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
-import 'package:trabajologinflutter/pages/main_page.dart';
-import 'package:http/http.dart' as http;
 import 'package:trabajologinflutter/Pages/mapa_page.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
 import 'registro_page.dart';
@@ -15,6 +14,57 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authService = AuthService();
+  bool _rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    print(' 1 SharedPreferences cargadas correctamente');
+
+    _loadSavedData();
+  }
+
+
+  Future<void> _clearUserData() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('email');
+      await prefs.remove('password');
+      await prefs.setBool('rememberMe', false);
+    } catch (e) {
+      print('Error al limpiar datos en SharedPreferences: $e');
+    }
+  }
+
+  Future<void> _loadSavedData() async {
+    try {
+      print('2 SharedPreferences cargadas correctamente');
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        _rememberMe = prefs.getBool('rememberMe') ?? false;
+        if (_rememberMe) {
+          _emailController.text = prefs.getString('email') ?? '';
+          _passwordController.text = prefs.getString('password') ?? '';
+          print('inal SharedPreferences cargadas correctamente');
+
+        }
+      });
+    } catch (e) {
+      print('Error al cargar datos desde SharedPreferences: $e');
+    }
+  }
+
+  Future<void> _saveUserData(String email, String password) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('email', email);
+      await prefs.setString('password', password);
+      await prefs.setBool('rememberMe', true);
+    } catch (e) {
+      print('Error al guardar datos en SharedPreferences: $e');
+    }
+  }
 
   Future<void> _signIn() async {
     String email = _emailController.text;
@@ -23,9 +73,10 @@ class _LoginPageState extends State<LoginPage> {
     String? errorMessage = await _authService.signin(email, password);
 
     if (errorMessage == null) {
+      print('SharedPreferences cargadas correctamente');
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => MapPage()), // Cambia "NewPage" al nombre de tu nueva página
+        MaterialPageRoute(builder: (context) => MainPage(email: email)),
       );
     } else {
       showDialog(
@@ -60,17 +111,17 @@ class _LoginPageState extends State<LoginPage> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color(0xFF2A0000), // Rojo muy oscuro
-                Color(0xFF460303), // Rojo oscuro
-                Color(0xFF730000), // Rojo profundo
-                Color(0xFFA80000), // Rojo brillante
+                Color(0xFF2A0000),
+                Color(0xFF460303),
+                Color(0xFF730000),
+                Color(0xFFA80000),
               ],
             ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: 80), // Espacio para el encabezado
+              SizedBox(height: 80),
               Text(
                 "Gimnasio Fit",
                 style: TextStyle(
@@ -109,12 +160,12 @@ class _LoginPageState extends State<LoginPage> {
                         controller: _emailController,
                         decoration: InputDecoration(
                           labelText: "Correo electrónico",
-                          labelStyle: TextStyle(color: Colors.grey[700]), // Mejor contraste
+                          labelStyle: TextStyle(color: Colors.grey[700]),
                           border: InputBorder.none,
                         ),
                       ),
                     ),
-                    Divider(height: 1, color: Colors.grey[300]), // Divider para separar campos
+                    Divider(height: 1, color: Colors.grey[300]),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       child: TextField(
@@ -122,13 +173,29 @@ class _LoginPageState extends State<LoginPage> {
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: "Contraseña",
-                          labelStyle: TextStyle(color: Colors.grey[700]), // Mejor contraste
+                          labelStyle: TextStyle(color: Colors.grey[700]),
                           border: InputBorder.none,
                         ),
                       ),
                     ),
                   ],
                 ),
+              ),
+              SizedBox(height: 20),
+              CheckboxListTile(
+                title: Text("Recordar usuario y contraseña"),
+                controlAffinity: ListTileControlAffinity.leading,
+                value: _rememberMe,
+                onChanged: (bool? value) async {
+                  setState(() {
+                    _rememberMe = value ?? false;
+                  });
+                  if (_rememberMe) {
+                    await _saveUserData(_emailController.text, _passwordController.text);
+                  } else {
+                    await _clearUserData();
+                  }
+                },
               ),
               SizedBox(height: 20),
               TextButton(
@@ -141,11 +208,11 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 20),
-              Center( // Centrar el botón de inicio de sesión
+              Center(
                 child: ElevatedButton(
                   onPressed: _signIn,
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFA80000), // Rojo vibrante
+                    primary: Color(0xFFA80000),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -199,7 +266,7 @@ class _LoginPageState extends State<LoginPage> {
                       radius: 25,
                       backgroundColor: Colors.white,
                       child: Image.network(
-                        'https://img.icons8.com/color/48/000000/facebook.png', // Icono de Facebook
+                        'https://img.icons8.com/color/48/000000/facebook.png',
                         height: 30,
                       ),
                     ),
@@ -218,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => RegistroPage()), // Cambiar a la página de registro
+                        MaterialPageRoute(builder: (context) => RegistroPage()),
                       );
                     },
                     child: Text(
@@ -235,3 +302,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
