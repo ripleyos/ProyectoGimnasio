@@ -71,7 +71,7 @@ class _GestionClientesState extends State<GestionClientes> {
                       1, // ID del cliente
                       'correo@example.com', // Correo del cliente
                       'Nombre del Cliente', // Nombre del cliente
-                      75.0, // Peso del cliente
+                      75.0, 
                     );
                   },
                   child: const Text("INSERTAR CLIENTE"),

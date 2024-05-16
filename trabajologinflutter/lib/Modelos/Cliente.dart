@@ -1,8 +1,8 @@
 class Cliente {
   final String correo;
-  final int id;
+  final String id;
   final String nombre;
-  final double peso;
+  final String peso;
   final String? telefono;
 
   Cliente({
@@ -18,7 +18,7 @@ class Cliente {
       correo: json['correo'],
       id: json['id'],
       nombre: json['nombre'],
-      peso: json['peso'].toDouble(),
+      peso: json['peso'],
       telefono: json['telefono'],
     );
   }
