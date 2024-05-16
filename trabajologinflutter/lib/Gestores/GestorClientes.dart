@@ -1,13 +1,8 @@
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import '../Modelos/Cliente.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
-import '../Modelos/Cliente.dart';
 
 class GestorClientes {
   static Future<List<Cliente>> cargarClientes() async {

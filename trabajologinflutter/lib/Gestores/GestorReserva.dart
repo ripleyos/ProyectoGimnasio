@@ -1,21 +1,20 @@
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:trabajologinflutter/providers/reservas.dart';
+import 'package:trabajologinflutter/Modelos/reservas.dart';
 
 class GestionReservas {
   List<Reserva> reservasExterna = [];
 
     Future<void> insertarReservaExterna(String reserva, String maquina,String gimnasio, String intervalo, String semana, String dia) async {
-    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/reservas.json';
+    const String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/reservas.json';
 
     Map<String, dynamic> data = {
-      "id_reserva": reserva ?? 0,
-      "id_maquina": maquina ?? 0,
-      "id_gimnasio": gimnasio ?? 0,
-      "intervalo": intervalo ?? 0,
-      "semana": semana ?? 0,
-      "dia": dia ?? 0,
+      "id_reserva": reserva ?? "0",
+      "id_maquina": maquina ?? "0",
+      "id_gimnasio": gimnasio ?? "0",
+      "intervalo": intervalo ?? "0",
+      "semana": semana ?? "0",
+      "dia": dia ?? "0",
     };
 
     try {

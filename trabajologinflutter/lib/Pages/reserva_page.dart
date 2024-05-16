@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:trabajologinflutter/Pages/CRUD_reservas_page.dart';
-import 'package:trabajologinflutter/providers/reservas.dart';
+import 'package:trabajologinflutter/Gestores/GestorReserva.dart';
+import 'package:trabajologinflutter/Modelos/reservas.dart';
 
 class ReservaPage extends StatefulWidget {
   @override

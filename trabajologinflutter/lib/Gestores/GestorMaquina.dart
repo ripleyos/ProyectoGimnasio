@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../providers/maquinas.dart';
-import 'login_page.dart';
+import '../Modelos/maquinas.dart';
 
 class MaquinasPage extends StatefulWidget {
   @override

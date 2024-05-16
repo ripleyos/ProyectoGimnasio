@@ -1,16 +1,8 @@
-import 'package:trabajologinflutter/Pages/PerfilPage.dart';
-import 'package:trabajologinflutter/Pages/TestGestionClientes.dart';
-import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
-import 'package:trabajologinflutter/Pages/main_page.dart';
-import 'package:trabajologinflutter/Pages/mapa_page.dart';
-import 'package:trabajologinflutter/Pages/pagina_principal.dart';
-import 'package:trabajologinflutter/Pages/registro_page.dart';
 import 'package:trabajologinflutter/providers/cart_provider.dart';
 import 'package:trabajologinflutter/providers/login_form_provider.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:trabajologinflutter/pages/login_page.dart';
-import 'package:trabajologinflutter/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(gesApp());

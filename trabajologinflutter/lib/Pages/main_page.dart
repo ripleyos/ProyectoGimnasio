@@ -5,11 +5,6 @@ import 'package:trabajologinflutter/Pages/pagina_principal.dart';
 import 'package:trabajologinflutter/Pages/PerfilPage.dart';
 import 'package:trabajologinflutter/Pages/SettingsPage.dart';
 import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
-import 'package:trabajologinflutter/Pages/CRUD_reservas_page.dart';
-import 'package:trabajologinflutter/Pages/PerfilPage.dart';
-import 'package:trabajologinflutter/Pages/SettingsPage.dart';
-import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
-import 'package:trabajologinflutter/Pages/pagina_principal.dart';
 import 'package:trabajologinflutter/Pages/reserva_page.dart';
 
 class MainPage extends StatefulWidget {

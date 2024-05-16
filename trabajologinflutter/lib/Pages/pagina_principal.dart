@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'CRUD_maquinas_page.dart';
+import '../Gestores/GestorMaquina.dart';
 
 class PaginaPrincipal extends StatefulWidget {
   @override
