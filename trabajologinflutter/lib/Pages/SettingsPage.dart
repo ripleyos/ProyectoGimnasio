@@ -6,11 +6,11 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Configuración'), // Título del AppBar en español
-        backgroundColor: Colors.black, // Negro para el AppBar
+        title: Text('Configuración'),
+        backgroundColor: Colors.black, // color para el AppBar
       ),
       body: Container(
-        color: Colors.black, // Fondo negro para toda la página
+        color: Colors.black, // Fondo para toda la página
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: <Widget>[
@@ -19,10 +19,10 @@ class SettingsPage extends StatelessWidget {
             _buildSettingsCard(
               context,
               icon: Icons.notifications,
-              title: 'Configuración de Notificaciones', // Título en español
-              description: 'Controla tus preferencias de notificación', // Descripción en español
+              title: 'Configuración de Notificaciones', // Título
+              description: 'Controla tus preferencias de notificación', // Descripcion
               onTap: () {
-                // Acción para la configuración de notificaciones
+                // Acción para la configuracion de notificaciones
               },
             ),
             SizedBox(height: 16.0), // Espacio entre tarjetas
@@ -30,9 +30,9 @@ class SettingsPage extends StatelessWidget {
               context,
               icon: Icons.security,
               title: 'Privacidad y Seguridad', // Título en español
-              description: 'Ajusta configuraciones de privacidad y seguridad', // Descripción en español
+              description: 'Ajusta configuraciones de privacidad y seguridad', // Descripcion en español
               onTap: () {
-                // Acción para privacidad y seguridad
+                // Accion para privacidad y seguridad
               },
             ),
             SizedBox(height: 16.0), // Espacio entre tarjetas
@@ -79,15 +79,15 @@ class SettingsPage extends StatelessWidget {
           icon: Icons.delete,
           title: 'Eliminar Cuenta', // Título en español
           onTap: () {
-            // Acción para eliminar la cuenta
+            // Accion para eliminar la cuenta
           },
         ),
         _buildAccountOption(
           context,
           icon: Icons.exit_to_app,
-          title: 'Cerrar Sesión', // Título en español
+          title: 'Cerrar Sesión', // Título
           onTap: () {
-            // Acción para cerrar sesión
+            // Accion para cerrar sesion
           },
         ),
       ],
@@ -114,13 +114,13 @@ class SettingsPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: ListTile(
-        leading: Icon(icon, size: 40, color: Colors.orange), // Icono grande y naranja
+        leading: Icon(icon, size: 40, color: Colors.orange), // Icono grande
         title: Text(
           title,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.black, // Texto negro
+            color: Colors.black, // Texto
           ),
         ),
         subtitle: Text(
@@ -130,7 +130,7 @@ class SettingsPage extends StatelessWidget {
             color: Colors.black54, // Texto negro suave
           ),
         ),
-        trailing: Icon(Icons.chevron_right, color: Colors.black), // Flecha negra para indicar navegación
+        trailing: Icon(Icons.chevron_right, color: Colors.black), // Flecha negra para indicar navegacion
         onTap: onTap,
       ),
     );
