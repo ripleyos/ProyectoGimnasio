@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
+import '../Modelos/Cliente.dart';
 import '../Widgets/EstadisticaItem.dart';
 
 class EstadisticasPage extends StatefulWidget {
+  final Cliente cliente;
+  EstadisticasPage({required this.cliente});
   @override
   _EstadisticasPageState createState() => _EstadisticasPageState();
 }
 
 class _EstadisticasPageState extends State<EstadisticasPage> {
+  late Cliente _cliente;
   int objetivoMensual = 5000;
+
 
   @override
   Widget build(BuildContext context) {

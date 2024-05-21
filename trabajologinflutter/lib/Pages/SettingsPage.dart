@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:trabajologinflutter/Pages/Settings/RestablecerContraseña.dart';
+import 'package:trabajologinflutter/Pages/login_page.dart';
 
-class SettingsPage extends StatelessWidget {
+import '../Modelos/Cliente.dart'; // Asegúrate de importar la página de inicio de sesión
+
+class SettingsPage extends StatefulWidget {
+  final Cliente cliente;
+  SettingsPage({required this.cliente});
+  @override
+  _SettingsPageState createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  late Cliente _cliente;
+
+  @override
+  void initState() {
+    super.initState();
+    _cliente = widget.cliente;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Configuración'),
+        title: Text('Configuración para ${_cliente.correo}'),
         backgroundColor: Colors.black, // color para el AppBar
       ),
       body: Container(
@@ -39,8 +56,8 @@ class SettingsPage extends StatelessWidget {
             _buildSettingsCard(
               context,
               icon: Icons.help_outline,
-              title: 'Ayuda y Soporte', // Título en español
-              description: 'Obtén ayuda y soporte', // Descripción en español
+              title: 'Ayuda y Soporte', // Título
+              description: 'Obtén ayuda y soporte', // Descripción
               onTap: () {
                 // Acción para ayuda y soporte
               },
@@ -54,7 +71,7 @@ class SettingsPage extends StatelessWidget {
   Widget _buildAccountExpansionTile(BuildContext context) {
     return ExpansionTile(
       title: Text(
-        'Configuración de Cuenta', // Título del desplegable en español
+        'Configuración de Cuenta', // Título del desplegable
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -66,18 +83,18 @@ class SettingsPage extends StatelessWidget {
         _buildAccountOption(
           context,
           icon: Icons.lock,
-          title: 'Cambiar Contraseña', // Título en español
+          title: 'Cambiar Contraseña', // Título
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChangePasswordPage()),
-            );
+            // Navigator.push(
+            //    context,
+            //    MaterialPageRoute(builder: (context) => ChangePasswordPage()),
+            //  );
           },
         ),
         _buildAccountOption(
           context,
           icon: Icons.delete,
-          title: 'Eliminar Cuenta', // Título en español
+          title: 'Eliminar Cuenta', // Título
           onTap: () {
             // Accion para eliminar la cuenta
           },
@@ -88,6 +105,10 @@ class SettingsPage extends StatelessWidget {
           title: 'Cerrar Sesión', // Título
           onTap: () {
             // Accion para cerrar sesion
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginPage()), // Navegar de vuelta a la página de inicio de sesión
+            );
           },
         ),
       ],

@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:trabajologinflutter/Modelos/Cliente.dart';
 import 'package:trabajologinflutter/Pages/pagina_principal.dart';
 import 'package:trabajologinflutter/Pages/PerfilPage.dart';
 import 'package:trabajologinflutter/Pages/SettingsPage.dart';
@@ -8,9 +8,9 @@ import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
 import 'package:trabajologinflutter/Pages/reserva_page.dart';
 
 class MainPage extends StatefulWidget {
-  final String email;
+  final Cliente cliente;
 
-  MainPage({required this.email});
+  MainPage({required this.cliente});
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -19,29 +19,36 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-
-  static List<Widget> _widgetOptions = <Widget>[
+ /* static List<Widget> _widgetOptions = <Widget>[
     ReservaPage(),
     PaginaPrincipal(),
-    EstadisticasPage(), 
+    EstadisticasPage(),
     SettingsPage(),
-  ];
+  ]; */
 
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
       ReservaPage(),
-      PerfilPage(email: widget.email),
-      EstadisticasPage(),
-      SettingsPage(),
+      PerfilPage(cliente: widget.cliente,),
+      EstadisticasPage(cliente: widget.cliente,),
+      SettingsPage(cliente: widget.cliente,),
     ];
 
     return Scaffold(
-      backgroundColor: Colors.grey[100], // Color de fondo del Scaffold
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.black, // Color de fondo del BottomNavigationBar
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF2A0000),
+              Color(0xFF460303),
+              Color(0xFF730000),
+              Color(0xFFA80000),
+            ],
+          ),
           boxShadow: [
             BoxShadow(
               blurRadius: 20,
@@ -65,33 +72,31 @@ class _MainPageState extends State<MainPage> {
               curve: Curves.easeOutExpo,
               duration: Duration(milliseconds: 900),
               gap: 8, // Espacio entre el icono y el texto
-              color: Colors.grey[700] ?? Colors.black, // Color del icono no seleccionado
+              color: Colors.white, // Color del icono no seleccionado
               activeColor: Colors.orange, // Color del icono y texto seleccionado
               iconSize: 24, // Tamaño del icono
-              tabBackgroundColor:
-              Colors.orange.withOpacity(0.1), // Color de fondo de la pestaña seleccionada
-              padding:
-              EdgeInsets.symmetric(horizontal: 20, vertical: 5), // Padding del nav bar
+              tabBackgroundColor: Colors.orange.withOpacity(0.1), // Color de fondo de la pestaña seleccionada
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5), // Padding del nav bar
               tabs: [
                 GButton(
                   icon: Icons.home,
-                  text: 'Bienvenido, ${widget.email}',
-                  iconColor: Colors.grey[700] ?? Colors.black,
+                  text: 'Inicio',
+                  iconColor: Colors.white,
                 ),
                 GButton(
                   icon: Icons.person,
                   text: 'Perfil',
-                  iconColor: Colors.grey[700] ?? Colors.black,
+                  iconColor: Colors.white,
                 ),
                 GButton(
                   icon: Icons.insert_chart,
                   text: 'Estadísticas',
-                  iconColor: Colors.grey[700] ?? Colors.black,
+                  iconColor: Colors.white,
                 ),
                 GButton(
                   icon: Icons.settings,
                   text: 'Ajustes',
-                  iconColor: Colors.grey[700] ?? Colors.black,
+                  iconColor: Colors.white,
                 ),
               ],
               selectedIndex: _selectedIndex,
