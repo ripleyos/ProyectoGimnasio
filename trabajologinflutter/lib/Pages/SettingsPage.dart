@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:trabajologinflutter/Pages/login_page.dart'; // Asegúrate de importar la página de inicio de sesión
+import 'package:trabajologinflutter/Pages/login_page.dart';
 
-class SettingsPage extends StatelessWidget {
+import '../Modelos/Cliente.dart'; // Asegúrate de importar la página de inicio de sesión
+
+class SettingsPage extends StatefulWidget {
+  final Cliente cliente;
+  SettingsPage({required this.cliente});
+  @override
+  _SettingsPageState createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  late Cliente _cliente;
+
+  @override
+  void initState() {
+    super.initState();
+    _cliente = widget.cliente;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Configuración'),
+        title: Text('Configuración para ${_cliente.correo}'),
         backgroundColor: Colors.black, // color para el AppBar
       ),
       body: Container(
@@ -68,10 +85,10 @@ class SettingsPage extends StatelessWidget {
           icon: Icons.lock,
           title: 'Cambiar Contraseña', // Título
           onTap: () {
-           // Navigator.push(
-          //    context,
-          //    MaterialPageRoute(builder: (context) => ChangePasswordPage()),
-          //  );
+            // Navigator.push(
+            //    context,
+            //    MaterialPageRoute(builder: (context) => ChangePasswordPage()),
+            //  );
           },
         ),
         _buildAccountOption(

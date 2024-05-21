@@ -1,41 +1,22 @@
 import 'package:flutter/material.dart';
-import '../Gestores/GestorClientes.dart';
 import '../Modelos/Cliente.dart';
 
 class PerfilPage extends StatefulWidget {
-  final String email;
+  final Cliente cliente;
 
-  PerfilPage({required this.email});
+  PerfilPage({required this.cliente});
 
   @override
   _PerfilPageState createState() => _PerfilPageState();
 }
 
 class _PerfilPageState extends State<PerfilPage> {
-  late String _email;
-  Cliente? _cliente;
-  bool _isLoading = true;
+  late Cliente _cliente;
 
   @override
   void initState() {
     super.initState();
-    _email = widget.email;
-    _fetchCliente();
-  }
-
-  Future<void> _fetchCliente() async {
-    try {
-      Cliente? cliente = await GestorClientes.buscarClientePorEmail(_email);
-      setState(() {
-        _cliente = cliente;
-        _isLoading = false;
-      });
-    } catch (error) {
-      setState(() {
-        _isLoading = false;
-      });
-      // Manejar el error adecuadamente, mostrar un mensaje de error, etc.
-    }
+    _cliente = widget.cliente;
   }
 
   @override
@@ -45,10 +26,7 @@ class _PerfilPageState extends State<PerfilPage> {
         title: Text('Mi Perfil'),
         backgroundColor: Colors.black,
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _cliente != null
-          ? Container(
+      body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -65,7 +43,7 @@ class _PerfilPageState extends State<PerfilPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildPerfilHeader(_cliente!),
+              _buildPerfilHeader(_cliente),
               SizedBox(height: 20),
               _buildAgregarAmigos(),
               SizedBox(height: 20),
@@ -73,8 +51,7 @@ class _PerfilPageState extends State<PerfilPage> {
             ],
           ),
         ),
-      )
-          : Center(child: Text('Cliente no encontrado')),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Acción para editar perfil
@@ -129,17 +106,27 @@ class _PerfilPageState extends State<PerfilPage> {
                   children: [
                     Text(
                       cliente.nombre,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                     SizedBox(height: 5),
                     Text(
                       'Entusiasta del Fitness',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
                     ),
                     SizedBox(height: 10),
                     Text(
                       'Ciudad, País',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
                     ),
                   ],
                 ),
@@ -214,7 +201,11 @@ class _PerfilPageState extends State<PerfilPage> {
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Text(
             'Amigos:',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
         SizedBox(height: 10),

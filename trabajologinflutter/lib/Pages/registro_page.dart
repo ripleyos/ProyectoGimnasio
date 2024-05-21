@@ -65,14 +65,14 @@ class _RegistroPageState extends State<RegistroPage> {
   Future<void> _insertarNuevoCliente() async {
     final String correo = _emailController.text;
     final String nombre = _nombreController.text;
-    final double peso = double.tryParse(_pesoController.text) ?? 0;
-    final double altura = double.tryParse(_alturaController.text) ?? 0;
+    final String peso = _pesoController.text;
+    final String altura = _alturaController.text;
     final String telefono = _telefonoController.text;
     final String kcalMensual = "0"; // Valor predeterminado para kcalMensual
     final String estrellas = "0"; // Valor predeterminado para estrellas
 
     // Sube la imagen a Firebase Storage
-    String imageUrl = await _uploadImageToFirebaseStorage();
+    String imageUrl = "";
 
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes.json';
 

@@ -8,10 +8,9 @@ import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
 import 'package:trabajologinflutter/Pages/reserva_page.dart';
 
 class MainPage extends StatefulWidget {
-  Cliente cliente_;
-  final String email;
+  final Cliente cliente;
 
-  MainPage({required this.email});
+  MainPage({required this.cliente});
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -20,20 +19,20 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  static List<Widget> _widgetOptions = <Widget>[
+ /* static List<Widget> _widgetOptions = <Widget>[
     ReservaPage(),
     PaginaPrincipal(),
     EstadisticasPage(),
     SettingsPage(),
-  ];
+  ]; */
 
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
       ReservaPage(),
-      PerfilPage(email: widget.email),
-      EstadisticasPage(),
-      SettingsPage(),
+      PerfilPage(cliente: widget.cliente,),
+      EstadisticasPage(cliente: widget.cliente,),
+      SettingsPage(cliente: widget.cliente,),
     ];
 
     return Scaffold(

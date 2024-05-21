@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
-import 'package:trabajologinflutter/Pages/mapa_page.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
+import 'package:trabajologinflutter/Gestores/GestorClientes.dart';
+import 'package:trabajologinflutter/Modelos/Cliente.dart';
 import 'registro_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -19,11 +20,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    print(' 1 SharedPreferences cargadas correctamente');
-
     _loadSavedData();
   }
-
 
   Future<void> _clearUserData() async {
     try {
@@ -38,16 +36,12 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _loadSavedData() async {
     try {
-      print('2 SharedPreferences cargadas correctamente');
-
       SharedPreferences prefs = await SharedPreferences.getInstance();
       setState(() {
         _rememberMe = prefs.getBool('rememberMe') ?? false;
         if (_rememberMe) {
           _emailController.text = prefs.getString('email') ?? '';
           _passwordController.text = prefs.getString('password') ?? '';
-          print('inal SharedPreferences cargadas correctamente');
-
         }
       });
     } catch (e) {
@@ -73,11 +67,19 @@ class _LoginPageState extends State<LoginPage> {
     String? errorMessage = await _authService.signin(email, password);
 
     if (errorMessage == null) {
-      print('SharedPreferences cargadas correctamente');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainPage(email: email)),
-      );
+      try {
+        Cliente? cliente = await GestorClientes.buscarClientePorEmail(email);
+        if (cliente != null) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MainPage(cliente: cliente)),
+          );
+        } else {
+          print('Cliente no encontrado');
+        }
+      } catch (error) {
+        print('Error buscando cliente: $error');
+      }
     } else {
       showDialog(
         context: context,
@@ -105,9 +107,6 @@ class _LoginPageState extends State<LoginPage> {
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(16),
-
-
-
           width: double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -305,4 +304,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
