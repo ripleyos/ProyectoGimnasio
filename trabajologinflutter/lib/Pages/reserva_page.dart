@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:trabajologinflutter/Gestores/GestorReserva.dart';
+import 'package:trabajologinflutter/Gestores/GestorMaquina.dart';
 import 'package:trabajologinflutter/Modelos/reservas.dart';
+import '../Modelos/maquinas.dart';
 
 class ReservaPage extends StatefulWidget {
   @override
@@ -9,59 +11,42 @@ class ReservaPage extends StatefulWidget {
 }
 
 class _ReservaPageState extends State<ReservaPage> {
+  @override
+  void initState() {
+    super.initState();
+    filtrarOpciones();
+    cargarMaquinas();
+    cargarReservas();
+  }
+
   List<Reserva> reservas = [];
+  List<Maquina> maquinas = [];
   String? intervaloSeleccion;
-  int? maquinaSeleccion;
+  String? maquinaSeleccion;
+  String? idMaquinaSeleccionada;
   int? semanaSeleccion;
   String? diaSeleccion;
+  String? fechaSeleccionada;
 
   List<String> options1 = [
-    '9:00 - 9:15',
-    '9:15 - 9:30',
-    '9:30 - 9:45',
-    '9:45 - 10:00',
-    '10:00 - 10:15',
-    '10:15 - 10:30',
-    '10:30 - 10:45',
-    '10:45 - 11:00',
-    '11:00 - 11:15',
-    '11:15 - 11:30',
-    '11:30 - 11:45',
-    '11:45 - 12:00',
-    '12:00 - 12:15',
-    '12:15 - 12:30',
-    '12:30 - 12:45',
-    '12:45 - 13:00',
-    '13:00 - 13:15',
-    '13:15 - 13:30',
-    '15:30 - 15:45',
-    '15:45 - 16:00',
-    '16:00 - 16:15',
-    '16:15 - 16:30',
-    '16:30 - 16:45',
-    '16:45 - 17:00',
-    '17:00 - 17:15',
-    '17:15 - 17:30',
-    '17:30 - 17:45',
-    '17:45 - 18:00',
-    '18:00 - 18:15',
-    '18:15 - 18:30',
-    '18:30 - 18:45',
-    '18:45 - 19:00',
-    '19:00 - 19:15',
-    '19:15 - 19:30',
-    '19:30 - 19:45',
-    '19:45 - 20:00',
-    '20:00 - 20:15',
-    '20:15 - 20:30',
+    '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+    '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+    '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+    '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+    '13:00 - 13:15', '13:15 - 13:30', '15:30 - 15:45', '15:45 - 16:00',
+    '16:00 - 16:15', '16:15 - 16:30', '16:30 - 16:45', '16:45 - 17:00',
+    '17:00 - 17:15', '17:15 - 17:30', '17:30 - 17:45', '17:45 - 18:00',
+    '18:00 - 18:15', '18:15 - 18:30', '18:30 - 18:45', '18:45 - 19:00',
+    '19:00 - 19:15', '19:15 - 19:30', '19:30 - 19:45', '19:45 - 20:00',
+    '20:00 - 20:15', '20:15 - 20:30',
   ];
-  List<int> options2 = [1, 2, 3];
-  List<int> options3 = [1, 2, 3, 4];
-  List<String> options4 = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  List<String> maquinasMostrar = ["q"];
+  Map<String, String> nombreToIdMaquina = {}; // Mapa para almacenar las relaciones nombre -> id
 
   List<String> filteredOptions = [];
 
   GestionReservas gestionReservas = GestionReservas();
+  GestionMaquinas gestionMaquinas = GestionMaquinas();
   
   void filtrarOpciones() {
     var oneHourLater = DateTime.now().add(Duration(hours: 1));
@@ -84,46 +69,43 @@ class _ReservaPageState extends State<ReservaPage> {
     }
   }
 
- void filtrarReservas() {
-  if (maquinaSeleccion != null && semanaSeleccion != null && diaSeleccion != null) {
+void filtrarReservas() {
+  if (idMaquinaSeleccionada != null && fechaSeleccionada != null) {
     Set<String> intervalosAEliminar = {};
 
     for (Reserva reserva in reservas) {
-      if (reserva.idMaquina == maquinaSeleccion.toString() &&
-          reserva.semana == semanaSeleccion.toString() &&
-          reserva.dia == diaSeleccion) {
+      if (reserva.idMaquina == idMaquinaSeleccionada &&
+          reserva.fecha == fechaSeleccionada) {
         intervalosAEliminar.addAll(reserva.intervalo.split(','));
       }
     }
 
-    
-    List<String> filteredOptionsSet = filteredOptions.toSet().toList();
-
-   
-    filteredOptionsSet.removeWhere((intervalo) => intervalosAEliminar.contains(intervalo));
-
-    // Asignar la lista filtrada de intervalos nuevamente a filteredOptions
-    filteredOptions = filteredOptionsSet;
+    filteredOptions = filteredOptions.where((intervalo) => !intervalosAEliminar.contains(intervalo)).toList();
   }
 }
 
-  
 
-  @override
-  void initState() {
-    super.initState();
-    filtrarOpciones(); 
-    cargarReservas();
-  }
-
-    Future<void> cargarReservas() async {
+  Future<void> cargarReservas() async {
     try {
       List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
       setState(() {
         reservas = reservasCargadas;
       });
     } catch (error) {
-      print('Error al cargar las reservas: $error');
+      print('Error al cargar las reservas paco: $error');
+    }
+  }
+
+  Future<void> cargarMaquinas() async {
+    try {
+      List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinas();
+      setState(() {
+        maquinas = maquinasCargadas;
+        maquinasMostrar = maquinas.map((maquina) => maquina.nombre).toList();
+        nombreToIdMaquina = {for (var maquina in maquinas) maquina.nombre: maquina.idMaquina};
+      });
+    } catch (error) {
+      print('Error al cargar las máquinas: $error');
     }
   }
 
@@ -143,23 +125,22 @@ class _ReservaPageState extends State<ReservaPage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
-                  child: DropdownButton<int>(
-                    items: options2.map((int item) {
+                  child: DropdownButton<String>(
+                    value:maquinaSeleccion != null ? maquinasMostrar.firstWhere((nombre) => nombreToIdMaquina[nombre] == idMaquinaSeleccionada) : null,
+                    items: maquinasMostrar.map((String item) {
                       return DropdownMenuItem(
                         value: item,
-                        child: Text(item.toString()),
+                        child: Text(item),
                       );
                     }).toList(),
-                    onChanged: (int? newValue) {
+                    onChanged: (String? newValue) {
                       setState(() {
-                        maquinaSeleccion = newValue!;
-                        semanaSeleccion = null;
-                        diaSeleccion = null;
+                        maquinaSeleccion = newValue;
+                        idMaquinaSeleccionada = nombreToIdMaquina[newValue];
                         filtrarReservas();
                       });
                     },
-                    value: maquinaSeleccion,
-                    hint: Text('Selecciona opción 2'),
+                    hint: Text('Selecciona máquina'),
                   ),
                 ),
               ),
@@ -172,51 +153,30 @@ class _ReservaPageState extends State<ReservaPage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
-                  child: DropdownButton<int>(
-                    items: options3.map((int item) {
-                      return DropdownMenuItem(
-                        value: item,
-                        child: Text(item.toString()),
-                      );
-                    }).toList(),
-                    onChanged: maquinaSeleccion != null ? (int? newValue) {
-                      setState(() {
-                        semanaSeleccion = newValue!;
-                        diaSeleccion = null;
-                        filtrarReservas();
-                      });
-                    } : null,
-                    value: semanaSeleccion,
-                    hint: Text('Selecciona opción 3'),
-                    disabledHint: Text('Selecciona opción 2 primero'),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              Container(
-                width: 230,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: semanaSeleccion != null ? Colors.white : Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: DropdownButton<String>(
-                    items: options4.map((String item) {
-                      return DropdownMenuItem(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }).toList(),
-                    onChanged: semanaSeleccion != null ? (String? newValue) {
-                      setState(() {
-                        diaSeleccion = newValue!;
-                        filtrarReservas();
-                      });
-                    } : null,
-                    value: diaSeleccion,
-                    hint: Text('Selecciona opción 4'),
-                    disabledHint: Text('Selecciona opción 3 primero'),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: maquinaSeleccion != null ? () async {
+                          final DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(Duration(days: 28)),
+                          );
+                          if (pickedDate != null) {
+                            setState(() {
+                              fechaSeleccionada = DateFormat('dd/MM/yyyy').format(pickedDate);
+                              filtrarReservas();
+                            });
+                          }
+                        } : null,
+                        child: Text('Selecciona fecha'),
+                      ),
+                      SizedBox(width: 10),
+                      if (fechaSeleccionada != null)
+                        Text(fechaSeleccionada!),
+                    ],
                   ),
                 ),
               ),
@@ -230,33 +190,32 @@ class _ReservaPageState extends State<ReservaPage> {
                 ),
                 child: Center(
                   child: DropdownButton<String>(
+                    value: intervaloSeleccion,
                     items: filteredOptions.map((String item) {
                       return DropdownMenuItem(
                         value: item,
                         child: Text(item),
                       );
                     }).toList(),
-                    onChanged: diaSeleccion != null ? (String? newValue) {
+                    onChanged: fechaSeleccionada != null ? (String? newValue) {
                       setState(() {
-                        intervaloSeleccion = newValue!;
+                        intervaloSeleccion = newValue;
                       });
                     } : null,
-                    value: intervaloSeleccion,
-                    hint: Text('Selecciona opción 1'),
-                    disabledHint: Text('Selecciona opción 4 primero'),
+                    hint: Text('Selecciona intervalo'),
+                    disabledHint: Text('Selecciona fecha primero'),
                   ),
                 ),
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: (maquinaSeleccion != null && semanaSeleccion != null && diaSeleccion != null)
+                onPressed: (maquinaSeleccion != null && fechaSeleccionada != null)
                     ? () {
-                        String maquina= maquinaSeleccion.toString();
-                        String semana= semanaSeleccion.toString();
-                        String? dia= diaSeleccion;
-                        String? intervalo= intervaloSeleccion;
-
-                        gestionReservas.insertarReservaExterna("1", maquina, "2", intervalo!, semana, dia!);
+                        String maquina = maquinaSeleccion.toString();
+                        String? intervalo = intervaloSeleccion;
+                        String fecha = fechaSeleccionada.toString();
+                        gestionReservas.insertarReservaExterna("1", idMaquinaSeleccionada!, "2", intervalo!, fecha);
+                        cargarReservas();
                       }
                     : null,
                 child: Text('Confirmar selección'),
@@ -268,3 +227,4 @@ class _ReservaPageState extends State<ReservaPage> {
     );
   }
 }
+

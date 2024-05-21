@@ -5,7 +5,7 @@ import 'package:trabajologinflutter/Modelos/reservas.dart';
 class GestionReservas {
   List<Reserva> reservasExterna = [];
 
-    Future<void> insertarReservaExterna(String reserva, String maquina,String gimnasio, String intervalo, String semana, String dia) async {
+    Future<void> insertarReservaExterna(String reserva, String maquina,String gimnasio, String intervalo, String fecha) async {
     const String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/reservas.json';
 
     Map<String, dynamic> data = {
@@ -13,8 +13,7 @@ class GestionReservas {
       "id_maquina": maquina ?? "0",
       "id_gimnasio": gimnasio ?? "0",
       "intervalo": intervalo ?? "0",
-      "semana": semana ?? "0",
-      "dia": dia ?? "0",
+      "fecha": fecha ?? "0",
     };
 
     try {
@@ -43,7 +42,7 @@ class GestionReservas {
       data.forEach((key, value) {
         if (value is Map<String, dynamic>) {
           reservas.add(Reserva.fromJson(value));
-          print(reservas);
+          print("lol $reservas");
         }
       });
 

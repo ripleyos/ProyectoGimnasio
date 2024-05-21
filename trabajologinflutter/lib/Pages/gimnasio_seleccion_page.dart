@@ -38,14 +38,14 @@ class GymDetailsPage extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Acción para el botón "Sí"
+                    
                   },
-                  child: Text('Sí'),
+                  child: Text('Si'),
                 ),
                 SizedBox(width: 16),
                 ElevatedButton(
                   onPressed: () {
-                    // Acción para el botón "No"
+                    
                   },
                   child: Text('No'),
                 ),

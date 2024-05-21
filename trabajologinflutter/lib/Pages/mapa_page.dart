@@ -5,7 +5,6 @@ import 'package:trabajologinflutter/Pages/gimnasio_seleccion_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MapPage extends StatelessWidget {
-  @override
   
 @override
 Widget build(BuildContext context) {
