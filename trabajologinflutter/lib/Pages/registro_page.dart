@@ -1,7 +1,12 @@
+
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:trabajologinflutter/services/auth_service.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
+import '../services/auth_service.dart';
 
 class RegistroPage extends StatefulWidget {
   @override
@@ -17,18 +22,25 @@ class _RegistroPageState extends State<RegistroPage> {
   final _alturaController = TextEditingController();
   final _telefonoController = TextEditingController();
   final _authService = AuthService();
+  List<String> _profileImageUrls = [
+    "https://store.playstation.com/store/api/chihiro/00_09_000/container/AR/es/19/UT0016-NPUO00020_00-AVAPLUSXTOPDAWG0/image?w=320&h=320&bg_color=000000&opacity=100&_version=00_09_000",
+    "url_de_la_imagen_2",
+    "url_de_la_imagen_3",
+  ];
 
-  bool _isLoading = false;
+  bool _validador = false;
+  String? _selectedImageUrl;
+  XFile? _image;
 
   Future<void> _register() async {
     setState(() {
-      _isLoading = true;
+      _validador = true;
     });
 
     if (_passwordController.text != _confirmPasswordController.text) {
       _mostrarErrorDialog("Las contraseñas no coinciden");
       setState(() {
-        _isLoading = false;
+        _validador = false;
       });
       return;
     }
@@ -39,7 +51,7 @@ class _RegistroPageState extends State<RegistroPage> {
     );
 
     setState(() {
-      _isLoading = false;
+      _validador = false;
     });
 
     if (errorMessage == null) {
@@ -53,9 +65,14 @@ class _RegistroPageState extends State<RegistroPage> {
   Future<void> _insertarNuevoCliente() async {
     final String correo = _emailController.text;
     final String nombre = _nombreController.text;
-    final double peso = double.parse(_pesoController.text);
-    final double altura = double.parse(_alturaController.text);
+    final double peso = double.tryParse(_pesoController.text) ?? 0;
+    final double altura = double.tryParse(_alturaController.text) ?? 0;
     final String telefono = _telefonoController.text;
+    final String kcalMensual = "0"; // Valor predeterminado para kcalMensual
+    final String estrellas = "0"; // Valor predeterminado para estrellas
+
+    // Sube la imagen a Firebase Storage
+    String imageUrl = await _uploadImageToFirebaseStorage();
 
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes.json';
 
@@ -65,6 +82,9 @@ class _RegistroPageState extends State<RegistroPage> {
       "peso": peso,
       "altura": altura,
       "telefono": telefono,
+      "kcalMensual": kcalMensual,
+      "estrellas": estrellas,
+      "imagenUrl": imageUrl,
     };
 
     try {
@@ -80,24 +100,21 @@ class _RegistroPageState extends State<RegistroPage> {
     }
   }
 
-  void _mostrarErrorDialog(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Error en el registro'),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
+  Future<String> _uploadImageToFirebaseStorage() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      final firebase_storage.Reference storageRef = firebase_storage.FirebaseStorage.instance.ref().child('clientes').child(DateTime.now().toString() + '.jpg');
+
+      final firebase_storage.UploadTask uploadTask = storageRef.putFile(File(pickedImage.path));
+      final firebase_storage.TaskSnapshot downloadUrl = (await uploadTask);
+      final String url = await downloadUrl.ref.getDownloadURL();
+
+      return url;
+    }
+
+    return "";
   }
 
   void _mostrarSuccessDialog() {
@@ -120,24 +137,44 @@ class _RegistroPageState extends State<RegistroPage> {
     );
   }
 
+  void _mostrarErrorDialog(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error en el registro'),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+        body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF2A0000),
-                Color(0xFF460303),
-                Color(0xFF730000),
-                Color(0xFFA80000),
-              ],
-            ),
-          ),
+        padding: const EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+    gradient: LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+    Color(0xFF2A0000),
+    Color(0xFF460303),
+    Color(0xFF730000),
+    Color(0xFFA80000),
+    ],
+    ),
+    ),
           child: Column(
             children: [
               SizedBox(height: 80),
@@ -149,7 +186,7 @@ class _RegistroPageState extends State<RegistroPage> {
             ],
           ),
         ),
-      ),
+        ),
     );
   }
 
@@ -231,8 +268,9 @@ class _RegistroPageState extends State<RegistroPage> {
               icon: Icons.phone,
               keyboardType: TextInputType.phone,
             ),
+            SizedBox(height: 16),
             SizedBox(height: 32),
-            _isLoading
+            _validador
                 ? CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(
                   Color(0xFFA80000)),
@@ -264,6 +302,72 @@ class _RegistroPageState extends State<RegistroPage> {
       ),
     );
   }
+  Widget _buildProfileImageGrid() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 4),
+          child: Text(
+            'Seleccionar imagen de perfil:',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        SizedBox(height: 8),
+        GridView.count(
+          crossAxisCount: 3, // Número de imágenes por fila
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(), // Evita el desplazamiento dentro del GridView
+          children: _profileImageUrls.map((imageUrl) {
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedImageUrl = imageUrl;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+
+  Widget _buildProfileImagePreview(String imageUrl) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5),
+          child: Image.network(
+            imageUrl,
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
+
+
 
   Widget _buildFooter() {
     return Padding(
@@ -298,6 +402,47 @@ class _RegistroPageState extends State<RegistroPage> {
       ),
       obscureText: isPassword,
       keyboardType: keyboardType,
+    );
+  }
+
+  Widget _buildImagePicker() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Seleccionar imagen:',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        SizedBox(height: 8),
+        GestureDetector(
+          onTap: () async {
+            final picker = ImagePicker();
+            final pickedImage =
+            await picker.pickImage(source: ImageSource.gallery);
+            if (pickedImage != null) {
+              setState(() {
+                _image = pickedImage;
+              });
+            }
+          },
+          child: Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: _image == null
+                ? Icon(Icons.add_a_photo,
+                size: 40, color: Colors.grey[700])
+                : Image.file(File(_image!.path), fit: BoxFit.cover),
+          ),
+        ),
+      ],
     );
   }
 }

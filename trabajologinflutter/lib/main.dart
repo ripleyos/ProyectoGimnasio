@@ -1,3 +1,5 @@
+import 'package:trabajologinflutter/Pages/PerfilPage.dart';
+import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:trabajologinflutter/pages/login_page.dart';
@@ -6,7 +8,9 @@ import 'package:provider/provider.dart';
 void main() => runApp(gesApp());
 
 class gesApp extends StatelessWidget {
-  const gesApp({super.key});
+
+  const gesApp({super.key})
+  ;
 
   @override
   Widget build(BuildContext context) {

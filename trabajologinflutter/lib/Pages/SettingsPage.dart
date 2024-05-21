@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trabajologinflutter/Pages/Settings/RestablecerContraseña.dart';
+import 'package:trabajologinflutter/Pages/login_page.dart'; // Asegúrate de importar la página de inicio de sesión
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -39,8 +39,8 @@ class SettingsPage extends StatelessWidget {
             _buildSettingsCard(
               context,
               icon: Icons.help_outline,
-              title: 'Ayuda y Soporte', // Título en español
-              description: 'Obtén ayuda y soporte', // Descripción en español
+              title: 'Ayuda y Soporte', // Título
+              description: 'Obtén ayuda y soporte', // Descripción
               onTap: () {
                 // Acción para ayuda y soporte
               },
@@ -54,7 +54,7 @@ class SettingsPage extends StatelessWidget {
   Widget _buildAccountExpansionTile(BuildContext context) {
     return ExpansionTile(
       title: Text(
-        'Configuración de Cuenta', // Título del desplegable en español
+        'Configuración de Cuenta', // Título del desplegable
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -66,18 +66,18 @@ class SettingsPage extends StatelessWidget {
         _buildAccountOption(
           context,
           icon: Icons.lock,
-          title: 'Cambiar Contraseña', // Título en español
+          title: 'Cambiar Contraseña', // Título
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChangePasswordPage()),
-            );
+           // Navigator.push(
+          //    context,
+          //    MaterialPageRoute(builder: (context) => ChangePasswordPage()),
+          //  );
           },
         ),
         _buildAccountOption(
           context,
           icon: Icons.delete,
-          title: 'Eliminar Cuenta', // Título en español
+          title: 'Eliminar Cuenta', // Título
           onTap: () {
             // Accion para eliminar la cuenta
           },
@@ -88,6 +88,10 @@ class SettingsPage extends StatelessWidget {
           title: 'Cerrar Sesión', // Título
           onTap: () {
             // Accion para cerrar sesion
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginPage()), // Navegar de vuelta a la página de inicio de sesión
+            );
           },
         ),
       ],

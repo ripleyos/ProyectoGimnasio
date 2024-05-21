@@ -105,6 +105,9 @@ class _LoginPageState extends State<LoginPage> {
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(16),
+
+
+
           width: double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(

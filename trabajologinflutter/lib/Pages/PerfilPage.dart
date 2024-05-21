@@ -2,34 +2,79 @@ import 'package:flutter/material.dart';
 import '../Gestores/GestorClientes.dart';
 import '../Modelos/Cliente.dart';
 
-class PerfilPage extends StatelessWidget {
+class PerfilPage extends StatefulWidget {
   final String email;
-
 
   PerfilPage({required this.email});
 
   @override
-  Widget build(BuildContext context) {
-  //  Cliente? cliente = GestionClientes.buscarClientePorEmail(email, GestionClientes.getClientes());
-   // String nombreCliente = cliente != null ? cliente.nombre : email;
+  _PerfilPageState createState() => _PerfilPageState();
+}
 
+class _PerfilPageState extends State<PerfilPage> {
+  late String _email;
+  Cliente? _cliente;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _email = widget.email;
+    _fetchCliente();
+  }
+
+  Future<void> _fetchCliente() async {
+    try {
+      Cliente? cliente = await GestorClientes.buscarClientePorEmail(_email);
+      setState(() {
+        _cliente = cliente;
+        _isLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        _isLoading = false;
+      });
+      // Manejar el error adecuadamente, mostrar un mensaje de error, etc.
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Mi Perfil'),
         backgroundColor: Colors.black,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildPerfilHeader(email),
-            SizedBox(height: 20),
-            _buildAgregarAmigos(),
-            SizedBox(height: 20),
-            _buildListaAmigos(),
-          ],
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : _cliente != null
+          ? Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF2A0000),
+              Color(0xFF460303),
+              Color(0xFF730000),
+              Color(0xFFA80000),
+            ],
+          ),
         ),
-      ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildPerfilHeader(_cliente!),
+              SizedBox(height: 20),
+              _buildAgregarAmigos(),
+              SizedBox(height: 20),
+              _buildListaAmigos(),
+            ],
+          ),
+        ),
+      )
+          : Center(child: Text('Cliente no encontrado')),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Acción para editar perfil
@@ -40,11 +85,20 @@ class PerfilPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPerfilHeader(String nombreCliente) {
+  Widget _buildPerfilHeader(Cliente cliente) {
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.black,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF2A0000),
+            Color(0xFF460303),
+            Color(0xFF730000),
+            Color(0xFFA80000),
+          ],
+        ),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(30),
           bottomRight: Radius.circular(30),
@@ -66,7 +120,7 @@ class PerfilPage extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: AssetImage('assets/profile_image.jpg'),
+                backgroundImage: NetworkImage(cliente.imagenUrl),
               ),
               SizedBox(width: 20),
               Expanded(
@@ -74,7 +128,7 @@ class PerfilPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      nombreCliente,
+                      cliente.nombre,
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                     SizedBox(height: 5),
@@ -104,7 +158,10 @@ class PerfilPage extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Colors.orange, Colors.deepOrange],
+          colors: [
+            Colors.white.withOpacity(0.1),
+            Colors.white.withOpacity(0.2),
+          ],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
@@ -136,7 +193,7 @@ class PerfilPage extends StatelessWidget {
             },
             child: Text('Agregar Amigos'),
             style: ElevatedButton.styleFrom(
-              primary: Colors.white,
+              primary: Colors.white.withOpacity(0.8),
               textStyle: TextStyle(fontSize: 18, color: Colors.deepOrange),
               padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
               shape: RoundedRectangleBorder(
@@ -157,7 +214,7 @@ class PerfilPage extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Text(
             'Amigos:',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
           ),
         ),
         SizedBox(height: 10),
@@ -175,6 +232,7 @@ class PerfilPage extends StatelessWidget {
 
   Widget _buildAmigoCard() {
     return Card(
+      color: Colors.white.withOpacity(0.85),
       elevation: 3,
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       shape: RoundedRectangleBorder(
@@ -187,7 +245,7 @@ class PerfilPage extends StatelessWidget {
         ),
         title: Text('Nombre del Amigo', style: TextStyle(fontSize: 20)),
         subtitle: Text('Peso: 75 kg - Altura: 175 cm', style: TextStyle(fontSize: 18)),
-        trailing: Icon(Icons.more_vert, color: Colors.orange),
+        trailing: Icon(Icons.more_vert, color: Colors.deepOrange),
         onTap: () {
           // Acción al hacer clic en un amigo de la lista
         },
