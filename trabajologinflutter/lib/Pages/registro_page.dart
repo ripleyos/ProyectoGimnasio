@@ -31,6 +31,40 @@ class _RegistroPageState extends State<RegistroPage> {
   bool _validador = false;
   String? _selectedImageUrl;
   XFile? _image;
+  String? _validateHeight(String value) {
+    if (value.isEmpty) {
+      return 'Ingrese su altura';
+    }
+    final RegExp regex = RegExp(r'^\d{3}$');
+    if (!regex.hasMatch(value)) {
+      return 'La altura debe tener el formato "170"';
+    }
+    return null;
+  }
+
+  // Validador para verificar que el campo de peso tenga el formato "50.32"
+  String? _validateWeight(String value) {
+    if (value.isEmpty) {
+      return 'Ingrese su peso';
+    }
+    final RegExp regex = RegExp(r'^\d{2,3}(\.\d{1,2})?$');
+    if (!regex.hasMatch(value)) {
+      return 'El peso debe tener el formato "50.32"';
+    }
+    return null;
+  }
+
+  // Validador para verificar que el campo de teléfono tenga una longitud de 9 y sean solo números
+  String? _validatePhone(String value) {
+    if (value.isEmpty) {
+      return 'Ingrese su teléfono';
+    }
+    final RegExp regex = RegExp(r'^\d{9}$');
+    if (!regex.hasMatch(value)) {
+      return 'El teléfono debe tener 9 dígitos';
+    }
+    return null;
+  }
 
   Future<void> _register() async {
     setState(() {
@@ -45,6 +79,61 @@ class _RegistroPageState extends State<RegistroPage> {
       return;
     }
 
+    // Validación de peso
+    if (_pesoController.text.isEmpty) {
+      _mostrarErrorDialog("Ingrese su peso");
+      setState(() {
+        _validador = false;
+      });
+      return;
+    }
+
+    final pesoRegex = RegExp(r'^\d{2,3}(\.\d{1,2})?$');
+    if (!pesoRegex.hasMatch(_pesoController.text)) {
+      _mostrarErrorDialog("El peso debe tener el formato '50.32'");
+      setState(() {
+        _validador = false;
+      });
+      return;
+    }
+
+    // Validación de altura
+    if (_alturaController.text.isEmpty) {
+      _mostrarErrorDialog("Ingrese su altura");
+      setState(() {
+        _validador = false;
+      });
+      return;
+    }
+
+    final alturaRegex = RegExp(r'^\d{3}$');
+    if (!alturaRegex.hasMatch(_alturaController.text)) {
+      _mostrarErrorDialog("La altura debe tener el formato '170'");
+      setState(() {
+        _validador = false;
+      });
+      return;
+    }
+
+    // Validación de teléfono
+    if (_telefonoController.text.isEmpty) {
+      _mostrarErrorDialog("Ingrese su teléfono");
+      setState(() {
+        _validador = false;
+      });
+      return;
+    }
+
+    final telefonoRegex = RegExp(r'^\d{9}$');
+    if (!telefonoRegex.hasMatch(_telefonoController.text)) {
+      _mostrarErrorDialog("El teléfono debe tener 9 dígitos");
+      setState(() {
+        _validador = false;
+      });
+      return;
+    }
+
+    // Si todos los campos son válidos, procedemos con el registro
     String? errorMessage = await _authService.signup(
       _emailController.text,
       _passwordController.text,
@@ -62,6 +151,7 @@ class _RegistroPageState extends State<RegistroPage> {
     }
   }
 
+
   Future<void> _insertarNuevoCliente() async {
     final String correo = _emailController.text;
     final String nombre = _nombreController.text;
@@ -70,9 +160,13 @@ class _RegistroPageState extends State<RegistroPage> {
     final String telefono = _telefonoController.text;
     final String kcalMensual = "0"; // Valor predeterminado para kcalMensual
     final String estrellas = "0"; // Valor predeterminado para estrellas
+    final String imageUrl = ""; // Se establece la URL de la imagen en vacío
 
-    // Sube la imagen a Firebase Storage
-    String imageUrl = "";
+    // Aquí debes establecer el idgimnasio y el objetivomensual según tu lógica de negocio
+    final String idgimnasio = "1"; // Por ejemplo, se establece el idgimnasio en "1"
+    final String objetivomensual = "0"; // Por ejemplo, se establece el objetivomensual en "0"
+
+    // Sube la imagen a Firebase Storage si es necesario
 
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes.json';
 
@@ -85,6 +179,9 @@ class _RegistroPageState extends State<RegistroPage> {
       "kcalMensual": kcalMensual,
       "estrellas": estrellas,
       "imagenUrl": imageUrl,
+      "amigos": [], // Lista de amigos inicialmente vacía
+      "objetivomensual": objetivomensual,
+      "idgimnasio": idgimnasio,
     };
 
     try {
@@ -99,6 +196,7 @@ class _RegistroPageState extends State<RegistroPage> {
       print("Error: $error");
     }
   }
+
 
   Future<String> _uploadImageToFirebaseStorage() async {
     final picker = ImagePicker();
@@ -250,9 +348,11 @@ class _RegistroPageState extends State<RegistroPage> {
             SizedBox(height: 16),
             _buildInputField(
               controller: _pesoController,
+
               labelText: 'Peso (kg)',
               icon: Icons.fitness_center,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
+
             ),
             SizedBox(height: 16),
             _buildInputField(
