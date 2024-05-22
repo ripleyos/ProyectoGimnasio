@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
@@ -59,6 +61,49 @@ class _LoginPageState extends State<LoginPage> {
       print('Error al guardar datos en SharedPreferences: $e');
     }
   }
+  // Dentro del onTap del GestureDetector para iniciar sesión con Google
+  void _signInWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+
+      if (googleSignInAccount != null) {
+
+        final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+
+        final UserCredential authResult =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+        // Obtener información del usuario
+        final User? user = authResult.user;
+
+        // Verificar si el usuario es nuevo o existente
+        if (authResult.additionalUserInfo!.isNewUser) {
+          // Si el usuario es nuevo, puedes hacer alguna lógica adicional aquí
+        }
+
+        // Guardar el email en SharedPreferences
+        await _saveUserData(user!.email!, '');
+
+
+        // Redirigir a la página principal o realizar otras acciones
+     //   Navigator.pushReplacement(
+       // );
+      } else {
+        // El usuario canceló el inicio de sesión con Google
+      }
+    } catch (error) {
+      print('Error al iniciar sesión con Google: $error');
+      // Manejar el error según sea necesario
+    }
+  }
+
+
 
   Future<void> _signIn() async {
     String email = _emailController.text;
@@ -248,7 +293,7 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      // Iniciar sesión con Google
+                      _signInWithGoogle();
                     },
                     child: CircleAvatar(
                       radius: 25,

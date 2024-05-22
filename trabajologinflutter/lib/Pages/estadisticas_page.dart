@@ -13,6 +13,11 @@ class EstadisticasPage extends StatefulWidget {
 
 class _EstadisticasPageState extends State<EstadisticasPage> {
   late Cliente _cliente;
+  @override
+  void initState() {
+    super.initState();
+    _cliente = widget.cliente;
+  }
   int objetivoMensual = 5000;
 
 
@@ -37,7 +42,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Calorías Perdidas',
+                  'Estadisticas de '+_cliente.nombre,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
@@ -45,7 +50,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
                 SizedBox(height: 20),
                 EstadisticaItem(
                   titulo: 'Tus Calorías',
-                  valor: 1500,
+                  valor: int.parse(_cliente.kcalMensual),
                   icono: Icons.person,
                 ),
                 SizedBox(height: 10),
@@ -79,7 +84,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
           sections: [
             PieChartSectionData(
               color: Colors.blue,
-              value: 1500,
+              value: double.parse(_cliente.kcalMensual),
               title: 'Tú',
             ),
             PieChartSectionData(

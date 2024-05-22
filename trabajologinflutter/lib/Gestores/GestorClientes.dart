@@ -48,4 +48,17 @@ class GestorClientes {
       return null;
     }
   }
+  static Future<bool> eliminarCliente(String id) async {
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
+    print(url);
+    final response = await http.delete(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      print("Cliente eliminado con éxito: $id");
+      return true;
+    } else {
+      print("Error al eliminar el cliente: ${response.statusCode}");
+      return false;
+    }
+  }
 }
