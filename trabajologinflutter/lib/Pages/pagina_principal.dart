@@ -114,10 +114,10 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                 child: RoundedBox(
                   color: Color(0xFF42A5F5), // Azul claro
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MaquinasPage()),
-                    );
+                    /*Navigator.push(
+                     // context,
+                      //MaterialPageRoute(builder: (context) => MaquinasPage()),
+                    );*/
                   },
                 ),
               ),
