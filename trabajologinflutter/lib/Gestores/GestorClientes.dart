@@ -10,19 +10,39 @@ class GestorClientes {
     List<Cliente> clientes = [];
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
+      final dynamic data = json.decode(response.body);
       print("Clientes data: $data"); // Registro de depuración
 
-      data.forEach((key, value) {
-        if (value is Map<String, dynamic>) {
-          value['id'] = key;
-          try {
-            clientes.add(Cliente.fromJson(value));
-          } catch (e) {
-            print("Error parsing client with id $key: $e");
+      if (data is List) {
+        // Si la respuesta es una lista de clientes
+        data.forEach((item) {
+          if (item is Map<String, dynamic>) {
+            try {
+              clientes.add(Cliente.fromJson(item));
+            } catch (e) {
+              print("Error parsing client: $e");
+            }
+          } else {
+            print("Elemento de la lista no es un objeto JSON");
           }
-        }
-      });
+        });
+      } else if (data is Map<String, dynamic>) {
+        // Si la respuesta es un objeto JSON que contiene los clientes
+        data.forEach((key, value) {
+          if (value is Map<String, dynamic>) {
+            try {
+              clientes.add(Cliente.fromJson(value));
+            } catch (e) {
+              print("Error parsing client: $e");
+            }
+          } else {
+            print("Valor del mapa no es un objeto JSON");
+          }
+        });
+      } else {
+        print("Respuesta del servidor en un formato no reconocido");
+      }
+
 
       print("Clientes cargados: ${clientes.length}"); // Registro de depuración
       return clientes;
@@ -30,6 +50,9 @@ class GestorClientes {
       throw Exception('Error al cargar los clientes: ${response.statusCode}');
     }
   }
+
+
+
 
   static Future<Cliente?> buscarClientePorEmail(String email) async {
     try {
@@ -64,7 +87,35 @@ class GestorClientes {
       return false;
     }
   }
+  static Future<bool> actualizarAmigos(String id, List<String> amigos, List<String> amigosPendientes) async {
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
+    final response = await http.patch(
+      Uri.parse(url),
+      body: json.encode({'amigos': amigos, 'amigosPendientes': amigosPendientes}),
+    );
 
+    if (response.statusCode == 200) {
+      print("Amigos y amigos pendientes actualizados con éxito para el cliente: $id");
+      return true;
+    } else {
+      print("Error al actualizar amigos y amigos pendientes para el cliente: ${response.statusCode}");
+      return false;
+    }
+  }
+  static Future<bool> actualizarCliente(String id, Cliente cliente) async {
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
+    final response = await http.patch(
+      Uri.parse(url),
+    );
+
+    if (response.statusCode == 200) {
+      print("Cliente actualizado con éxito: $id");
+      return true;
+    } else {
+      print("Error al actualizar el cliente: ${response.statusCode}");
+      return false;
+    }
+  }
   static Future<bool> eliminarCliente(String id) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
     print(url);
@@ -95,3 +146,4 @@ class GestorClientes {
     }
   }
 }
+

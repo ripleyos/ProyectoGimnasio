@@ -64,12 +64,19 @@ Future<void> inicializarDatos() async {
     if (gymId == "null") {
       return;
     } else {
+      print('mal eh');
+    /*   Navigator.push(
+=======
       return;
       /*Navigator.push(
+>>>>>>> ca824982a50546a72d2283cf9123b76443fb29bf
         context,
         MaterialPageRoute(
           builder: (context) => MapPage(cliente: widget.cliente),
         ),
+<<<<<<< HEAD
+      ); */
+=======
       );*/
     }
   }

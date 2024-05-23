@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
      //   'home' : ( _ ) => MainPage(),
       },
       theme: ThemeData.light().copyWith(
-          scaffoldBackgroundColor: Colors.blueGrey
+          scaffoldBackgroundColor: Colors.black87
       ),
     );
   }

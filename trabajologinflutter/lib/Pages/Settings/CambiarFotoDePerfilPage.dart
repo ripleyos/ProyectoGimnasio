@@ -81,12 +81,34 @@ class CambiarFotoDePerfilPage extends StatelessWidget {
   void _updateProfilePicture(BuildContext context, String imageUrl) async {
     bool exito = await GestorClientes.actualizarImagenCliente(cliente.id, imageUrl);
     if (exito) {
+      _showSuccessDialog(context);
       cliente.imagenUrl = imageUrl;
-      Navigator.of(context).pop();
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al actualizar la imagen de perfil')),
       );
     }
+  }
+
+  void _showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Cambio exitoso'),
+          content: Text('Tus cambios se mostrarán la próxima vez que inicies la app.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el cuadro de diálogo
+                Navigator.of(context).pop(); // Regresa a la página anterior
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
