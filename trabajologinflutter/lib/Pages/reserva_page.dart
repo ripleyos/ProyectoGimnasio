@@ -58,12 +58,13 @@ class _ReservaPageState extends State<ReservaPage> {
     if (gymId ==null) {
       return;
     } else {
-      Navigator.push(
+      print('mal eh');
+    /*   Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => MapPage(cliente:widget.cliente),
         ),
-      );
+      ); */
     }
   }
 

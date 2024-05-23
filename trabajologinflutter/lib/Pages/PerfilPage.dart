@@ -52,6 +52,8 @@ class _PerfilPageState extends State<PerfilPage> {
               _buildAgregarAmigos(),
               SizedBox(height: 20),
               _buildListaAmigos(),
+              SizedBox(height: 20),
+              _buildListaAmigosPendientes(),
             ],
           ),
         ),
@@ -67,6 +69,7 @@ class _PerfilPageState extends State<PerfilPage> {
   }
 
   Widget _buildPerfilHeader(Cliente cliente) {
+    int starCount = int.parse(cliente.estrellas);
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -93,49 +96,40 @@ class _PerfilPageState extends State<PerfilPage> {
           ),
         ],
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: NetworkImage(cliente.imagenUrl),
-              ),
-              SizedBox(width: 20),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      cliente.nombre,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      'Entusiasta del Fitness',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Ciudad, País',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+          Image.network(
+            cliente.imagenUrl,
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+          ),
+          SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  cliente.nombre,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 5),
+                Text(
+                  'Entusiasta del Fitness',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 30),
+                _buildStarRating(starCount),
+              ],
+            ),
           ),
         ],
       ),
@@ -167,31 +161,31 @@ class _PerfilPageState extends State<PerfilPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-      Expanded(
-      child: TextFormField(
-      decoration: InputDecoration(
-        hintText: 'Buscar amigos...',
-        hintStyle: TextStyle(color: Colors.white),
-        border: InputBorder.none,
-      ),
-      style: TextStyle(color: Colors.white),
-    ),
-    ),
-    SizedBox(width: 10),
-    ElevatedButton(
-      onPressed: () {
-        // Aquí puedes implementar la lógica para buscar y agregar amigos.
-      },
-      child: Text('Agregar Amigos'),
-      style: ElevatedButton.styleFrom(
-        primary: Colors.white.withOpacity(0.8),
-        textStyle: TextStyle(fontSize: 18, color: Colors.deepOrange),
-        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-    ),
+          Expanded(
+            child: TextFormField(
+              decoration: InputDecoration(
+                hintText: 'Buscar amigos...',
+                hintStyle: TextStyle(color: Colors.white),
+                border: InputBorder.none,
+              ),
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () {
+              // Implementar la lógica para buscar y agregar amigos.
+            },
+            child: Text('Agregar Amigos'),
+            style: ElevatedButton.styleFrom(
+              primary: Colors.white.withOpacity(0.8),
+              textStyle: TextStyle(fontSize: 18, color: Colors.deepOrange),
+              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -206,10 +200,11 @@ class _PerfilPageState extends State<PerfilPage> {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
-          List<Cliente> amigos = _cliente.amigos
-              .map((email) => snapshot.data!.firstWhere((cliente) => cliente.correo == email))
+          List<Cliente> amigos = snapshot.data!
+              .where((cliente) => _cliente.amigos.contains(cliente.correo))
               .toList();
-          return Column(
+          return amigos.isNotEmpty
+              ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
@@ -233,7 +228,54 @@ class _PerfilPageState extends State<PerfilPage> {
                 },
               ),
             ],
-          );
+          )
+              : SizedBox(); // Si no hay amigos, devolver un contenedor vacío
+        } else {
+          return SizedBox();
+        }
+      },
+    );
+  }
+
+  Widget _buildListaAmigosPendientes() {
+    return FutureBuilder<List<Cliente>>(
+      future: GestorClientes.cargarClientes(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (snapshot.hasData) {
+          List<Cliente> amigosPendientes = snapshot.data!
+              .where((cliente) => _cliente.amigosPendientes.contains(cliente.correo))
+              .toList();
+          return amigosPendientes.isNotEmpty
+              ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Amigos Pendientes:',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: amigosPendientes.length,
+                itemBuilder: (context, index) {
+                  return _buildAmigoPendienteCard(amigosPendientes[index]);
+                },
+              ),
+            ],
+          )
+              : SizedBox(); // Si no hay amigos pendientes, devolver un contenedor vacío
         } else {
           return SizedBox();
         }
@@ -256,7 +298,7 @@ class _PerfilPageState extends State<PerfilPage> {
         ),
         title: Text(amigo.nombre, style: TextStyle(fontSize: 20)),
         subtitle: Text(
-          'Peso: ${amigo.peso} - Altura: ${amigo.peso}',
+          'Peso: ${amigo.peso} - Altura: ${amigo.altura}',
           style: TextStyle(fontSize: 18),
         ),
         trailing: Icon(Icons.more_vert, color: Colors.deepOrange),
@@ -264,6 +306,79 @@ class _PerfilPageState extends State<PerfilPage> {
           // Acción al hacer clic en un amigo de la lista
         },
       ),
+    );
+  }
+
+  Widget _buildAmigoPendienteCard(Cliente amigoPendiente) {
+    return Card(
+      color: Colors.white.withOpacity(0.85),
+      elevation: 3,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: ListTile(
+        leading: CircleAvatar(
+          radius: 30,
+          backgroundImage: NetworkImage(amigoPendiente.imagenUrl),
+        ),
+        title: Text(amigoPendiente.nombre, style: TextStyle(fontSize: 20)),
+        subtitle: Text(
+          'Peso: ${amigoPendiente.peso} - Altura: ${amigoPendiente.altura}',
+          style: TextStyle(fontSize: 18),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.check, color: Colors.green),
+                onPressed: () async {
+                  setState(() {
+                    _cliente.amigos.add(amigoPendiente.correo);
+                    _cliente.amigosPendientes.remove(amigoPendiente.correo);
+                  });
+                  bool exito = await GestorClientes.actualizarAmigos(_cliente.id, _cliente.amigos, _cliente.amigosPendientes);
+                  if (exito) {
+                    print("Solicitud de amistad aceptada");
+                  } else {
+                    print("Error al aceptar la solicitud de amistad");
+                  }
+                }
+            ),
+            IconButton(
+              icon: Icon(Icons.close, color: Colors.red),
+                onPressed: () async {
+                  setState(() {
+                    _cliente.amigosPendientes.remove(amigoPendiente.correo);
+                  });
+                  bool exito = await GestorClientes.actualizarAmigos(
+                      _cliente.id, _cliente.amigos, _cliente.amigosPendientes);
+                  if (exito) {
+                    print("Solicitud de amistad rechazada");
+                  } else {
+                    print("Error al rechazar la solicitud de amistad");
+                  }
+                }
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStarRating(int starCount) {
+    List<Widget> stars = List.generate(
+      starCount,
+          (index) => Image.asset(
+        "lib/images/6.png",
+        width: 70,
+        height: 70,
+        fit: BoxFit.cover,
+      ),
+    );
+
+    return Row(
+      children: stars,
     );
   }
 
@@ -310,4 +425,3 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 }
-
