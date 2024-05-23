@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import '../Gestores/GestorClientes.dart';
 import '../Modelos/Cliente.dart';
 
 class PerfilPage extends StatefulWidget {
@@ -54,7 +58,7 @@ class _PerfilPageState extends State<PerfilPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Acción para editar perfil
+          _mostrarDialogoCambioNombre();
         },
         child: Icon(Icons.edit),
         backgroundColor: Colors.orange,
@@ -163,65 +167,81 @@ class _PerfilPageState extends State<PerfilPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: TextFormField(
-              decoration: InputDecoration(
-                hintText: 'Buscar amigos...',
-                hintStyle: TextStyle(color: Colors.white),
-                border: InputBorder.none,
-              ),
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          SizedBox(width: 10),
-          ElevatedButton(
-            onPressed: () {
-              // Acción para agregar amigos
-            },
-            child: Text('Agregar Amigos'),
-            style: ElevatedButton.styleFrom(
-              primary: Colors.white.withOpacity(0.8),
-              textStyle: TextStyle(fontSize: 18, color: Colors.deepOrange),
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-          ),
+      Expanded(
+      child: TextFormField(
+      decoration: InputDecoration(
+        hintText: 'Buscar amigos...',
+        hintStyle: TextStyle(color: Colors.white),
+        border: InputBorder.none,
+      ),
+      style: TextStyle(color: Colors.white),
+    ),
+    ),
+    SizedBox(width: 10),
+    ElevatedButton(
+      onPressed: () {
+        // Aquí puedes implementar la lógica para buscar y agregar amigos.
+      },
+      child: Text('Agregar Amigos'),
+      style: ElevatedButton.styleFrom(
+        primary: Colors.white.withOpacity(0.8),
+        textStyle: TextStyle(fontSize: 18, color: Colors.deepOrange),
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+    ),
         ],
       ),
     );
   }
 
   Widget _buildListaAmigos() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Text(
-            'Amigos:',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        SizedBox(height: 10),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: 10, // Reemplazar con la longitud real de la lista de amigos
-          itemBuilder: (context, index) {
-            return _buildAmigoCard();
-          },
-        ),
-      ],
+    return FutureBuilder<List<Cliente>>(
+      future: GestorClientes.cargarClientes(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (snapshot.hasData) {
+          List<Cliente> amigos = _cliente.amigos
+              .map((email) => snapshot.data!.firstWhere((cliente) => cliente.correo == email))
+              .toList();
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Amigos:',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: amigos.length,
+                itemBuilder: (context, index) {
+                  return _buildAmigoCard(amigos[index]);
+                },
+              ),
+            ],
+          );
+        } else {
+          return SizedBox();
+        }
+      },
     );
   }
 
-  Widget _buildAmigoCard() {
+  Widget _buildAmigoCard(Cliente amigo) {
     return Card(
       color: Colors.white.withOpacity(0.85),
       elevation: 3,
@@ -232,10 +252,13 @@ class _PerfilPageState extends State<PerfilPage> {
       child: ListTile(
         leading: CircleAvatar(
           radius: 30,
-          backgroundImage: AssetImage('assets/friend_image.jpg'),
+          backgroundImage: NetworkImage(amigo.imagenUrl),
         ),
-        title: Text('Nombre del Amigo', style: TextStyle(fontSize: 20)),
-        subtitle: Text('Peso: 75 kg - Altura: 175 cm', style: TextStyle(fontSize: 18)),
+        title: Text(amigo.nombre, style: TextStyle(fontSize: 20)),
+        subtitle: Text(
+          'Peso: ${amigo.peso} - Altura: ${amigo.peso}',
+          style: TextStyle(fontSize: 18),
+        ),
         trailing: Icon(Icons.more_vert, color: Colors.deepOrange),
         onTap: () {
           // Acción al hacer clic en un amigo de la lista
@@ -243,4 +266,48 @@ class _PerfilPageState extends State<PerfilPage> {
       ),
     );
   }
+
+  void _mostrarDialogoCambioNombre() {
+    TextEditingController _nombreController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Cambiar Nombre'),
+          content: TextField(
+            controller: _nombreController,
+            decoration: InputDecoration(hintText: "Nuevo nombre"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: Text('Guardar'),
+              onPressed: () async {
+                String nuevoNombre = _nombreController.text;
+                if (nuevoNombre.isNotEmpty) {
+                  bool exito =
+                  await GestorClientes.actualizarNombreCliente(_cliente.id, nuevoNombre);
+                  if (exito) {
+                    setState(() {
+                      _cliente.nombre = nuevoNombre;
+                    });
+                    Navigator.of(context).pop(); // Cerrar el diálogo
+                  } else {
+                    // Manejar error si la actualización no fue exitosa
+                  }
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+

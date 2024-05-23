@@ -1,14 +1,15 @@
 class Cliente {
   final String id;
-  final String nombre;
+  late final String nombre;
   final String correo;
-  final String imagenUrl;
+  late final String imagenUrl;
   final String peso;
   final String kcalMensual;
   final String estrellas;
   final List<String> amigos;
   final String objetivomensual;
   final String idgimnasio;
+  final String altura;
 
   Cliente({
     required this.id,
@@ -21,6 +22,7 @@ class Cliente {
     required this.amigos,
     required this.objetivomensual,
     required this.idgimnasio,
+    required this.altura,
   });
 
   factory Cliente.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,7 @@ class Cliente {
       amigos: json['amigos'] != null ? List<String>.from(json['amigos'] as List) : [],
       objetivomensual: json['objetivomensual'] as String,
       idgimnasio: json['idgimnasio'] as String,
+      altura: json['altura'] as String ?? "",
     );
   }
 }

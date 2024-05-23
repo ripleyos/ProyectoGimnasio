@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
+import 'package:trabajologinflutter/Pages/registroGoogle_page.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
 import 'package:trabajologinflutter/Gestores/GestorClientes.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
@@ -84,16 +85,30 @@ class _LoginPageState extends State<LoginPage> {
 
         // Verificar si el usuario es nuevo o existente
         if (authResult.additionalUserInfo!.isNewUser) {
-          // Si el usuario es nuevo, puedes hacer alguna lógica adicional aquí
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => RegistroGooglePage(email: user!.email.toString() ),
+            ),
+          );
         }
-
         // Guardar el email en SharedPreferences
         await _saveUserData(user!.email!, '');
 
 
         // Redirigir a la página principal o realizar otras acciones
-     //   Navigator.pushReplacement(
-       // );
+            try {
+              Cliente? cliente = await GestorClientes.buscarClientePorEmail(user!.email.toString());
+              if (cliente != null) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainPage(cliente: cliente)),
+                );
+              } else {
+                print('Cliente no encontrado');
+              }
+            } catch (error) {
+              print('Error buscando cliente: $error');
+            }
       } else {
         // El usuario canceló el inicio de sesión con Google
       }

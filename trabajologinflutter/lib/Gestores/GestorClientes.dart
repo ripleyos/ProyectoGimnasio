@@ -48,6 +48,23 @@ class GestorClientes {
       return null;
     }
   }
+
+  static Future<bool> actualizarNombreCliente(String id, String nuevoNombre) async {
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
+    final response = await http.patch(
+      Uri.parse(url),
+      body: json.encode({'nombre': nuevoNombre}),
+    );
+
+    if (response.statusCode == 200) {
+      print("Nombre del cliente actualizado con éxito: $id");
+      return true;
+    } else {
+      print("Error al actualizar el nombre del cliente: ${response.statusCode}");
+      return false;
+    }
+  }
+
   static Future<bool> eliminarCliente(String id) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
     print(url);
@@ -58,6 +75,22 @@ class GestorClientes {
       return true;
     } else {
       print("Error al eliminar el cliente: ${response.statusCode}");
+      return false;
+    }
+  }
+
+  static Future<bool> actualizarImagenCliente(String id, String nuevaImagenUrl) async {
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
+    final response = await http.patch(
+      Uri.parse(url),
+      body: json.encode({'imagenUrl': nuevaImagenUrl}),
+    );
+
+    if (response.statusCode == 200) {
+      print("Imagen del cliente actualizada con éxito: $id");
+      return true;
+    } else {
+      print("Error al actualizar la imagen del cliente: ${response.statusCode}");
       return false;
     }
   }

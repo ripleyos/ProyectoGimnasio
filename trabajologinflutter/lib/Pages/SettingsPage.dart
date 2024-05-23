@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:trabajologinflutter/Pages/Settings/CambiarFotoDePerfilPage.dart';
 import 'package:trabajologinflutter/Pages/SupportPage.dart';
 import 'package:trabajologinflutter/Pages/login_page.dart';
 import '../Gestores/GestorClientes.dart';
@@ -90,6 +91,19 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       leading: Icon(Icons.person, color: Colors.white),
       children: <Widget>[
+        _buildAccountOption(
+          context,
+          icon: Icons.image,
+          title: 'Cambiar Imagen de Perfil',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CambiarFotoDePerfilPage(cliente: _cliente),
+              ),
+            );
+          },
+        ),
         _buildAccountOption(
           context,
           icon: Icons.lock,
@@ -209,7 +223,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void _deleteAccount(String password) async {
     try {
       await _authService.reauthenticateAndDelete(_cliente.correo, password);
-     // await GestorClientes.eliminarCliente(_cliente.id);
+      // await GestorClientes.eliminarCliente(_cliente.id);
 
       Navigator.pushAndRemoveUntil(
         context,

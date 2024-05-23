@@ -19,13 +19,6 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
- /* static List<Widget> _widgetOptions = <Widget>[
-    ReservaPage(),
-    PaginaPrincipal(),
-    EstadisticasPage(),
-    SettingsPage(),
-  ]; */
-
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
@@ -87,6 +80,18 @@ class _MainPageState extends State<MainPage> {
                   icon: Icons.person,
                   text: 'Perfil',
                   iconColor: Colors.white,
+                  leading: Stack(
+                    children: [
+                      Icon(Icons.person, color: Colors.white), // Icono base
+                      Positioned(
+                        right: 0,
+                        child: CircleAvatar(
+                          radius: 12, // Radio del avatar
+                          backgroundImage: NetworkImage(widget.cliente.imagenUrl), // O usa AssetImage('ruta/a/tu/imagen.png') si la imagen está en los activos
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 GButton(
                   icon: Icons.insert_chart,
