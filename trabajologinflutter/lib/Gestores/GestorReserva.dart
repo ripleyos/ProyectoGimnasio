@@ -54,6 +54,23 @@ class GestionReservas {
     return [];
   }
 
+    Future<void> eliminarReservaExterna(String idReserva) async {
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/reservas/$idReserva.json';
+
+    try {
+      final response = await http.delete(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        print("Reserva eliminada: ");
+        print(response.body);
+      } else {
+        print('Error al eliminar reserva: ${response.statusCode}');
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+  }
+
     Future<List<Reserva>> get reservas async {
     return cargarReservasExterna();
   }

@@ -21,14 +21,18 @@ class ReservaPage extends StatefulWidget {
 
 class _ReservaPageState extends State<ReservaPage> {
   late Cliente cliente;
-  @override
-  void initState() {
-    super.initState();
-    cliente = widget.cliente;
-    tienesGym();
-    cargarMaquinas();
-    cargarReservas();
-  }
+@override
+void initState() {
+  super.initState();
+  cliente = widget.cliente;
+  inicializarDatos();
+}
+
+Future<void> inicializarDatos() async {
+  await cargarMaquinas();
+  await cargarReservas();
+  await eliminarReservasAntiguas();
+}
 
   List<Reserva> reservas = [];
   List<Maquina> maquinas = [];
@@ -94,7 +98,22 @@ class _ReservaPageState extends State<ReservaPage> {
       print('Error al cargar las máquinas: $error');
     }
   }
+    Future<void> eliminarReservasAntiguas() async {
+    var now = DateTime.now();
+    var formatter = DateFormat('dd/MM/yyyy');
 
+    for (var reserva in reservas) {
+      var fechaReserva = formatter.parse(reserva.fecha);
+      if (fechaReserva.isBefore(now) ||
+          (fechaReserva.isAtSameMomentAs(now) && 
+           reserva.intervalo.split(' - ')[1].compareTo(DateFormat('HH:mm').format(now)) <= 0)) {
+        await gestionReservas.eliminarReservaExterna(reserva.idReserva);
+      }
+    }
+
+
+    await cargarReservas();
+  }
   void ajustarNumRepeticion() {
     // Obtener el número de reservas actuales del cliente
     int reservasActuales = reservas.where((reserva) => reserva.idCliente == cliente.correo).length;
