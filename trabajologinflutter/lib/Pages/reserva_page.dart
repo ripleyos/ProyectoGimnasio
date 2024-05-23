@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:trabajologinflutter/Gestores/GestorReserva.dart';
 import 'package:trabajologinflutter/Gestores/GestorMaquina.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
+import 'package:trabajologinflutter/Modelos/RepeticionData.dart';
 import 'package:trabajologinflutter/Modelos/reservas.dart';
 import '../Modelos/maquinas.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,19 +11,20 @@ import 'package:trabajologinflutter/Pages/mapa_page.dart';
 import 'package:uuid/uuid.dart';
 
 class ReservaPage extends StatefulWidget {
-    late final Cliente cliente;
+  late final Cliente cliente;
 
-    ReservaPage({required this.cliente});
+  ReservaPage({required this.cliente});
+  
   @override
   _ReservaPageState createState() => _ReservaPageState();
 }
 
 class _ReservaPageState extends State<ReservaPage> {
-  late Cliente _cliente;
+  late Cliente cliente;
   @override
   void initState() {
     super.initState();
-    _cliente = widget.cliente;
+    cliente = widget.cliente;
     tienesGym();
     cargarMaquinas();
     cargarReservas();
@@ -54,17 +56,24 @@ class _ReservaPageState extends State<ReservaPage> {
   List<RepeticionData> numRepeticionesSeleccionadas = [];
 
   Future<void> tienesGym() async {
-    gymId = _cliente.idgimnasio;
-    if (gymId ==null) {
+    gymId = cliente.idgimnasio;
+    if (gymId == "null") {
       return;
     } else {
       print('mal eh');
     /*   Navigator.push(
+=======
+      return;
+      /*Navigator.push(
+>>>>>>> ca824982a50546a72d2283cf9123b76443fb29bf
         context,
         MaterialPageRoute(
-          builder: (context) => MapPage(cliente:widget.cliente),
+          builder: (context) => MapPage(cliente: widget.cliente),
         ),
+<<<<<<< HEAD
       ); */
+=======
+      );*/
     }
   }
 
@@ -73,6 +82,7 @@ class _ReservaPageState extends State<ReservaPage> {
       List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
       setState(() {
         reservas = reservasCargadas;
+        ajustarNumRepeticion(); // Ajustar el número de repeticiones después de cargar las reservas
       });
     } catch (error) {
       print('Error al cargar las reservas paco: $error');
@@ -92,63 +102,66 @@ class _ReservaPageState extends State<ReservaPage> {
     }
   }
 
-void filtrarOpciones() {
-  var today = DateTime.now();
-  var oneHourLater = today.add(Duration(hours: 1));
-  var formatter = DateFormat('HH:mm');
-  filteredOptions.clear();
+  void ajustarNumRepeticion() {
+    // Obtener el número de reservas actuales del cliente
+    int reservasActuales = reservas.where((reserva) => reserva.idCliente == cliente.correo).length;
 
-  for (var repeticionData in numRepeticionesSeleccionadas) {
+    // Ajustar la lista de números de repeticiones según el número de reservas actuales
+    setState(() {
+      numRepeticion = List.generate(12 - reservasActuales, (index) => (index + 1).toString());
+    });
+  }
+
+  void filtrarOpciones(RepeticionData repeticionData) {
+    var today = DateTime.now();
+    var oneHourLater = today.add(Duration(hours: 1));
+    var formatter = DateFormat('HH:mm');
+    repeticionData.filteredOptions.clear();
+
     if (repeticionData.fechaSeleccionada != null) {
       String selectedDate = repeticionData.fechaSeleccionada!.split(' ')[0];
       String ahora = DateFormat('dd/MM/yyyy').format(today);
+
       // Solo filtrar si la fecha seleccionada es igual al día actual
-      if (selectedDate==ahora) {
+      if (selectedDate == ahora) {
         for (String interval in options1) {
           String intervalStart = interval.split(' - ')[0];
           var intervalStartDateTime = formatter.parse(intervalStart);
-          
+
           if (intervalStartDateTime.hour > oneHourLater.hour ||
               (intervalStartDateTime.hour == oneHourLater.hour &&
                   intervalStartDateTime.minute > oneHourLater.minute)) {
-            filteredOptions.add(interval);
+            repeticionData.filteredOptions.add(interval);
           }
         }
-      }else{
-
+      } else {
         for (String interval in options1) {
-          String intervalStart = interval.split(' - ')[0];
-          var intervalStartDateTime = formatter.parse(intervalStart);
-          filteredOptions.add(interval);
+          repeticionData.filteredOptions.add(interval);
         }
-
       }
-    }
-  }
-}
-
-
-  void filtrarReservas() {
-    for (int i = 0; i < numRepeticionesSeleccionadas.length; i++) {
-      var idMaquinaSeleccionada = numRepeticionesSeleccionadas[i].idMaquinaSeleccionada;
-      var fechaSeleccionada = numRepeticionesSeleccionadas[i].fechaSeleccionada;
-      if (idMaquinaSeleccionada != null && fechaSeleccionada != null) {
-        Set<String> intervalosAEliminar = {};
-
-        for (Reserva reserva in reservas) {
-          if (reserva.idMaquina == idMaquinaSeleccionada && reserva.fecha == fechaSeleccionada) {
-            intervalosAEliminar.addAll(reserva.intervalo.split(','));
-          }
-        }
-
-        List<String> opcionesFiltradas = filteredOptions.where((intervalo) => !intervalosAEliminar.contains(intervalo)).toList();
-        setState(() {
-          numRepeticionesSeleccionadas[i].filteredOptions = opcionesFiltradas;
-        });
+    } else {
+      for (String interval in options1) {
+        repeticionData.filteredOptions.add(interval);
       }
     }
   }
 
+  void filtrarReservas(RepeticionData repeticionData) {
+    if (repeticionData.idMaquinaSeleccionada != null && repeticionData.fechaSeleccionada != null) {
+      Set<String> intervalosAEliminar = {};
+
+      for (Reserva reserva in reservas) {
+        if (reserva.idMaquina == repeticionData.idMaquinaSeleccionada && reserva.fecha == repeticionData.fechaSeleccionada) {
+          intervalosAEliminar.addAll(reserva.intervalo.split(','));
+        }
+      }
+
+      List<String> opcionesFiltradas = repeticionData.filteredOptions.where((intervalo) => !intervalosAEliminar.contains(intervalo)).toSet().toList();
+      setState(() {
+        repeticionData.filteredOptions = opcionesFiltradas;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +218,6 @@ void filtrarOpciones() {
                               setState(() {
                                 repeticionData.maquinaSeleccion = newValue;
                                 repeticionData.idMaquinaSeleccionada = repeticionData.nombreToIdMaquina[newValue];
-                                
                               });
                             },
                             hint: Text('Selecciona máquina'),
@@ -235,8 +247,9 @@ void filtrarOpciones() {
                                   if (pickedDate != null) {
                                     setState(() {
                                       repeticionData.fechaSeleccionada = DateFormat('dd/MM/yyyy').format(pickedDate);
-                                      filtrarOpciones();
-                                      filtrarReservas();
+                                      repeticionData.intervaloSeleccion = null;
+                                      filtrarOpciones(repeticionData);
+                                      filtrarReservas(repeticionData);
                                     });
                                   }
                                 } : null,
@@ -285,8 +298,9 @@ void filtrarOpciones() {
                     for (var repeticionData in numRepeticionesSeleccionadas) {
                       String? intervalo = repeticionData.intervaloSeleccion;
                       String fecha = repeticionData.fechaSeleccionada!;
+                      String clienteId = cliente.correo;
                       String reservaId = Uuid().v4();
-                      gestionReservas.insertarReservaExterna(reservaId, repeticionData.idMaquinaSeleccionada!, gymId!, intervalo!, fecha);
+                      gestionReservas.insertarReservaExterna(reservaId, repeticionData.idMaquinaSeleccionada!, gymId!, clienteId, intervalo!, fecha);
                     }
                     cargarReservas();
                   },
@@ -299,21 +313,4 @@ void filtrarOpciones() {
       ),
     );
   }
-}
-
-class RepeticionData {
-  String? maquinaSeleccion;
-  String? idMaquinaSeleccionada;
-  String? fechaSeleccionada;
-  String? intervaloSeleccion;
-  String? diaSeleccion;
-  List<String> maquinasMostrar;
-  Map<String, String> nombreToIdMaquina;
-  List<String> filteredOptions;
-
-  RepeticionData({
-    required this.maquinasMostrar,
-    required this.nombreToIdMaquina,
-    required this.filteredOptions,
-  });
 }
