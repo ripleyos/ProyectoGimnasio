@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
-import 'package:trabajologinflutter/Pages/ChatGPTPage.dart';
 import 'package:trabajologinflutter/Pages/pagina_principal.dart';
 import 'package:trabajologinflutter/Pages/PerfilPage.dart';
 import 'package:trabajologinflutter/Pages/SettingsPage.dart';
