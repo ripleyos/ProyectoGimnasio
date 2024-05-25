@@ -1,6 +1,6 @@
 class Cliente {
   final String id;
-  late final String nombre;
+  final nombre;
   final String correo;
   late final String imagenUrl;
   final String peso;
@@ -27,9 +27,9 @@ class Cliente {
     required this.altura,
   });
 
-  factory Cliente.fromJson(Map<String, dynamic> json) {
+  factory Cliente.fromJson(String key, Map<String, dynamic> json) {
     return Cliente(
-      id: json['id'] != null ? json['id'] as String : '',
+      id: key,
       nombre: json['nombre'] != null ? json['nombre'] as String : '',
       correo: json['correo'] != null ? json['correo'] as String : '',
       imagenUrl: json['imagenUrl'] != null ? json['imagenUrl'] as String : '',
@@ -42,5 +42,8 @@ class Cliente {
       idgimnasio: json['idgimnasio'] != null ? json['idgimnasio'] as String : '',
       altura: json['altura'] != null ? json['altura'] as String : '',
     );
+  }
+  void actualizarImagenUrl(String nuevaImagenUrl) {
+    imagenUrl = nuevaImagenUrl;
   }
 }

@@ -61,19 +61,12 @@ class _ReservaPageState extends State<ReservaPage> {
       return;
     } else {
       print('mal eh');
-    /*   Navigator.push(
-=======
-      return;
       /*Navigator.push(
->>>>>>> ca824982a50546a72d2283cf9123b76443fb29bf
         context,
         MaterialPageRoute(
           builder: (context) => MapPage(cliente: widget.cliente),
         ),
-<<<<<<< HEAD
       ); */
-=======
-      );*/
     }
   }
 
@@ -82,7 +75,7 @@ class _ReservaPageState extends State<ReservaPage> {
       List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
       setState(() {
         reservas = reservasCargadas;
-        ajustarNumRepeticion(); // Ajustar el número de repeticiones después de cargar las reservas
+        ajustarNumRepeticion();
       });
     } catch (error) {
       print('Error al cargar las reservas paco: $error');

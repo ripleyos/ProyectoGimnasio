@@ -2,8 +2,17 @@ import 'package:flutter/material.dart';
 import '../../Gestores/GestorClientes.dart';
 import '../../Modelos/Cliente.dart';
 
-class CambiarFotoDePerfilPage extends StatelessWidget {
+class CambiarFotoDePerfilPage extends StatefulWidget {
   final Cliente cliente;
+
+  CambiarFotoDePerfilPage({required this.cliente});
+
+  @override
+  _CambiarFotoDePerfilPageState createState() => _CambiarFotoDePerfilPageState();
+}
+
+class _CambiarFotoDePerfilPageState extends State<CambiarFotoDePerfilPage> {
+  late Cliente _cliente;
   final List<String> imageUrls = [
     'https://i.psnprofiles.com/avatars/m/G08aacb7cb.png',
     'https://i.psnprofiles.com/avatars/m/G9a5c1e2a3.png',
@@ -15,13 +24,17 @@ class CambiarFotoDePerfilPage extends StatelessWidget {
     'https://i.psnprofiles.com/avatars/m/Gdd8c162c6.png',
   ];
 
-  CambiarFotoDePerfilPage({required this.cliente});
+  @override
+  void initState() {
+    super.initState();
+    _cliente = widget.cliente;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cambiar Imagen de Perfil'),
+        title: Text('Cambiar Imagen de Perfil para ${_cliente.id}'),
         backgroundColor: Colors.black,
       ),
       body: Container(
@@ -79,15 +92,13 @@ class CambiarFotoDePerfilPage extends StatelessWidget {
   }
 
   void _updateProfilePicture(BuildContext context, String imageUrl) async {
-    bool exito = await GestorClientes.actualizarImagenCliente(cliente.id, imageUrl);
-    if (exito) {
+    print("Intentando actualizar imagen a: $imageUrl");
+    print(_cliente.id);
+    bool result = await GestorClientes.actualizarImagenCliente(_cliente.id, imageUrl);
+    if (result) {
       _showSuccessDialog(context);
-      cliente.imagenUrl = imageUrl;
-
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al actualizar la imagen de perfil')),
-      );
+      print("Error al actualizar la imagen del cliente");
     }
   }
 
