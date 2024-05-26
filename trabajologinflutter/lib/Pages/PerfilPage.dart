@@ -26,10 +26,6 @@ class _PerfilPageState extends State<PerfilPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Mi Perfil'),
-        backgroundColor: Colors.black,
-      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -58,13 +54,6 @@ class _PerfilPageState extends State<PerfilPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _mostrarDialogoCambioNombre();
-        },
-        child: Icon(Icons.edit),
-        backgroundColor: Colors.orange,
-      ),
     );
   }
 
@@ -89,7 +78,7 @@ class _PerfilPageState extends State<PerfilPage> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
+            color: Colors.black.withOpacity(0.3),
             spreadRadius: 5,
             blurRadius: 7,
             offset: Offset(0, 3),
@@ -99,11 +88,9 @@ class _PerfilPageState extends State<PerfilPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            cliente.imagenUrl,
-            width: 100,
-            height: 100,
-            fit: BoxFit.cover,
+          CircleAvatar(
+            radius: 50,
+            backgroundImage: NetworkImage(cliente.imagenUrl),
           ),
           SizedBox(width: 20),
           Expanded(
@@ -113,7 +100,7 @@ class _PerfilPageState extends State<PerfilPage> {
                 Text(
                   cliente.nombre,
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 26,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -123,10 +110,10 @@ class _PerfilPageState extends State<PerfilPage> {
                   'Entusiasta del Fitness',
                   style: TextStyle(
                     fontSize: 18,
-                    color: Colors.white,
+                    color: Colors.white70,
                   ),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 20),
                 _buildStarRating(starCount),
               ],
             ),
@@ -137,6 +124,8 @@ class _PerfilPageState extends State<PerfilPage> {
   }
 
   Widget _buildAgregarAmigos() {
+    String email = '';
+
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -151,7 +140,7 @@ class _PerfilPageState extends State<PerfilPage> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
+            color: Colors.black.withOpacity(0.2),
             spreadRadius: 3,
             blurRadius: 5,
             offset: Offset(0, 3),
@@ -163,9 +152,12 @@ class _PerfilPageState extends State<PerfilPage> {
         children: [
           Expanded(
             child: TextFormField(
+              onChanged: (value) {
+                email = value.trim();
+              },
               decoration: InputDecoration(
                 hintText: 'Buscar amigos...',
-                hintStyle: TextStyle(color: Colors.white),
+                hintStyle: TextStyle(color: Colors.white70),
                 border: InputBorder.none,
               ),
               style: TextStyle(color: Colors.white),
@@ -173,8 +165,28 @@ class _PerfilPageState extends State<PerfilPage> {
           ),
           SizedBox(width: 10),
           ElevatedButton(
-            onPressed: () {
-              // Implementar la lógica para buscar y agregar amigos.
+            onPressed: () async {
+              if (email.isNotEmpty) {
+                Cliente? cliente = await GestorClientes.buscarClientePorEmail(email);
+                if (cliente != null) {
+                  String miCorreo = _cliente.correo; // Reemplaza esto con tu propio correo
+                  if (!_cliente.amigos.contains(cliente.correo) && !_cliente.amigosPendientes.contains(cliente.correo)) {
+                    setState(() {
+                      cliente.amigosPendientes.add(miCorreo);
+                    });
+                    bool exito = await GestorClientes.actualizarAmigos(cliente.id, cliente.amigos, cliente.amigosPendientes);
+                    if (exito) {
+                      print("Solicitud enviada al cliente");
+                    } else {
+                      print("Error al enviar la solicitud al cliente");
+                    }
+                  } else {
+                    print("Ya has enviado una solicitud a este cliente o ya eres amigo de él.");
+                  }
+                } else {
+                  print("Cliente no encontrado");
+                }
+              }
             },
             child: Text('Agregar Amigos'),
             style: ElevatedButton.styleFrom(
@@ -332,33 +344,45 @@ class _PerfilPageState extends State<PerfilPage> {
           children: [
             IconButton(
               icon: Icon(Icons.check, color: Colors.green),
-                onPressed: () async {
-                  setState(() {
-                    _cliente.amigos.add(amigoPendiente.correo);
-                    _cliente.amigosPendientes.remove(amigoPendiente.correo);
-                  });
-                  bool exito = await GestorClientes.actualizarAmigos(_cliente.id, _cliente.amigos, _cliente.amigosPendientes);
-                  if (exito) {
-                    print("Solicitud de amistad aceptada");
+              onPressed: () async {
+                setState(() {
+                  _cliente.amigos.add(amigoPendiente.correo);
+                  _cliente.amigosPendientes.remove(amigoPendiente.correo);
+                });
+                bool exito = await GestorClientes.actualizarAmigos(
+                    _cliente.id, _cliente.amigos, _cliente.amigosPendientes);
+                if (exito) {
+                  print("Solicitud de amistad aceptada");
+                  // Ahora agregamos el correo del cliente al que se aceptó como amigo
+                  amigoPendiente.amigos.add(_cliente.correo);
+                  // Eliminamos al cliente actual de la lista de amigos pendientes del cliente que envió la solicitud
+                  amigoPendiente.amigosPendientes.remove(_cliente.correo);
+                  bool exitoCliente = await GestorClientes.actualizarAmigos(
+                      amigoPendiente.id, amigoPendiente.amigos, amigoPendiente.amigosPendientes);
+                  if (exitoCliente) {
+                    print("Cliente agregado como amigo en la lista del cliente que envió la solicitud");
                   } else {
-                    print("Error al aceptar la solicitud de amistad");
+                    print("Error al agregar cliente como amigo en la lista del cliente que envió la solicitud");
                   }
+                } else {
+                  print("Error al aceptar la solicitud de amistad");
                 }
+              },
             ),
             IconButton(
               icon: Icon(Icons.close, color: Colors.red),
-                onPressed: () async {
-                  setState(() {
-                    _cliente.amigosPendientes.remove(amigoPendiente.correo);
-                  });
-                  bool exito = await GestorClientes.actualizarAmigos(
-                      _cliente.id, _cliente.amigos, _cliente.amigosPendientes);
-                  if (exito) {
-                    print("Solicitud de amistad rechazada");
-                  } else {
-                    print("Error al rechazar la solicitud de amistad");
-                  }
+              onPressed: () async {
+                setState(() {
+                  _cliente.amigosPendientes.remove(amigoPendiente.correo);
+                });
+                bool exito = await GestorClientes.actualizarAmigos(
+                    _cliente.id, _cliente.amigos, _cliente.amigosPendientes);
+                if (exito) {
+                  print("Solicitud de amistad rechazada");
+                } else {
+                  print("Error al rechazar la solicitud de amistad");
                 }
+              },
             ),
           ],
         ),
@@ -366,62 +390,15 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
+
   Widget _buildStarRating(int starCount) {
     List<Widget> stars = List.generate(
       starCount,
-          (index) => Image.asset(
-        "lib/images/6.png",
-        width: 70,
-        height: 70,
-        fit: BoxFit.cover,
-      ),
+          (index) => Icon(Icons.star, color: Colors.yellow, size: 30),
     );
 
     return Row(
       children: stars,
-    );
-  }
-
-  void _mostrarDialogoCambioNombre() {
-    TextEditingController _nombreController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Cambiar Nombre'),
-          content: TextField(
-            controller: _nombreController,
-            decoration: InputDecoration(hintText: "Nuevo nombre"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            ElevatedButton(
-              child: Text('Guardar'),
-              onPressed: () async {
-                String nuevoNombre = _nombreController.text;
-                if (nuevoNombre.isNotEmpty) {
-                  bool exito =
-                  await GestorClientes.actualizarNombreCliente(_cliente.id, nuevoNombre);
-                  if (exito) {
-                    setState(() {
-                      _cliente.nombre = nuevoNombre;
-                    });
-                    Navigator.of(context).pop(); // Cerrar el diálogo
-                  } else {
-                    // Manejar error si la actualización no fue exitosa
-                  }
-                }
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

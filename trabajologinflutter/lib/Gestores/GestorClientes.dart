@@ -13,25 +13,12 @@ class GestorClientes {
       final dynamic data = json.decode(response.body);
       print("Clientes data: $data"); // Registro de depuración
 
-      if (data is List) {
-        // Si la respuesta es una lista de clientes
-        data.forEach((item) {
-          if (item is Map<String, dynamic>) {
-            try {
-              clientes.add(Cliente.fromJson(item));
-            } catch (e) {
-              print("Error parsing client: $e");
-            }
-          } else {
-            print("Elemento de la lista no es un objeto JSON");
-          }
-        });
-      } else if (data is Map<String, dynamic>) {
+      if (data is Map<String, dynamic>) {
         // Si la respuesta es un objeto JSON que contiene los clientes
         data.forEach((key, value) {
           if (value is Map<String, dynamic>) {
             try {
-              clientes.add(Cliente.fromJson(value));
+              clientes.add(Cliente.fromJson(key, value));
             } catch (e) {
               print("Error parsing client: $e");
             }
@@ -42,7 +29,6 @@ class GestorClientes {
       } else {
         print("Respuesta del servidor en un formato no reconocido");
       }
-
 
       print("Clientes cargados: ${clientes.length}"); // Registro de depuración
       return clientes;
@@ -91,7 +77,7 @@ class GestorClientes {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
     final response = await http.patch(
       Uri.parse(url),
-      body: json.encode({'amigos': amigos, 'amigosPendientes': amigosPendientes}),
+      body: json.encode({'amigos': amigos, 'amigos_pendientes': amigosPendientes}),
     );
 
     if (response.statusCode == 200) {
@@ -102,12 +88,13 @@ class GestorClientes {
       return false;
     }
   }
+
+
   static Future<bool> actualizarCliente(String id, Cliente cliente) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
     final response = await http.patch(
       Uri.parse(url),
     );
-
     if (response.statusCode == 200) {
       print("Cliente actualizado con éxito: $id");
       return true;
@@ -132,6 +119,8 @@ class GestorClientes {
 
   static Future<bool> actualizarImagenCliente(String id, String nuevaImagenUrl) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
+    print(url);
+    print(nuevaImagenUrl);
     final response = await http.patch(
       Uri.parse(url),
       body: json.encode({'imagenUrl': nuevaImagenUrl}),
@@ -142,10 +131,12 @@ class GestorClientes {
       return true;
     } else {
       print("Error al actualizar la imagen del cliente: ${response.statusCode}");
+      print("Respuesta del servidor: ${response.body}");
       return false;
     }
   }
 
+<<<<<<< HEAD
     static Future<void> actualizarPuntosCliente(String id, String puntos) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
     final response = await http.patch(
@@ -159,6 +150,8 @@ class GestorClientes {
       print("Error al actualizar la imagen del cliente: ${response.statusCode}");
     }
   }
+=======
+>>>>>>> 8434ea30a6b1c6b6c9824830735c6b05c9c0ada6
 
 }
 
