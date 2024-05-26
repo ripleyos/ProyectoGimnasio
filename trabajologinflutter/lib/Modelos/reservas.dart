@@ -1,29 +1,28 @@
 class Reserva {
-  final String idReserva;
-  final String idMaquina;
-  final String idGimnasio;
-  final String idCliente;
-  final String intervalo;
-  final String fecha;
-
+  String id;
+  String fecha;
+  String idCliente;
+  String idGimnasio;
+  String idMaquina;
+  String intervalo;
 
   Reserva({
-    required this.idReserva,
-    required this.idMaquina,
-    required this.idGimnasio,
-    required this.idCliente,
-    required this.intervalo,
+    required this.id,
     required this.fecha,
+    required this.idCliente,
+    required this.idGimnasio,
+    required this.idMaquina,
+    required this.intervalo,
   });
 
-  factory Reserva.fromJson(Map<String, dynamic> json) {
+  factory Reserva.fromJson(String id, Map<String, dynamic> json) {
     return Reserva(
-      idReserva: json['id_reserva'] ?? '',
-      idMaquina: json['id_maquina'] ?? '',
-      idGimnasio: json['id_gimnasio'] ?? '',
+      id: id,
+      fecha: json['fecha'],
       idCliente: json['id_cliente'],
-      intervalo: json['intervalo'] ?? '',
-      fecha: json['fecha'] ?? '',
+      idGimnasio: json['id_gimnasio'],
+      idMaquina: json['id_maquina'],
+      intervalo: json['intervalo'],
     );
   }
 }

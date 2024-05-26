@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:trabajologinflutter/Gestores/GestorClientes.dart';
 import 'package:trabajologinflutter/Gestores/GestorReserva.dart';
 import 'package:trabajologinflutter/Gestores/GestorMaquina.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
@@ -57,6 +58,7 @@ Future<void> inicializarDatos() async {
   List<String> filteredOptions = [];
   GestionReservas gestionReservas = GestionReservas();
   GestionMaquinas gestionMaquinas = GestionMaquinas();
+  GestorClientes gestionClientes = GestorClientes();
   List<RepeticionData> numRepeticionesSeleccionadas = [];
 
   Future<void> tienesGym() async {
@@ -81,51 +83,99 @@ Future<void> inicializarDatos() async {
     }
   }
 
-  Future<void> cargarReservas() async {
-    try {
-      List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
-      setState(() {
-        reservas = reservasCargadas;
-        ajustarNumRepeticion(); // Ajustar el número de repeticiones después de cargar las reservas
-      });
-    } catch (error) {
-      print('Error al cargar las reservas paco: $error');
-    }
-  }
+Future<void> cargarReservas() async {
+  try {
+    List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
+    setState(() {
+      reservas = reservasCargadas;
+      ajustarNumRepeticion(); 
 
-  Future<void> cargarMaquinas() async {
-    try {
-      List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinas();
-      setState(() {
-        maquinas = maquinasCargadas;
-        maquinasMostrar = maquinas.map((maquina) => maquina.nombre).toList();
-        nombreToIdMaquina = {for (var maquina in maquinas) maquina.nombre: maquina.idMaquina};
-      });
-    } catch (error) {
-      print('Error al cargar las máquinas: $error');
-    }
-  }
-    Future<void> eliminarReservasAntiguas() async {
-    var now = DateTime.now();
-    var formatter = DateFormat('dd/MM/yyyy');
-
-    for (var reserva in reservas) {
-      var fechaReserva = formatter.parse(reserva.fecha);
-      if (fechaReserva.isBefore(now) ||
-          (fechaReserva.isAtSameMomentAs(now) && 
-           reserva.intervalo.split(' - ')[1].compareTo(DateFormat('HH:mm').format(now)) <= 0)) {
-        await gestionReservas.eliminarReservaExterna(reserva.idReserva);
+      
+      for (var reserva in reservas) {
+        print('Reserva cargada: ${reserva.id}, Fecha: ${reserva.fecha}, Cliente: ${reserva.idCliente}');
       }
-    }
-
-
-    await cargarReservas();
+    });
+  } catch (error) {
+    print('Error al cargar las reservas paco: $error');
   }
+}
+
+
+Future<void> cargarMaquinas() async {
+  try {
+    List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinas();
+    setState(() {
+      maquinas = maquinasCargadas.where((maquina) => maquina.idGimnasio == cliente.idgimnasio).toList();
+      maquinasMostrar = maquinas.map((maquina) => maquina.nombre).toList();
+      nombreToIdMaquina = {for (var maquina in maquinas) maquina.nombre: maquina.idMaquina};
+    });
+  } catch (error) {
+    print('Error al cargar las máquinas: $error');
+  }
+}
+Future<void> eliminarReservasAntiguas() async {
+  GestorClientes.cargarClientes;
+  var now = DateTime.now();
+  var formatter = DateFormat('dd/MM/yyyy');
+  var nowFormatted = DateFormat('HH:mm').format(now);
+
+
+  var reservasClienteActual = reservas.where((reserva) => reserva.idCliente == cliente.correo).toList();
+
+  for (var reserva in reservasClienteActual) {
+    var fechaReserva = formatter.parse(reserva.fecha);
+    var intervaloFin = reserva.intervalo.split(' - ')[1];
+    var fechaHoraReserva = DateTime(
+      fechaReserva.year,
+      fechaReserva.month,
+      fechaReserva.day,
+      int.parse(intervaloFin.split(':')[0]), 
+      int.parse(intervaloFin.split(':')[1])
+    );
+
+    if (fechaHoraReserva.isBefore(now)) {
+      print("Eliminando reserva con ID: ${reserva.id}");
+
+
+      var maquinaAsociada = maquinas.firstWhere((maquina) => maquina.idMaquina == reserva.idMaquina);
+      if (maquinaAsociada != null) {
+
+        int puntosAAgregar = 0;
+        if (maquinaAsociada.tipo == "fuerza") {
+          puntosAAgregar = 100;
+        } else if (maquinaAsociada.tipo == "resistencia") {
+          puntosAAgregar = 50;
+        }
+
+
+        Cliente clienteAsociado = cliente;
+
+        
+        int kcalActual = int.parse(clienteAsociado.kcalMensual);
+        int kcalNueva = kcalActual + puntosAAgregar;
+        String nuevaKcal = kcalNueva.toString();
+
+       
+        await GestorClientes.actualizarPuntosCliente(clienteAsociado.id, nuevaKcal);
+      } else {
+        print("Error: No se pudo encontrar la máquina asociada a esta reserva");
+      }
+
+      
+      await gestionReservas.eliminarReservaExterna(reserva.id);
+    }
+  }
+
+ 
+  await cargarReservas();
+}
+
+
+
   void ajustarNumRepeticion() {
-    // Obtener el número de reservas actuales del cliente
+   
     int reservasActuales = reservas.where((reserva) => reserva.idCliente == cliente.correo).length;
 
-    // Ajustar la lista de números de repeticiones según el número de reservas actuales
     setState(() {
       numRepeticion = List.generate(12 - reservasActuales, (index) => (index + 1).toString());
     });
@@ -141,7 +191,6 @@ Future<void> inicializarDatos() async {
       String selectedDate = repeticionData.fechaSeleccionada!.split(' ')[0];
       String ahora = DateFormat('dd/MM/yyyy').format(today);
 
-      // Solo filtrar si la fecha seleccionada es igual al día actual
       if (selectedDate == ahora) {
         for (String interval in options1) {
           String intervalStart = interval.split(' - ')[0];
@@ -170,10 +219,11 @@ Future<void> inicializarDatos() async {
       Set<String> intervalosAEliminar = {};
 
       for (Reserva reserva in reservas) {
-        if (reserva.idMaquina == repeticionData.idMaquinaSeleccionada && reserva.fecha == repeticionData.fechaSeleccionada) {
+        if (reserva.idMaquina == repeticionData.idMaquinaSeleccionada && reserva.fecha == repeticionData.fechaSeleccionada &&
+      reserva.idGimnasio == cliente.idgimnasio) {
           intervalosAEliminar.addAll(reserva.intervalo.split(','));
         }
-      }
+      } 
 
       List<String> opcionesFiltradas = repeticionData.filteredOptions.where((intervalo) => !intervalosAEliminar.contains(intervalo)).toSet().toList();
       setState(() {
@@ -186,7 +236,9 @@ Future<void> inicializarDatos() async {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        
         body: Center(
+          
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -315,11 +367,11 @@ Future<void> inicializarDatos() async {
                 ElevatedButton(
                   onPressed: () {
                     for (var repeticionData in numRepeticionesSeleccionadas) {
-                      String? intervalo = repeticionData.intervaloSeleccion;
-                      String fecha = repeticionData.fechaSeleccionada!;
-                      String clienteId = cliente.correo;
-                      String reservaId = Uuid().v4();
-                      gestionReservas.insertarReservaExterna(reservaId, repeticionData.idMaquinaSeleccionada!, gymId!, clienteId, intervalo!, fecha);
+                    String? intervalo = repeticionData.intervaloSeleccion;
+                    String fecha = repeticionData.fechaSeleccionada!;
+                    String clienteId = cliente.correo;
+                    gestionReservas.insertarReservaExterna(repeticionData.idMaquinaSeleccionada!, "1", clienteId, intervalo!, fecha);
+
                     }
                     cargarReservas();
                   },
