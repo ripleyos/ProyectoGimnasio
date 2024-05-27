@@ -6,6 +6,7 @@ import 'package:trabajologinflutter/Pages/PerfilPage.dart';
 import 'package:trabajologinflutter/Pages/SettingsPage.dart';
 import 'package:trabajologinflutter/Pages/estadisticas_page.dart';
 import 'package:trabajologinflutter/Pages/reserva_page.dart';
+import 'package:trabajologinflutter/Pages/modificacion_page.dart';
 
 class MainPage extends StatefulWidget {
   final Cliente cliente;
@@ -22,7 +23,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
-      ReservaPage(cliente:widget.cliente,),
+      ModificacionReservaPage(cliente:widget.cliente,),
       PerfilPage(cliente: widget.cliente,),
       EstadisticasPage(cliente: widget.cliente,),
       SettingsPage(cliente: widget.cliente,),

@@ -136,7 +136,6 @@ class GestorClientes {
     }
   }
 
-<<<<<<< HEAD
     static Future<void> actualizarPuntosCliente(String id, String puntos) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
     final response = await http.patch(
@@ -150,8 +149,6 @@ class GestorClientes {
       print("Error al actualizar la imagen del cliente: ${response.statusCode}");
     }
   }
-=======
->>>>>>> 8434ea30a6b1c6b6c9824830735c6b05c9c0ada6
 
 }
 

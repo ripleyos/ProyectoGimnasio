@@ -76,7 +76,6 @@ Future<void> inicializarDatos() async {
     }
   }
 
-<<<<<<< HEAD
 Future<void> cargarReservas() async {
   try {
     List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
@@ -157,17 +156,6 @@ Future<void> eliminarReservasAntiguas() async {
 
       
       await gestionReservas.eliminarReservaExterna(reserva.id);
-=======
-  Future<void> cargarReservas() async {
-    try {
-      List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
-      setState(() {
-        reservas = reservasCargadas;
-        ajustarNumRepeticion();
-      });
-    } catch (error) {
-      print('Error al cargar las reservas paco: $error');
->>>>>>> 8434ea30a6b1c6b6c9824830735c6b05c9c0ada6
     }
   }
 
@@ -376,8 +364,10 @@ Future<void> eliminarReservasAntiguas() async {
                     String fecha = repeticionData.fechaSeleccionada!;
                     String clienteId = cliente.correo;
                     gestionReservas.insertarReservaExterna(repeticionData.idMaquinaSeleccionada!, "1", clienteId, intervalo!, fecha);
-
+                    numRepeticionSeleccion = null;
                     }
+                    numRepeticionSeleccion = null; // Reiniciar el valor de numRepeticionSeleccion
+                    numRepeticionesSeleccionadas.clear(); // Limpiar la lista de repeticionData
                     cargarReservas();
                   },
                   child: Text('Confirmar selección'),

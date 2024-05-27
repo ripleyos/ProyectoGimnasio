@@ -1,7 +1,7 @@
 class Maquina {
   final String idMaquina;
   final String idGimnasio;
-  final String met;
+  final String localizacion;
   final String marca;
   final String nombre;
   final String tipo;
@@ -10,7 +10,7 @@ class Maquina {
   Maquina({
     required this.idMaquina,
     required this.idGimnasio,
-    required this.met,
+    required this.localizacion,
     required this.marca,
     required this.nombre,
     required this.tipo,
@@ -20,7 +20,7 @@ class Maquina {
     return Maquina(
       idMaquina: json['id_maquina'] ?? 0,
       idGimnasio: json['id_gimnasio'] ?? 0,
-      met: json['met'] ?? 0,
+      localizacion: json['localizacion'] ?? 0,
       marca: json['marca'] ?? '',
       nombre: json['nombre'] ?? '',
       tipo: json['tipo'] ?? '',
