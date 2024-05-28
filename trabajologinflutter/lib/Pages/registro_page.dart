@@ -259,7 +259,7 @@ class _RegistroPageState extends State<RegistroPage> {
     final String imageUrl = ""; // Se establece la URL de la imagen en vacío
 
     // Aquí debes establecer el idgimnasio y el objetivomensual según tu lógica de negocio
-    final String idgimnasio = "1"; // Por ejemplo, se establece el idgimnasio en "1"
+    final String idgimnasio = "0"; // Por ejemplo, se establece el idgimnasio en "1"
     final String objetivomensual = "5000"; // Por ejemplo, se establece el objetivomensual en "0"
 
     // Sube la imagen a Firebase Storage si es necesario

@@ -156,7 +156,7 @@ class _PerfilPageState extends State<PerfilPage> {
                 email = value.trim();
               },
               decoration: InputDecoration(
-                hintText: 'Buscar amigos...',
+                hintText: 'Introduce el email de tu amigo',
                 hintStyle: TextStyle(color: Colors.white70),
                 border: InputBorder.none,
               ),
@@ -313,13 +313,27 @@ class _PerfilPageState extends State<PerfilPage> {
           'Peso: ${amigo.peso} - Altura: ${amigo.altura}',
           style: TextStyle(fontSize: 18),
         ),
-        trailing: Icon(Icons.more_vert, color: Colors.deepOrange),
-        onTap: () {
-          // Acción al hacer clic en un amigo de la lista
-        },
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.delete, color: Colors.red),
+              onPressed: () {
+                _showEliminarAmigoDialog(context, amigo);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.more_vert, color: Colors.deepOrange),
+              onPressed: () {
+                _showAmigoDetalleDialog(context, amigo);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
+
 
   Widget _buildAmigoPendienteCard(Cliente amigoPendiente) {
     return Card(
@@ -389,12 +403,92 @@ class _PerfilPageState extends State<PerfilPage> {
       ),
     );
   }
+  void _showAmigoDetalleDialog(BuildContext context, Cliente amigo) {
+    int estrellas = int.parse(amigo.estrellas);
+    Color backgroundColor;
+    String message;
+
+    if (estrellas >= 1 && estrellas <= 3) {
+      backgroundColor = Colors.brown[600]!;
+      message = "${amigo.nombre} está empezando su aventura en el gimnasio, tiene $estrellas estrellas.";
+    } else if (estrellas >= 4 && estrellas <= 8) {
+      backgroundColor = Colors.grey[300]!;
+      message = "${amigo.nombre} sabe lo que se hace, ya tiene $estrellas estrellas.";
+    } else if (estrellas > 8) {
+      backgroundColor = Colors.amber[300]!;
+      message = "${amigo.nombre} es un veterano del gimnasio, tiene $estrellas estrellas.";
+    } else {
+      backgroundColor = Colors.white;
+      message = "${amigo.nombre} tiene $estrellas estrellas.";
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          title: Text('Detalle del Amigo'),
+          content: Text(
+            message,
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cerrar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showEliminarAmigoDialog(BuildContext context, Cliente amigo) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Eliminar Amigo'),
+          content: Text('¿Seguro que quieres eliminar de amigos a ${amigo.nombre}?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                setState(() {
+                  _cliente.amigos.remove(amigo.correo);
+                });
+                bool exito = await GestorClientes.actualizarAmigos(
+                    _cliente.id, _cliente.amigos, _cliente.amigosPendientes);
+                if (exito) {
+                  print("Amigo eliminado");
+                } else {
+                  print("Error al eliminar al amigo");
+                }
+              },
+              child: Text('Eliminar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 
 
   Widget _buildStarRating(int starCount) {
     List<Widget> stars = List.generate(
       starCount,
-          (index) => Icon(Icons.star, color: Colors.yellow, size: 30),
+          (index) => Icon(Icons.grade, color: Colors.redAccent, size: 30),
     );
 
     return Row(

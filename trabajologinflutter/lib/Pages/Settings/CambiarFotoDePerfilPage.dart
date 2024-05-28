@@ -22,6 +22,8 @@ class _CambiarFotoDePerfilPageState extends State<CambiarFotoDePerfilPage> {
     'https://i.psnprofiles.com/avatars/m/G9181b4325.png',
     'https://i.psnprofiles.com/avatars/m/Gd6b182a3d.png',
     'https://i.psnprofiles.com/avatars/m/Gdd8c162c6.png',
+    'https://i.psnprofiles.com/avatars/s/Ge0975cb41.png',
+    'https://i.psnprofiles.com/avatars/m/Gcb72c418d.png'
   ];
 
   @override
@@ -94,6 +96,7 @@ class _CambiarFotoDePerfilPageState extends State<CambiarFotoDePerfilPage> {
   void _updateProfilePicture(BuildContext context, String imageUrl) async {
     print("Intentando actualizar imagen a: $imageUrl");
     print(_cliente.id);
+    _cliente.imagenUrl=imageUrl;
     bool result = await GestorClientes.actualizarImagenCliente(_cliente.id, imageUrl);
     if (result) {
       _showSuccessDialog(context);
