@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SupportPage extends StatefulWidget {
   @override
@@ -40,21 +41,29 @@ class _SupportPageState extends State<SupportPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 8.0),
-                  Text(
-                    'javierzamora@elcampico.org',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: () => _launchEmail(),
+                    child: Text(
+                      'javierzamora@elcampico.org',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                   SizedBox(height: 8.0),
-                  Text(
-                    'sergiovera@elcampico.org',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: () => _launchEmail(),
+                    child: Text(
+                      'sergiovera@elcampico.org',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ],
@@ -78,21 +87,29 @@ class _SupportPageState extends State<SupportPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 8.0),
-                  Text(
-                    '644 468 368',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: () => launch("tel:+34644468368"),
+                    child: Text(
+                      '644 468 368',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                   SizedBox(height: 8.0),
-                  Text(
-                    '653 572 312',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+                  GestureDetector(
+                    onTap: () => launch("tel:+34653572312"),
+                    child: Text(
+                      '653 572 312',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ],
@@ -116,9 +133,15 @@ class _SupportPageState extends State<SupportPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 8.0),
-                  _buildDiscordProfile('Javigum1', '@javigum1'),
+                  GestureDetector(
+                    onTap: () => _launchDiscord(),
+                    child: _buildDiscordProfile('Javigum1', '@javigum1', 'https://image.emojisky.com/845/493845-middle.png'),
+                  ),
                   SizedBox(height: 8.0),
-                  _buildDiscordProfile('Montesino', '@montesino'),
+                  GestureDetector(
+                    onTap: () => _launchDiscord(),
+                    child: _buildDiscordProfile('Montesino', '@montesino', 'https://content.imageresizer.com/images/memes/crying-wojak-mask-meme-3.jpg'),
+                  ),
                 ],
               ),
             ),
@@ -126,6 +149,24 @@ class _SupportPageState extends State<SupportPage> {
         ),
       ),
     );
+  }
+
+  void _launchEmail() async {
+    const email = 'mailto:javierzamora@elcampico.org,sergiovera@elcampico.org';
+    if (await canLaunch(email)) {
+      await launch(email);
+    } else {
+      throw 'Could not launch $email';
+    }
+  }
+
+  void _launchDiscord() async {
+    const url = 'https://discord.com/';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget _buildSupportOption(BuildContext context, {required IconData icon, required String title, required String description, required VoidCallback onTap, required bool isExpanded, required Widget expandedContent}) {
@@ -182,12 +223,11 @@ class _SupportPageState extends State<SupportPage> {
     );
   }
 
-  Widget _buildDiscordProfile(String name, String username) {
+  Widget _buildDiscordProfile(String name, String username, String avatarUrl) {
     return Row(
       children: [
         CircleAvatar(
-          // Aquí puedes colocar las imágenes de perfil si las tienes
-          backgroundColor: Colors.grey, // Colocamos un color gris por defecto
+          backgroundImage: NetworkImage(avatarUrl),
           radius: 20,
         ),
         SizedBox(width: 12.0),

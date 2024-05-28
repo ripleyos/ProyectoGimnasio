@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:trabajologinflutter/Pages/Settings/CambiarFotoDePerfilPage.dart';
 import 'package:trabajologinflutter/Pages/SupportPage.dart';
 import 'package:trabajologinflutter/Pages/login_page.dart';
-import '../Gestores/GestorClientes.dart';
 import '../Modelos/Cliente.dart';
 import '../services/auth_service.dart';
 
@@ -23,8 +22,11 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _cliente = widget.cliente;
-    Firebase.initializeApp();
+    Firebase.initializeApp().whenComplete(() {
+      print("completed");
+      _cliente=widget.cliente;
+      setState(() {});
+    });
   }
 
   @override
@@ -109,7 +111,15 @@ class _SettingsPageState extends State<SettingsPage> {
           icon: Icons.lock,
           title: 'Cambiar Contraseña',
           onTap: () {
-            // Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordPage()));
+            _authService.sendPasswordResetEmail(_cliente.correo).then((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Correo de restablecimiento de contraseña enviado")),
+              );
+            }).catchError((error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Error al enviar el correo de restablecimiento: $error")),
+              );
+            });
           },
         ),
         _buildAccountOption(
@@ -117,8 +127,11 @@ class _SettingsPageState extends State<SettingsPage> {
           icon: Icons.delete,
           title: 'Eliminar Cuenta',
           onTap: () {
-            _authService.sendPasswordResetEmail(_cliente.correo);
-            _showPasswordDialog(context);
+            try {
+              _authService.sendPasswordResetEmail(_cliente.correo);
+            } catch (e) {
+              print(e);
+            }
           },
         ),
         _buildAccountOption(
