@@ -52,6 +52,55 @@ Future<void> inicializarDatos() async {
     '19:00 - 19:15', '19:15 - 19:30', '19:30 - 19:45', '19:45 - 20:00',
     '20:00 - 20:15', '20:15 - 20:30',
   ];
+
+  List<String> options2 = [
+  '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+  '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+  '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+  '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+  '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+  '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+  '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+  '15:00 - 15:15', '15:15 - 15:30', '15:30 - 15:45', '15:45 - 16:00',
+  '16:00 - 16:15', '16:15 - 16:30',
+];
+
+List<String> options3 = [
+  '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+  '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+  '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+  '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+  '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+  '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+  '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+  '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+];
+
+List<String> options4 = [
+  '6:00 - 6:15', '6:15 - 6:30', '6:30 - 6:45', '6:45 - 7:00',
+  '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+  '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+  '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+  '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+  '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+  '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+  '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+  '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+];
+
+List<String> options5 = [
+  '5:00 - 5:15', '5:15 - 5:30', '5:30 - 5:45', '5:45 - 6:00',
+  '6:00 - 6:15', '6:15 - 6:30', '6:30 - 6:45', '6:45 - 7:00',
+  '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+  '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+  '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+  '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+  '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+  '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+  '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+  '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+];
+
   List<String> maquinasMostrar = ["q"];
   List<String> numRepeticion = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   Map<String, String> nombreToIdMaquina = {};
@@ -175,37 +224,60 @@ Future<void> eliminarReservasAntiguas() async {
   }
 
   void filtrarOpciones(RepeticionData repeticionData) {
-    var today = DateTime.now();
-    var oneHourLater = today.add(Duration(hours: 1));
-    var formatter = DateFormat('HH:mm');
-    repeticionData.filteredOptions.clear();
+  var today = DateTime.now();
+  var oneHourLater = today.add(Duration(hours: 1));
+  var formatter = DateFormat('HH:mm');
+  repeticionData.filteredOptions.clear();
 
-    if (repeticionData.fechaSeleccionada != null) {
-      String selectedDate = repeticionData.fechaSeleccionada!.split(' ')[0];
-      String ahora = DateFormat('dd/MM/yyyy').format(today);
+  List<String> options;
 
-      if (selectedDate == ahora) {
-        for (String interval in options1) {
-          String intervalStart = interval.split(' - ')[0];
-          var intervalStartDateTime = formatter.parse(intervalStart);
+  switch (cliente.idgimnasio) {
+    case '1':
+      options = options1;
+      break;
+    case '2':
+      options = options2;
+      break;
+    case '3':
+      options = options3;
+      break;
+    case '4':
+      options = options4;
+      break;
+    case '5':
+      options = options5;
+      break;
+    default:
+      options = options1; // O una lista vacía o alguna lista predeterminada.
+      break;
+  }
 
-          if (intervalStartDateTime.hour > oneHourLater.hour ||
-              (intervalStartDateTime.hour == oneHourLater.hour &&
-                  intervalStartDateTime.minute > oneHourLater.minute)) {
-            repeticionData.filteredOptions.add(interval);
-          }
-        }
-      } else {
-        for (String interval in options1) {
+  if (repeticionData.fechaSeleccionada != null) {
+    String selectedDate = repeticionData.fechaSeleccionada!.split(' ')[0];
+    String ahora = DateFormat('dd/MM/yyyy').format(today);
+
+    if (selectedDate == ahora) {
+      for (String interval in options) {
+        String intervalStart = interval.split(' - ')[0];
+        var intervalStartDateTime = formatter.parse(intervalStart);
+
+        if (intervalStartDateTime.hour > oneHourLater.hour ||
+            (intervalStartDateTime.hour == oneHourLater.hour &&
+                intervalStartDateTime.minute > oneHourLater.minute)) {
           repeticionData.filteredOptions.add(interval);
         }
       }
     } else {
-      for (String interval in options1) {
+      for (String interval in options) {
         repeticionData.filteredOptions.add(interval);
       }
     }
+  } else {
+    for (String interval in options) {
+      repeticionData.filteredOptions.add(interval);
+    }
   }
+}
 
   void filtrarReservas(RepeticionData repeticionData) {
     if (repeticionData.idMaquinaSeleccionada != null && repeticionData.fechaSeleccionada != null) {
@@ -358,17 +430,55 @@ Future<void> eliminarReservasAntiguas() async {
                   );
                 }).toList(),
                 ElevatedButton(
-                  onPressed: () {
-                    for (var repeticionData in numRepeticionesSeleccionadas) {
-                    String? intervalo = repeticionData.intervaloSeleccion;
-                    String fecha = repeticionData.fechaSeleccionada!;
-                    String clienteId = cliente.correo;
-                    gestionReservas.insertarReservaExterna(repeticionData.idMaquinaSeleccionada!, "1", clienteId, intervalo!, fecha);
-                    numRepeticionSeleccion = null;
+                  onPressed: () async {
+                    // Verificar si hay duplicados en numRepeticionesSeleccionadas
+                    bool hayDuplicados = false;
+
+                    for (int i = 0; i < numRepeticionesSeleccionadas.length; i++) {
+                      for (int j = i + 1; j < numRepeticionesSeleccionadas.length; j++) {
+                        if (numRepeticionesSeleccionadas[i].idMaquinaSeleccionada == numRepeticionesSeleccionadas[j].idMaquinaSeleccionada &&
+                            numRepeticionesSeleccionadas[i].fechaSeleccionada == numRepeticionesSeleccionadas[j].fechaSeleccionada &&
+                            numRepeticionesSeleccionadas[i].intervaloSeleccion == numRepeticionesSeleccionadas[j].intervaloSeleccion) {
+                          hayDuplicados = true;
+                          break;
+                        }
+                      }
+                      if (hayDuplicados) break;
                     }
-                    numRepeticionSeleccion = null; // Reiniciar el valor de numRepeticionSeleccion
-                    numRepeticionesSeleccionadas.clear(); // Limpiar la lista de repeticionData
-                    cargarReservas();
+
+                    if (hayDuplicados) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Advertencia'),
+                            content: Text('Hay duplicados en las reservas seleccionadas. Por favor, revisa los datos.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Aceptar'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      for (var repeticionData in numRepeticionesSeleccionadas) {
+                        String? intervalo = repeticionData.intervaloSeleccion;
+                        String fecha = repeticionData.fechaSeleccionada!;
+                        String clienteId = cliente.correo;
+                        await gestionReservas.insertarReservaExterna(repeticionData.idMaquinaSeleccionada!, "1", clienteId, intervalo!, fecha);
+                      }
+
+                      setState(() {
+                        numRepeticionSeleccion = null; // Reiniciar el valor de numRepeticionSeleccion
+                        numRepeticionesSeleccionadas.clear(); // Limpiar la lista de repeticionData
+                      });
+
+                      await cargarReservas(); // Recargar las reservas
+                    }
                   },
                   child: Text('Confirmar selección'),
                 ),

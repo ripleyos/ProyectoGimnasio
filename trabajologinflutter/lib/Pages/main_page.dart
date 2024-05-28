@@ -23,7 +23,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
-      ModificacionReservaPage(cliente:widget.cliente,),
+      ReservaPage(cliente:widget.cliente,),
       PerfilPage(cliente: widget.cliente,),
       EstadisticasPage(cliente: widget.cliente,),
       SettingsPage(cliente: widget.cliente,),
