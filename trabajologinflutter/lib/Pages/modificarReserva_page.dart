@@ -114,7 +114,7 @@ void filtrarOpciones(DateTime? selectedDate) {
 
     Future<void> cargarMaquinas() async {
       try {
-        List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinas();
+        List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinasExterna();
         setState(() {
           maquinas = maquinasCargadas
               .where((maquina) => maquina.idGimnasio == cliente.idgimnasio)

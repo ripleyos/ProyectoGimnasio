@@ -8,7 +8,6 @@ import 'package:trabajologinflutter/Modelos/RepeticionData.dart';
 import 'package:trabajologinflutter/Modelos/reservas.dart';
 import '../Modelos/maquinas.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trabajologinflutter/Pages/mapa_page.dart';
 import 'package:uuid/uuid.dart';
 
 class ReservaPage extends StatefulWidget {
@@ -145,7 +144,7 @@ Future<void> cargarReservas() async {
 
 Future<void> cargarMaquinas() async {
   try {
-    List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinas();
+    List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinasExterna();
     setState(() {
       maquinas = maquinasCargadas.where((maquina) => maquina.idGimnasio == cliente.idgimnasio).toList();
       maquinasMostrar = maquinas.map((maquina) => maquina.nombre).toList();

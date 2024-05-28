@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:trabajologinflutter/Pages/registroGoogle_page.dart';
+import 'package:trabajologinflutter/Pages/seleccionGym_page.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
 import 'package:trabajologinflutter/Gestores/GestorClientes.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
@@ -99,10 +100,17 @@ class _LoginPageState extends State<LoginPage> {
             try {
               Cliente? cliente = await GestorClientes.buscarClientePorEmail(user!.email.toString());
               if (cliente != null) {
+                if(cliente.idgimnasio != "0"){
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => MainPage(cliente: cliente)),
                 );
+                }else{
+                  Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => GymPage(cliente: cliente)),
+                );
+                }
               } else {
                 print('Cliente no encontrado');
               }
@@ -130,10 +138,17 @@ class _LoginPageState extends State<LoginPage> {
       try {
         Cliente? cliente = await GestorClientes.buscarClientePorEmail(email);
         if (cliente != null) {
+          if(cliente.idgimnasio !="0"){
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => MainPage(cliente: cliente)),
           );
+          }else{
+            Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => GymPage(cliente: cliente)),
+          );
+          }
         } else {
           print('Cliente no encontrado');
         }

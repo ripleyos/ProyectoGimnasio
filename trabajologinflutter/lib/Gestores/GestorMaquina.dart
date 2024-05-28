@@ -5,7 +5,7 @@ import '../Modelos/maquinas.dart';
 
 class GestionMaquinas {
 
-Future<List<Maquina>> cargarMaquinas() async {
+Future<List<Maquina>> cargarMaquinasExterna() async {
   final response = await http.get(Uri.parse(
       'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/maquinas.json'));
   if (response.statusCode == 200) {
@@ -25,7 +25,29 @@ Future<List<Maquina>> cargarMaquinas() async {
   }
     return [];
 }
+Future<List<Maquina>> cargarMaquinas(String gimnasioId) async {
+  final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/maquinas.json';
+  final response = await http.get(Uri.parse(url));
 
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> data = json.decode(response.body);
+    List<Maquina> maquinas = [];
+
+    data.forEach((key, value) {
+      if (value is Map<String, dynamic>) {
+        Maquina maquina = Maquina.fromJson(value);
+        if (maquina.idGimnasio == gimnasioId) {
+          maquinas.add(maquina);
+        }
+      }
+    });
+
+    return maquinas;
+  } else {
+    print('Error al cargar las máquinas: ${response.statusCode}');
+  }
+  return [];
+}
   /*Future<void> eliminarMaquina() async {
     final String url =
         'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/maquinas.json';

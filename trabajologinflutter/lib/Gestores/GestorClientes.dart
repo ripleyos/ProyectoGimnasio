@@ -149,6 +149,18 @@ class GestorClientes {
       print("Error al actualizar la imagen del cliente: ${response.statusCode}");
     }
   }
+      static Future<void> actualizarGymCliente(String id, String id_gimnasio) async {
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
+    final response = await http.patch(
+      Uri.parse(url),
+      body: json.encode({'idgimnasio': id_gimnasio}),
+    );
 
+    if (response.statusCode == 200) {
+      print("Imagen del cliente actualizada con éxito: $id");
+    } else {
+      print("Error al actualizar la imagen del cliente: ${response.statusCode}");
+    }
+  }
 }
 
