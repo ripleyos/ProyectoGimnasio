@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:trabajologinflutter/Gestores/GestorClientes.dart';
 
 import '../Modelos/Cliente.dart';
 import '../Widgets/EstadisticaItem.dart';
@@ -7,33 +8,61 @@ import '../Widgets/EstadisticaItem.dart';
 class EstadisticasPage extends StatefulWidget {
   final Cliente cliente;
   EstadisticasPage({required this.cliente});
+
   @override
   _EstadisticasPageState createState() => _EstadisticasPageState();
 }
 
 class _EstadisticasPageState extends State<EstadisticasPage> {
   late Cliente _cliente;
+  Map<String, int> amigosCalorias = {};
+
   @override
   void initState() {
     super.initState();
     _cliente = widget.cliente;
+    _cargarCaloriasAmigos();
   }
-  int objetivoMensual = 5000;
 
+  Future<void> _cargarCaloriasAmigos() async {
+    for (String correo in _cliente.amigos) {
+      Cliente? amigo = await GestorClientes.buscarClientePorEmail(correo);
+      if (amigo != null) {
+        setState(() {
+          amigosCalorias[amigo.nombre] = int.parse(amigo.kcalMensual);
+        });
+      }
+    }
+  }
+
+  Future<void> _guardarObjetivoMensual() async {
+    bool actualizado = await GestorClientes.actualizarCliente(
+      _cliente.id,
+      objetivomensual: _cliente.objetivomensual,
+    );
+
+    if (actualizado) {
+      print("Objetivo mensual guardado con éxito.");
+    } else {
+      print("Error al guardar el objetivo mensual.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Estadísticas'),
-      ),
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
+              colors: [
+                Color(0xFF2A0000),
+                Color(0xFF460303),
+                Color(0xFF730000),
+                Color(0xFFA80000),
+              ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.blue[200]!, Colors.blue[800]!],
             ),
           ),
           padding: EdgeInsets.all(20),
@@ -41,12 +70,8 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Estadisticas de '+_cliente.nombre,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
                 SizedBox(height: 20),
-                _buildPieChart(),
+                _buildPieChartAmigos(),
                 SizedBox(height: 20),
                 EstadisticaItem(
                   titulo: 'Tus Calorías',
@@ -54,15 +79,31 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
                   icono: Icons.person,
                 ),
                 SizedBox(height: 10),
-                EstadisticaItem(
-                  titulo: 'Calorías de tus Amigos',
-                  valor: 2500,
-                  icono: Icons.group,
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ExpansionTile(
+                    title: Text('Calorías de tus Amigos'),
+                    children: amigosCalorias.entries.map((entry) {
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                        child: EstadisticaItem(
+                          titulo: entry.key,
+                          valor: entry.value,
+                          icono: Icons.group,
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 20),
+                _buildPieChartObjetivo(),
+                SizedBox(height: 20),
                 EstadisticaItem(
                   titulo: 'Objetivo Mensual',
-                  valor: objetivoMensual,
+                  valor: int.parse(_cliente.objetivomensual),
                   icono: Icons.calendar_today,
                   onTap: _ajustarObjetivoMensual,
                 ),
@@ -75,7 +116,35 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
     );
   }
 
-  Widget _buildPieChart() {
+  Widget _buildPieChartAmigos() {
+    List<PieChartSectionData> sections = [
+      PieChartSectionData(
+        color: Colors.blue,
+        value: double.parse(_cliente.kcalMensual),
+        title: 'Tú',
+      ),
+    ];
+
+    amigosCalorias.forEach((nombre, kcal) {
+      sections.add(PieChartSectionData(
+        color: _getColorForAmigo(),
+        value: kcal.toDouble(),
+        title: nombre,
+      ));
+    });
+
+    return SizedBox(
+      width: 200,
+      height: 200,
+      child: PieChart(
+        PieChartData(
+          sections: sections,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPieChartObjetivo() {
     return SizedBox(
       width: 200,
       height: 200,
@@ -88,14 +157,19 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
               title: 'Tú',
             ),
             PieChartSectionData(
-              color: Colors.green,
-              value: 2500,
-              title: 'Amigos',
+              color: Colors.red,
+              value: double.parse(_cliente.objetivomensual),
+              title: 'Objetivo Mensual',
             ),
           ],
         ),
       ),
     );
+  }
+
+  Color _getColorForAmigo() {
+    List<Color> colors = [Colors.green, Colors.yellow, Colors.orange, Colors.purple, Colors.cyan];
+    return colors[amigosCalorias.length % colors.length];
   }
 
   void _ajustarObjetivoMensual() {
@@ -108,7 +182,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
             keyboardType: TextInputType.number,
             onChanged: (value) {
               setState(() {
-                objetivoMensual = int.tryParse(value) ?? objetivoMensual;
+                _cliente.objetivomensual = value;
               });
             },
             decoration: InputDecoration(
@@ -123,7 +197,8 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
               child: Text('Cancelar'),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                await _guardarObjetivoMensual();
                 Navigator.pop(context);
               },
               child: Text('Guardar'),
@@ -134,4 +209,3 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
     );
   }
 }
-

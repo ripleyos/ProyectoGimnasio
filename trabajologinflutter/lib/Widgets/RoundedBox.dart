@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RoundedBox extends StatelessWidget {
-  final VoidCallback? onTap;
   final Color color;
+  final Function()? onTap;
+  final Widget child;
 
-  const RoundedBox({Key? key, this.onTap, required this.color}) : super(key: key);
+  RoundedBox({required this.color, this.onTap, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -13,15 +14,10 @@ class RoundedBox extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: color, // Color de fondo de las ventanas
-          borderRadius: BorderRadius.circular(20.0), // Bordes redondos
+          color: color,
+          borderRadius: BorderRadius.circular(10.0),
         ),
-        child: Center(
-          child: Text(
-            'Ventana',
-            style: TextStyle(color: Colors.white, fontSize: 20.0),
-          ),
-        ),
+        child: child,
       ),
     );
   }

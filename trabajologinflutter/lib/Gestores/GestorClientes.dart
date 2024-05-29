@@ -90,20 +90,40 @@ class GestorClientes {
   }
 
 
-  static Future<bool> actualizarCliente(String id, Cliente cliente) async {
+  static Future<bool> actualizarCliente(String id, {String? nombre, String? correo, String? imagenUrl, String? peso, String? kcalMensual, String? estrellas, List<String>? amigos, List<String>? amigosPendientes, String? objetivomensual, String? idgimnasio, String? altura}) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
-    final response = await http.patch(
-      Uri.parse(url),
-    );
-    if (response.statusCode == 200) {
-      print("Cliente actualizado con éxito: $id");
-      return true;
-    } else {
-      print("Error al actualizar el cliente: ${response.statusCode}");
+
+    Map<String, dynamic> data = {};
+    if (nombre != null) data['nombre'] = nombre;
+    if (correo != null) data['correo'] = correo;
+    if (imagenUrl != null) data['imagenUrl'] = imagenUrl;
+    if (peso != null) data['peso'] = peso;
+    if (kcalMensual != null) data['kcalMensual'] = kcalMensual;
+    if (estrellas != null) data['estrellas'] = estrellas;
+    if (amigos != null) data['amigos'] = amigos;
+    if (amigosPendientes != null) data['amigos_pendientes'] = amigosPendientes;
+    if (objetivomensual != null) data['objetivomensual'] = objetivomensual;
+    if (idgimnasio != null) data['idgimnasio'] = idgimnasio;
+    if (altura != null) data['altura'] = altura;
+
+    try {
+      final response = await http.patch(Uri.parse(url), body: json.encode(data));
+
+      if (response.statusCode == 200) {
+        print("Cliente actualizado con éxito: $id");
+        print("Respuesta del servidor: ${response.body}");
+        return true;
+      } else {
+        print('Error al actualizar cliente: ${response.statusCode}');
+        print("Respuesta del servidor: ${response.body}");
+        return false;
+      }
+    } catch (error) {
+      print("Error: $error");
       return false;
     }
-  }
-  static Future<bool> eliminarCliente(String id) async {
+  } 
+  Future<bool> eliminarCliente(String id) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
     print(url);
     final response = await http.delete(Uri.parse(url));

@@ -7,6 +7,8 @@ class RepeticionData {
   List<String> maquinasMostrar;
   Map<String, String> nombreToIdMaquina;
   List<String> filteredOptions;
+  String? localizacionMaquina;
+  String? marcaMaquina;
 
   RepeticionData({
     required this.maquinasMostrar,

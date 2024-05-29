@@ -8,7 +8,7 @@ class Cliente {
   final String estrellas;
   final List<String> amigos;
   final List<String> amigosPendientes;
-  final String objetivomensual;
+  String objetivomensual;
   final String idgimnasio;
   final String altura;
 

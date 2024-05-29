@@ -124,6 +124,16 @@ List<String> options5 = [
     }
   }
 
+    String obtenerLocalizacion(String? nombreMaquina) {
+    var maquina = maquinas.firstWhere((maquina) => maquina.nombre == nombreMaquina);
+    return maquina?.localizacion ?? 'Desconocida';
+  }
+
+  String obtenerMarca(String? nombreMaquina) {
+    var maquina = maquinas.firstWhere((maquina) => maquina.nombre == nombreMaquina);
+    return maquina?.marca ?? 'Desconocida';
+  }
+
 Future<void> cargarReservas() async {
   try {
     List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
@@ -296,81 +306,126 @@ Future<void> eliminarReservasAntiguas() async {
     }
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        
-        body: Center(
-          
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                DropdownButton<String>(
-                  value: numRepeticionSeleccion,
-                  items: numRepeticion.map((String item) {
-                    return DropdownMenuItem(
-                      value: item,
-                      child: Text(item),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      numRepeticionSeleccion = newValue;
-                      numRepeticionesSeleccionadas = List.generate(
-                        int.parse(newValue!),
-                        (index) => RepeticionData(
-                          maquinasMostrar: maquinasMostrar,
-                          nombreToIdMaquina: nombreToIdMaquina,
-                          filteredOptions: [],
-                        ),
-                      );
-                    });
-                  },
-                  hint: Text('Selecciona número de repetición'),
-                ),
-                ...numRepeticionesSeleccionadas.map((repeticionData) {
-                  return Column(
-                    children: [
-                      Container(
-                        width: 230,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: DropdownButton<String>(
-                            value: repeticionData.maquinaSeleccion != null ? repeticionData.maquinasMostrar.firstWhere((nombre) => repeticionData.nombreToIdMaquina[nombre] == repeticionData.idMaquinaSeleccionada) : null,
-                            items: repeticionData.maquinasMostrar.map((String item) {
-                              return DropdownMenuItem(
-                                value: item,
-                                child: Text(item),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                repeticionData.maquinaSeleccion = newValue;
-                                repeticionData.idMaquinaSeleccionada = repeticionData.nombreToIdMaquina[newValue];
-                              });
-                            },
-                            hint: Text('Selecciona máquina'),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF2A0000),
+                Color(0xFF460303),
+                Color(0xFF730000),
+                Color(0xFFA80000),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
                           ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: 230,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: repeticionData.maquinaSeleccion != null ? Colors.white : Colors.grey[300],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          child: Column(
                             children: [
+                              DropdownButton<String>(
+                    value: numRepeticionSeleccion,
+                    items: numRepeticion.map((String item) {
+                      return DropdownMenuItem(
+                        value: item,
+                        child: Text(item),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        numRepeticionSeleccion = newValue;
+                        numRepeticionesSeleccionadas = List.generate(
+                          int.parse(newValue!),
+                          (index) => RepeticionData(
+                            maquinasMostrar: maquinasMostrar,
+                            nombreToIdMaquina: nombreToIdMaquina,
+                            filteredOptions: [],
+                          ),
+                        );
+                      });
+                    },
+                    hint: Text('Selecciona número de repetición'),
+                  ),
+                            ],
+                          ),
+                  ),                
+                  ...numRepeticionesSeleccionadas.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    RepeticionData repeticionData = entry.value;
+                    return Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                  'Reserva ${index + 1}:',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              DropdownButton<String>(
+                                value: repeticionData.maquinaSeleccion != null ? repeticionData.maquinasMostrar.firstWhere((nombre) => repeticionData.nombreToIdMaquina[nombre] == repeticionData.idMaquinaSeleccionada) : null,
+                                items: repeticionData.maquinasMostrar.map((String item) {
+                                  return DropdownMenuItem(
+                                    value: item,
+                                    child: Text(item),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    repeticionData.maquinaSeleccion = newValue;
+                                    repeticionData.idMaquinaSeleccionada = repeticionData.nombreToIdMaquina[newValue];
+                                    repeticionData.localizacionMaquina = obtenerLocalizacion(newValue);
+                                    repeticionData.marcaMaquina = obtenerMarca(newValue);
+                                  });
+                                },
+                                hint: Text('Selecciona máquina'),
+                              ),
+                              if (repeticionData.maquinaSeleccion != null)
+                                Column(
+                                  children: [
+                                    if (repeticionData.localizacionMaquina != null && repeticionData.marcaMaquina != null)
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Localización: ${repeticionData.localizacionMaquina}',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Text(
+                                            'Marca: ${repeticionData.marcaMaquina}',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                  ],
+                                ),
+                              SizedBox(height: 10),
                               ElevatedButton(
                                 onPressed: repeticionData.maquinaSeleccion != null ? () async {
                                   final DateTime? pickedDate = await showDatePicker(
@@ -390,98 +445,119 @@ Future<void> eliminarReservasAntiguas() async {
                                 } : null,
                                 child: Text('Selecciona fecha'),
                               ),
-                              SizedBox(width: 10),
                               if (repeticionData.fechaSeleccionada != null)
-                                Text(repeticionData.fechaSeleccionada!),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Fecha seleccionada:'),
+                                    Text(repeticionData.fechaSeleccionada!),
+                                  ],
+                                ),
+                              SizedBox(height: 10),
+                              DropdownButton<String>(
+                                value: repeticionData.intervaloSeleccion,
+                                items: repeticionData.filteredOptions.map((String item) {
+                                  return DropdownMenuItem(
+                                    value: item,
+                                    child: Text(item),
+                                  );
+                                }).toList(),
+                                onChanged: repeticionData.fechaSeleccionada != null ? (String? newValue) {
+                                  setState(() {
+                                    repeticionData.intervaloSeleccion = newValue;
+                                  });
+                                } : null,
+                                hint: Text('Selecciona intervalo'),
+                                disabledHint: Text('Selecciona fecha primero'),
+                              ),
                             ],
                           ),
                         ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: 230,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: repeticionData.diaSeleccion != null ? Colors.white : Colors.grey[300],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: DropdownButton<String>(
-                            value: repeticionData.intervaloSeleccion,
-                            items: repeticionData.filteredOptions.map((String item) {
-                              return DropdownMenuItem(
-                                value: item,
-                                child: Text(item),
-                              );
-                            }).toList(),
-                            onChanged: repeticionData.fechaSeleccionada != null ? (String? newValue) {
-                              setState(() {
-                                repeticionData.intervaloSeleccion = newValue;
-                              });
-                            } : null,
-                            hint: Text('Selecciona intervalo'),
-                            disabledHint: Text('Selecciona fecha primero'),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                    ],
-                  );
-                }).toList(),
-                ElevatedButton(
-                  onPressed: () async {
-                    // Verificar si hay duplicados en numRepeticionesSeleccionadas
-                    bool hayDuplicados = false;
+                      ],
+                    );
+                  }).toList(),
+                  ElevatedButton(
+                    onPressed: () async {
+                      bool hayDuplicados = false;
+                      bool hayIncompletos = false;
 
-                    for (int i = 0; i < numRepeticionesSeleccionadas.length; i++) {
-                      for (int j = i + 1; j < numRepeticionesSeleccionadas.length; j++) {
-                        if (numRepeticionesSeleccionadas[i].idMaquinaSeleccionada == numRepeticionesSeleccionadas[j].idMaquinaSeleccionada &&
-                            numRepeticionesSeleccionadas[i].fechaSeleccionada == numRepeticionesSeleccionadas[j].fechaSeleccionada &&
-                            numRepeticionesSeleccionadas[i].intervaloSeleccion == numRepeticionesSeleccionadas[j].intervaloSeleccion) {
-                          hayDuplicados = true;
+                      for (int i = 0; i < numRepeticionesSeleccionadas.length; i++) {
+                        for (int j = i + 1; j < numRepeticionesSeleccionadas.length; j++) {
+                          if (numRepeticionesSeleccionadas[i].idMaquinaSeleccionada == numRepeticionesSeleccionadas[j].idMaquinaSeleccionada &&
+                              numRepeticionesSeleccionadas[i].fechaSeleccionada == numRepeticionesSeleccionadas[j].fechaSeleccionada &&
+                              numRepeticionesSeleccionadas[i].intervaloSeleccion == numRepeticionesSeleccionadas[j].intervaloSeleccion) {
+                            hayDuplicados = true;
+                            break;
+                          }
+                        }
+                        if (hayDuplicados) break;
+                      }
+
+                      for (var repeticionData in numRepeticionesSeleccionadas) {
+                        if (repeticionData.idMaquinaSeleccionada == null ||
+                            repeticionData.fechaSeleccionada == null ||
+                            repeticionData.intervaloSeleccion == null) {
+                          hayIncompletos = true;
                           break;
                         }
                       }
-                      if (hayDuplicados) break;
-                    }
 
-                    if (hayDuplicados) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Advertencia'),
-                            content: Text('Hay duplicados en las reservas seleccionadas. Por favor, revisa los datos.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Aceptar'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    } else {
-                      for (var repeticionData in numRepeticionesSeleccionadas) {
-                        String? intervalo = repeticionData.intervaloSeleccion;
-                        String fecha = repeticionData.fechaSeleccionada!;
-                        String clienteId = cliente.correo;
-                        await gestionReservas.insertarReservaExterna(repeticionData.idMaquinaSeleccionada!, "1", clienteId, intervalo!, fecha);
+                      if (hayDuplicados) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Advertencia'),
+                              content: Text('Hay duplicados en las reservas seleccionadas. Por favor, revisa los datos.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Aceptar'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else if (hayIncompletos) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Advertencia'),
+                              content: Text('Hay alguna reserva sin completar. Por favor, completa todos los campos.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Aceptar'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        for (var repeticionData in numRepeticionesSeleccionadas) {
+                          String? intervalo = repeticionData.intervaloSeleccion;
+                          String fecha = repeticionData.fechaSeleccionada!;
+                          String clienteId = cliente.correo;
+                          await gestionReservas.insertarReservaExterna(repeticionData.idMaquinaSeleccionada!, "1", clienteId, intervalo!, fecha);
+                        }
+
+                        setState(() {
+                          numRepeticionSeleccion = null;
+                          numRepeticionesSeleccionadas.clear();
+                        });
+
+                        await cargarReservas();
                       }
-
-                      setState(() {
-                        numRepeticionSeleccion = null; // Reiniciar el valor de numRepeticionSeleccion
-                        numRepeticionesSeleccionadas.clear(); // Limpiar la lista de repeticionData
-                      });
-
-                      await cargarReservas(); // Recargar las reservas
-                    }
-                  },
-                  child: Text('Confirmar selección'),
-                ),
-              ],
+                    },
+                    child: Text('Confirmar selección'),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
