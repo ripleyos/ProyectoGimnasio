@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:trabajologinflutter/Gestores/GestorGimnasio.dart';
 import 'package:trabajologinflutter/Gestores/GestorMaquina.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
+import 'package:trabajologinflutter/Modelos/Gimnasio.dart';
 import 'package:trabajologinflutter/Modelos/maquinas.dart';
 import 'package:trabajologinflutter/Modelos/reservas.dart';
 import 'package:trabajologinflutter/Gestores/GestorReserva.dart';
@@ -23,8 +25,13 @@ class _ModificarReservaPageState extends State<ModificarReservaPage> {
   String? intervaloSeleccionado;
   String? fechaSeleccionada;
   String? idMaquinaSeleccionada;
+  String? marcaMaquinaSeleccionada;
+  String? localizacionMaquinaSeleccionada;
+  String? nombreGimnasio;
   List<String> maquinas = [];
   List<Reserva> reservas = [];
+  List<Gimnasio> gimnasios = [];
+  Maquina? maquinaActual;
 
   List<String> intervalosDisponibles = [
     '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
@@ -40,41 +47,70 @@ class _ModificarReservaPageState extends State<ModificarReservaPage> {
   ];
   List<String> filteredOptions = [];
   Map<String, String> nombreToIdMaquina = {};
+  Map<String, Maquina> nombreToMaquina = {};
 
   GestionReservas gestionReservas = GestionReservas();
   GestionMaquinas gestionMaquinas = GestionMaquinas();
+  GestorGimnasio gestorGimnasio = GestorGimnasio();
 
   @override
   void initState() {
     super.initState();
     cliente = widget.cliente;
-    cargarMaquinas();
-    cargarReservas();
+    cargarDatos();
   }
 
-void filtrarOpciones(DateTime? selectedDate) {
-  var now = DateTime.now();
-  var oneHourLater = now.add(Duration(hours: 1));
-  var formatter = DateFormat('HH:mm');
-  filteredOptions.clear();
+  Future<void> cargarDatos() async {
+    await cargarMaquinas();
+    await cargarReservas();
+    await cargarGimnasios();
+    setState(() {
+      nombreGimnasio = obtenerNombreGimnasio(widget.reserva.idGimnasio);
+      maquinaActual = obtenerMaquina(widget.reserva.idMaquina);
+    });
+  }
 
-  for (String interval in intervalosDisponibles) {
-    String intervalStart = interval.split(' - ')[0];
-    var intervalStartDateTime = formatter.parse(intervalStart);
-
-    // Si la fecha seleccionada es hoy
-    if (selectedDate != null && selectedDate.year == now.year && selectedDate.month == now.month && selectedDate.day == now.day) {
-      if (intervalStartDateTime.hour > oneHourLater.hour ||
-          (intervalStartDateTime.hour == oneHourLater.hour &&
-              intervalStartDateTime.minute > oneHourLater.minute)) {
-        filteredOptions.add(interval);
-      }
-    } else { // Si la fecha seleccionada es diferente a hoy, no aplicar filtro
-      filteredOptions.add(interval);
+  Future<void> cargarGimnasios() async {
+    try {
+      List<Gimnasio> gimnasiosCargados = await gestorGimnasio.cargarGimnasios();
+      setState(() {
+        gimnasios = gimnasiosCargados;
+      });
+    } catch (error) {
+      print('Error al cargar los gimnasios: $error');
     }
   }
-}
 
+  String obtenerNombreGimnasio(String idGimnasio) {
+    final gimnasio = gimnasios.firstWhere((gimnasio) => gimnasio.id == idGimnasio);
+    return gimnasio.nombre;
+  }
+
+  Maquina obtenerMaquina(String idMaquina) {
+    return nombreToMaquina.values.firstWhere((maquina) => maquina.idMaquina == idMaquina);
+  }
+
+  void filtrarOpciones(DateTime? selectedDate) {
+    var now = DateTime.now();
+    var oneHourLater = now.add(Duration(hours: 1));
+    var formatter = DateFormat('HH:mm');
+    filteredOptions.clear();
+
+    for (String interval in intervalosDisponibles) {
+      String intervalStart = interval.split(' - ')[0];
+      var intervalStartDateTime = formatter.parse(intervalStart);
+
+      if (selectedDate != null && selectedDate.year == now.year && selectedDate.month == now.month && selectedDate.day == now.day) {
+        if (intervalStartDateTime.hour > oneHourLater.hour ||
+            (intervalStartDateTime.hour == oneHourLater.hour &&
+                intervalStartDateTime.minute > oneHourLater.minute)) {
+          filteredOptions.add(interval);
+        }
+      } else {
+        filteredOptions.add(interval);
+      }
+    }
+  }
 
   Future<void> cargarReservas() async {
     try {
@@ -88,44 +124,42 @@ void filtrarOpciones(DateTime? selectedDate) {
   }
 
   void filtrarReservas() {
-  if (maquinaSeleccionada != null && fechaSeleccionada != null) {
-    // Convertir fecha seleccionada a objeto DateTime
-    DateTime selectedDateTime = DateFormat('dd/MM/yyyy').parse(fechaSeleccionada!);
+    if (maquinaSeleccionada != null && fechaSeleccionada != null) {
+      DateTime selectedDateTime = DateFormat('dd/MM/yyyy').parse(fechaSeleccionada!);
+      Set<String> intervalosAEliminar = {};
 
-    Set<String> intervalosAEliminar = {};
+      for (Reserva reserva in reservas) {
+        DateTime reservaDateTime = DateFormat('dd/MM/yyyy').parse(reserva.fecha);
 
-    for (Reserva reserva in reservas) {
-      // Convertir fecha de la reserva a objeto DateTime
-      DateTime reservaDateTime = DateFormat('dd/MM/yyyy').parse(reserva.fecha);
-
-      if (reserva.idMaquina == idMaquinaSeleccionada &&
-          reserva.fecha == fechaSeleccionada &&
-          reserva.idGimnasio == cliente.idgimnasio ) {
-        intervalosAEliminar.addAll(reserva.intervalo.split(','));
+        if (reserva.idMaquina == idMaquinaSeleccionada &&
+            reserva.fecha == fechaSeleccionada &&
+            reserva.idGimnasio == cliente.idgimnasio) {
+          intervalosAEliminar.addAll(reserva.intervalo.split(','));
+        }
       }
-    }
 
-    setState(() {
-      filteredOptions = filteredOptions.where((intervalo) => !intervalosAEliminar.contains(intervalo)).toSet().toList();
-    });
+      setState(() {
+        filteredOptions = filteredOptions.where((intervalo) => !intervalosAEliminar.contains(intervalo)).toSet().toList();
+      });
+    }
   }
-}
 
-
-    Future<void> cargarMaquinas() async {
-      try {
-        List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinasExterna();
-        setState(() {
-          maquinas = maquinasCargadas
-              .where((maquina) => maquina.idGimnasio == cliente.idgimnasio)
-              .map((maquina) => maquina.nombre)
-              .toList();
-          nombreToIdMaquina = {for (var maquina in maquinasCargadas) maquina.nombre: maquina.idMaquina};
-        });
-      } catch (error) {
-        print('Error al cargar las máquinas: $error');
-      }
+  Future<void> cargarMaquinas() async {
+    try {
+      List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinasExterna();
+      setState(() {
+        maquinas = maquinasCargadas
+            .where((maquina) => maquina.idGimnasio == cliente.idgimnasio)
+            .map((maquina) => maquina.nombre)
+            .toList();
+        nombreToIdMaquina = {for (var maquina in maquinasCargadas) maquina.nombre: maquina.idMaquina};
+        nombreToMaquina = {for (var maquina in maquinasCargadas) maquina.nombre: maquina};
+        maquinaActual = maquinasCargadas.firstWhere((maquina) => maquina.idMaquina == widget.reserva.idMaquina);
+      });
+    } catch (error) {
+      print('Error al cargar las máquinas: $error');
     }
+  }
 
   Future<void> modificarReserva() async {
     await gestionReservas.modificarReservaExterna(
@@ -143,75 +177,134 @@ void filtrarOpciones(DateTime? selectedDate) {
       appBar: AppBar(
         title: Text('Modificar Reserva'),
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-                              DropdownButton<String>(
-                  value: maquinaSeleccionada,
-                  items: maquinas.map((String item) {
-                    return DropdownMenuItem(
-                      value: item,
-                      child: Text(item),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      maquinaSeleccionada = newValue;
-                      idMaquinaSeleccionada = nombreToIdMaquina[newValue];
-                    });
-                  },
-                  hint: Text('Selecciona máquina'),
-                ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  final DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime.now().add(Duration(days: 28)),
-                  );
-                  if (pickedDate != null) {
-                    setState(() {
-                      fechaSeleccionada = DateFormat('dd/MM/yyyy').format(pickedDate);
-                      intervaloSeleccionado = null; 
-
-                      filtrarOpciones(pickedDate);
-                      filtrarReservas();
-                    });
-                  }
-                },
-                child: Text('Selecciona fecha'),
-              ),
-              SizedBox(height: 10),
-              if (fechaSeleccionada != null) Text(fechaSeleccionada!),
-              SizedBox(height: 10),
-              DropdownButton<String>(
-                value: intervaloSeleccionado,
-                items: filteredOptions.map((String item) {
-                  return DropdownMenuItem(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList(),
-                onChanged: fechaSeleccionada != null ? (String? newValue) {
-                  setState(() {
-                    intervaloSeleccionado = newValue;
-                  });
-                } : null,
-                hint: Text('Selecciona intervalo'),
-                disabledHint: Text('Selecciona fecha primero'),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  modificarReserva();
-                },
-                child: Text('Confirmar modificación'),
-              ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF2A0000),
+              Color(0xFF460303),
+              Color(0xFF730000),
+              Color(0xFFA80000),
             ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (maquinaActual != null && nombreGimnasio != null) // Mostrar el recuadro solo si la máquina actual está cargada
+                  Container(
+                    padding: EdgeInsets.all(16.0),
+                    margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Reserva Actual:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        Text('Máquina: ${maquinaActual!.nombre}', style: TextStyle(fontSize: 16)),
+                        Text('Marca: ${maquinaActual!.marca}', style: TextStyle(fontSize: 16)),
+                        Text('Localización: ${maquinaActual!.localizacion}', style: TextStyle(fontSize: 16)),
+                        Text('Fecha: ${widget.reserva.fecha}', style: TextStyle(fontSize: 16)),
+                        Text('Intervalo: ${widget.reserva.intervalo}', style: TextStyle(fontSize: 16)),
+                        Text('Gimnasio: $nombreGimnasio', style: TextStyle(fontSize: 16)),
+                      ],
+                    ),
+                  ),
+                Container(
+                  padding: EdgeInsets.all(16.0),
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      DropdownButton<String>(
+                        value: maquinaSeleccionada,
+                        items: maquinas.map((String item) {
+                          return DropdownMenuItem(
+                            value: item,
+                            child: Text(item),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            maquinaSeleccionada = newValue;
+                            idMaquinaSeleccionada = nombreToIdMaquina[newValue];
+                            marcaMaquinaSeleccionada = nombreToMaquina[newValue]!.marca;
+                            localizacionMaquinaSeleccionada = nombreToMaquina[newValue]!.localizacion;
+                          });
+                        },
+                        hint: Text('Selecciona máquina'),
+                      ),
+                      if (maquinaSeleccionada != null)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Marca: $marcaMaquinaSeleccionada', style: TextStyle(fontSize: 16)),
+                            Text('Localización: $localizacionMaquinaSeleccionada', style: TextStyle(fontSize: 16)),
+                          ],
+                        ),
+                      SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(Duration(days: 28)),
+                          );
+                          if (pickedDate != null) {
+                            setState(() {
+                              fechaSeleccionada = DateFormat('dd/MM/yyyy').format(pickedDate);
+                              intervaloSeleccionado = null;
+
+                              filtrarOpciones(pickedDate);
+                              filtrarReservas();
+                            });
+                          }
+                        },
+                        child: Text('Selecciona fecha'),
+                      ),
+                      if (fechaSeleccionada != null) Text(fechaSeleccionada!),
+                      SizedBox(height: 10),
+                      DropdownButton<String>(
+                        value: intervaloSeleccionado,
+                        items: filteredOptions.map((String item) {
+                          return DropdownMenuItem(
+                            value: item,
+                            child: Text(item),
+                          );
+                        }).toList(),
+                        onChanged: fechaSeleccionada != null ? (String? newValue) {
+                          setState(() {
+                            intervaloSeleccionado = newValue;
+                          });
+                        } : null,
+                        hint: Text('Selecciona intervalo'),
+                        disabledHint: Text('Selecciona fecha primero'),
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          modificarReserva();
+                        },
+                        child: Text('Confirmar modificación'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

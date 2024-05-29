@@ -1,10 +1,15 @@
-// Importa las clases y funciones necesarias
 import 'package:flutter/material.dart';
+import 'package:trabajologinflutter/Gestores/GestorGimnasio.dart';
+import 'package:trabajologinflutter/Gestores/GestorMaquina.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
+import 'package:trabajologinflutter/Modelos/Gimnasio.dart';
+import 'package:trabajologinflutter/Modelos/maquinas.dart';
 import 'package:trabajologinflutter/Modelos/reservas.dart';
 import 'package:trabajologinflutter/Pages/modificarReserva_page.dart';
-import 'reserva_card.dart'; // Asegúrate de tener la clase Cliente importada
-import 'package:trabajologinflutter/Gestores/GestorReserva.dart'; // Archivo donde están las funciones cargarReservasExterna y eliminarReserva
+import 'reserva_card.dart'; 
+import 'package:trabajologinflutter/Gestores/GestorReserva.dart'; 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class ModificacionReservaPage extends StatefulWidget {
   final Cliente cliente;
@@ -17,12 +22,26 @@ class ModificacionReservaPage extends StatefulWidget {
 
 class _ModificacionReservaPageState extends State<ModificacionReservaPage> {
   List<Reserva> reservas = [];
-  GestionReservas gestionReservas = new GestionReservas();
+  List<Maquina> maquinas = [];
+  List<Gimnasio> gimnasios = [];
+  GestionReservas gestionReservas = GestionReservas();
+  GestionMaquinas gestionMaquinas = GestionMaquinas();
+  GestorGimnasio gestorGimnasio = GestorGimnasio();
+  bool isLoading = true;  // Variable de estado para el indicador de carga
 
   @override
   void initState() {
     super.initState();
-    cargarReservas();
+    cargarDatos();
+  }
+
+  Future<void> cargarDatos() async {
+    await cargarReservas();
+    await cargarMaquinas();
+    await cargarGimnasios();
+    setState(() {
+      isLoading = false;  // Datos cargados, ocultar indicador de carga
+    });
   }
 
   Future<void> cargarReservas() async {
@@ -32,65 +51,108 @@ class _ModificacionReservaPageState extends State<ModificacionReservaPage> {
     });
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Reservas de ${widget.cliente.nombre}'),
-    ),
-    body: ListView.builder(
-      itemCount: reservas.length,
-      itemBuilder: (context, index) {
-        final reserva = reservas[index];
-        return ReservaCard(
-          reserva: reserva,
-          onModify: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ModificarReservaPage(cliente: widget.cliente, reserva: reserva),
-                ),
-              );
-            print('Modificar reserva ${reserva.id}');
-          },
-          onDelete: () async {
-            // Mostrar el diálogo de confirmación
-            bool confirmacion = await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Eliminar Reserva'),
-                  content: Text('¿Estás seguro de que quieres eliminar esta reserva?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false); // Cancelar la eliminación
+  Future<List<Maquina>> cargarMaquinas() async {
+    List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinasExterna();
+    setState(() {
+      maquinas = maquinasCargadas;
+    });
+    return maquinasCargadas;
+  }
+
+  Future<List<Gimnasio>> cargarGimnasios() async {
+    List<Gimnasio> gimnasiosCargados = await gestorGimnasio.cargarGimnasios();
+    setState(() {
+      gimnasios = gimnasiosCargados;
+    });
+    return gimnasiosCargados;
+  }
+
+  String obtenerNombreGimnasio(String idGimnasio) {
+    final gimnasio = gimnasios.firstWhere((gimnasio) => gimnasio.id == idGimnasio);
+    return gimnasio.nombre;
+  }
+
+  Maquina obtenerMaquina(String idMaquina) {
+    return maquinas.firstWhere((maquina) => maquina.idMaquina == idMaquina);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Reservas de ${widget.cliente.nombre}'),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF2A0000),
+              Color(0xFF460303),
+              Color(0xFF730000),
+              Color(0xFFA80000),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: isLoading
+          ? Center(child: CircularProgressIndicator()) 
+          : ListView.builder(
+              itemCount: reservas.length,
+              itemBuilder: (context, index) {
+                final reserva = reservas[index];
+                final maquina = obtenerMaquina(reserva.idMaquina);
+                final nombreGimnasio = obtenerNombreGimnasio(reserva.idGimnasio);
+                return ReservaCard(
+                  reserva: reserva,
+                  reservaNumero: index + 1, // Número de reserva
+                  maquinaNombre: maquina.nombre,
+                  maquinaLocalizacion: maquina.localizacion,
+                  maquinaMarca: maquina.marca,
+                  nombreGimnasio: nombreGimnasio,
+                  onModify: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ModificarReservaPage(cliente: widget.cliente, reserva: reserva),
+                      ),
+                    );
+                  },
+                  onDelete: () async {
+                    bool confirmacion = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Eliminar Reserva'),
+                          content: Text('¿Estás seguro de que quieres eliminar esta reserva?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(false);
+                              },
+                              child: Text('Cancelar', style: TextStyle(color: Colors.red)),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                bool exito = await gestionReservas.eliminarReservaExterna(reserva.id);
+                                if (exito) {
+                                  setState(() {
+                                    reservas.removeWhere((r) => r.id == reserva.id);
+                                  });
+                                }
+                                Navigator.of(context).pop(true);
+                              },
+                              child: Text('Eliminar', style: TextStyle(color: Colors.green)),
+                            ),
+                          ],
+                        );
                       },
-                      child: Text('Cancelar', style: TextStyle(color: Colors.red)),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        // Eliminar la reserva si se confirma
-                        bool exito = await gestionReservas.eliminarReservaExterna(reserva.id); // Asegúrate de implementar esta función
-                        if (exito) {
-                          setState(() {
-                            reservas.removeWhere((r) => r.id == reserva.id);
-                          });
-                        }
-                        Navigator.of(context).pop(true); // Confirmar la eliminación
-                      },
-                      child: Text('Eliminar', style: TextStyle(color: Colors.green)),
-                    ),
-                  ],
+                    );
+                  },
                 );
               },
-            );
-
-          },
-        );
-      },
-    ),
-  );
-}
-
+            ),
+      ),
+    );
+  }
 }

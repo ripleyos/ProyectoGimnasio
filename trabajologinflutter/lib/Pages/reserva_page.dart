@@ -338,7 +338,15 @@ Future<void> eliminarReservasAntiguas() async {
                           ),
                           child: Column(
                             children: [
-                              DropdownButton<String>(
+                              Text(
+                                  'Selecciona el numero de reservas consecutivas que quieres hacer:',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                    DropdownButton<String>(
                     value: numRepeticionSeleccion,
                     items: numRepeticion.map((String item) {
                       return DropdownMenuItem(
@@ -360,9 +368,9 @@ Future<void> eliminarReservasAntiguas() async {
                       });
                     },
                     hint: Text('Selecciona número de repetición'),
-                  ),
-                            ],
-                          ),
+                        ),
+                      ],
+                    ),
                   ),                
                   ...numRepeticionesSeleccionadas.asMap().entries.map((entry) {
                     int index = entry.key;
@@ -401,6 +409,8 @@ Future<void> eliminarReservasAntiguas() async {
                                     repeticionData.idMaquinaSeleccionada = repeticionData.nombreToIdMaquina[newValue];
                                     repeticionData.localizacionMaquina = obtenerLocalizacion(newValue);
                                     repeticionData.marcaMaquina = obtenerMarca(newValue);
+                                    repeticionData.intervaloSeleccion = null;
+                                    repeticionData.fechaSeleccionada = null;
                                   });
                                 },
                                 hint: Text('Selecciona máquina'),
@@ -552,6 +562,24 @@ Future<void> eliminarReservasAntiguas() async {
                         });
 
                         await cargarReservas();
+                      
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Éxito'),
+                              content: Text('La reserva se ha realizado con éxito.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Aceptar'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       }
                     },
                     child: Text('Confirmar selección'),

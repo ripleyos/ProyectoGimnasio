@@ -3,11 +3,21 @@ import 'package:trabajologinflutter/Modelos/reservas.dart';
 
 class ReservaCard extends StatelessWidget {
   final Reserva reserva;
+  final int reservaNumero; // Nuevo atributo para el número de reserva
+  final String maquinaNombre;
+  final String maquinaLocalizacion;
+  final String maquinaMarca;
+  final String nombreGimnasio;
   final VoidCallback onModify;
   final VoidCallback onDelete;
 
   ReservaCard({
     required this.reserva,
+    required this.reservaNumero,
+    required this.maquinaNombre,
+    required this.maquinaLocalizacion,
+    required this.maquinaMarca,
+    required this.nombreGimnasio,
     required this.onModify,
     required this.onDelete,
   });
@@ -26,14 +36,16 @@ class ReservaCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Reserva ${reserva.id}',
+              'Reserva $reservaNumero',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
             Text('Fecha: ${reserva.fecha}', style: TextStyle(fontSize: 16)),
             Text('Intervalo: ${reserva.intervalo}', style: TextStyle(fontSize: 16)),
-            Text('ID Máquina: ${reserva.idMaquina}', style: TextStyle(fontSize: 16)),
-            Text('ID Gimnasio: ${reserva.idGimnasio}', style: TextStyle(fontSize: 16)),
+            Text('Máquina: $maquinaNombre', style: TextStyle(fontSize: 16)),
+            Text('Localización: $maquinaLocalizacion', style: TextStyle(fontSize: 16)),
+            Text('Marca: $maquinaMarca', style: TextStyle(fontSize: 16)),
+            Text('Gimnasio: $nombreGimnasio', style: TextStyle(fontSize: 16)),
             SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
