@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
+import 'package:trabajologinflutter/Pages/ReservaFuerzaPreecha.dart';
+import 'package:trabajologinflutter/Pages/ReservaResistenciaPreecha.dart';
 import 'package:trabajologinflutter/Pages/modificacion_page.dart';
 import 'package:trabajologinflutter/Pages/reserva_page.dart';
 import '../Gestores/GestorMaquina.dart';
@@ -96,7 +98,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                       Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ModificacionReservaPage(cliente: widget.cliente),
+                      builder: (context) => ReservaFuerzaPreechaPage(cliente: widget.cliente),
                      ),
                    );
                     },
@@ -140,7 +142,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                             Navigator.push(
                             context,
                             MaterialPageRoute(
-                            builder: (context) => ModificacionReservaPage(cliente: widget.cliente),
+                            builder: (context) => ReservaResistenciaPreechaPage(cliente: widget.cliente),
                             ),
                            );
                           },
