@@ -43,6 +43,7 @@ class _PerfilPageState extends State<PerfilPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              _buildPageTitle("Perfil"), // Aquí agregamos el título de la página
               _buildPerfilHeader(_cliente),
               _buildAgregarAmigos(),
               _buildListaAmigos(),
@@ -53,6 +54,35 @@ class _PerfilPageState extends State<PerfilPage> {
       ),
     );
   }
+
+  Widget _buildPageTitle(String title) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 30),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF2A0000),
+            Color(0xFF460303),
+            Color(0xFF730000),
+            Color(0xFFA80000),
+          ],
+        ),
+      ),
+      child: Center(
+        child: Text(
+          title,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
 
   Widget _buildPerfilHeader(Cliente cliente) {
     int starCount = int.parse(cliente.estrellas);
@@ -202,47 +232,47 @@ class _PerfilPageState extends State<PerfilPage> {
 
   Widget _buildListaAmigos() {
     return FutureBuilder<List<Cliente>>(
-        future: GestorClientes.cargarClientes(),
-    builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-    return Center(child: CircularProgressIndicator());
-    } else if (snapshot.hasError) {
-    return Center(child: Text('Error: ${snapshot.error}'));
-    } else if (snapshot.hasData) {
-    List<Cliente> amigos = snapshot.data!
-        .where((cliente) => _cliente.amigos.contains(cliente.correo))
-        .toList();
-    return amigos.isNotEmpty
-    ? Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Padding(
-    padding: EdgeInsets.symmetric(horizontal: 20),
-    child: Text(
-    'Amigos:',
-    style: TextStyle(
-    fontSize: 24,
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
-    ),
-    ),
-    ),
-    SizedBox(height: 10),
-      ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: amigos.length,
-        itemBuilder: (context, index) {
-          return _buildAmigoCard(amigos[index]);
-        },
-      ),
-    ],
-    )
-        : _buildNoAmigosWidget(); // Mostramos el widget completo si no hay amigos
-    } else {
-      return _buildNoAmigosWidget();
-    }
-    },
+      future: GestorClientes.cargarClientes(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (snapshot.hasData) {
+          List<Cliente> amigos = snapshot.data!
+              .where((cliente) => _cliente.amigos.contains(cliente.correo))
+              .toList();
+          return amigos.isNotEmpty
+              ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'Amigos:',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: amigos.length,
+                itemBuilder: (context, index) {
+                  return _buildAmigoCard(amigos[index]);
+                },
+              ),
+            ],
+          )
+              : _buildNoAmigosWidget(); // Mostramos el widget completo si no hay amigos
+        } else {
+          return _buildNoAmigosWidget();
+        }
+      },
     );
   }
 
@@ -516,5 +546,3 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 }
-
-

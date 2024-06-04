@@ -278,22 +278,20 @@ class _RegistroPageState extends State<RegistroPage> {
 
 
   Future <void> _insertarNuevoCliente(String email) async {
-    // Convertir el correo electrónico a minúsculas
+
     String correo = email.toLowerCase();
 
     final String nombre = _nombreController.text;
     final String peso = _pesoController.text;
     final String altura = _alturaController.text;
     final String telefono = _telefonoController.text;
-    final String kcalMensual = "1"; // Valor predeterminado para kcalMensual
-    final String estrellas = "0"; // Valor predeterminado para estrellas
-    final String imageUrl = ""; // Se establece la URL de la imagen en vacío
+    final String kcalMensual = "1";
+    final String estrellas = "0";
+    final String imageUrl = "https://static.vecteezy.com/system/resources/previews/009/314/126/non_2x/default-avatar-profile-in-flat-design-free-png.png";
 
-    // Aquí debes establecer el idgimnasio y el objetivomensual según tu lógica de negocio
-    final String idgimnasio = "0"; // Por ejemplo, se establece el idgimnasio en "1"
-    final String objetivomensual = "5000"; // Por ejemplo, se establece el objetivomensual en "0"
+    final String idgimnasio = "0";
+    final String objetivomensual = "5000";
 
-    // Sube la imagen a Firebase Storage si es necesario
 
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes.json';
 

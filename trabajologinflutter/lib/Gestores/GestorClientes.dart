@@ -47,9 +47,9 @@ class GestorClientes {
 
       Cliente? clienteEncontrado = clientes.firstWhere((cliente) => cliente.correo == email);
       if (clienteEncontrado != null) {
-        print("Cliente encontrado: ${clienteEncontrado.nombre}"); // Registro de depuración
+        print("Cliente encontrado: ${clienteEncontrado.nombre}");
       } else {
-        print("Cliente no encontrado"); // Registro de depuración
+        print("Cliente no encontrado");
       }
       return clienteEncontrado;
     } catch (error) {
@@ -122,7 +122,7 @@ class GestorClientes {
       print("Error: $error");
       return false;
     }
-  } 
+  }
   Future<bool> eliminarCliente(String id) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
     print(url);

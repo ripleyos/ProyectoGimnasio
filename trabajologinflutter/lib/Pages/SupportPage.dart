@@ -184,7 +184,7 @@ class _SupportPageState extends State<SupportPage> {
               padding: EdgeInsets.all(16.0),
               child: Row(
                 children: [
-                  Icon(icon, size: 40, color: Colors.orange),
+                  Icon(icon, size: 40, color: Colors.redAccent),
                   SizedBox(width: 12.0),
                   Expanded(
                     child: Column(

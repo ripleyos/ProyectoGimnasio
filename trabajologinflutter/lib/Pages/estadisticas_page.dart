@@ -15,6 +15,8 @@ class EstadisticasPage extends StatefulWidget {
 
 class _EstadisticasPageState extends State<EstadisticasPage> {
   late Cliente _cliente;
+  late String _errorMessage;
+
   Map<String, int> amigosCalorias = {};
   String bookerNombre = '';
   int bookerKcal = 0;
@@ -227,7 +229,12 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
             keyboardType: TextInputType.number,
             onChanged: (value) {
               setState(() {
-                _cliente.objetivomensual = value;
+                if (double.tryParse(value) != null) {
+                  _cliente.objetivomensual = value;
+                  _errorMessage = '';
+                } else {
+                  _errorMessage = 'Carácter no válido';
+                }
               });
             },
             decoration: InputDecoration(
@@ -236,16 +243,20 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
             ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancelar'),
-            ),
+
             ElevatedButton(
               onPressed: () async {
-                await _guardarObjetivoMensual();
-                Navigator.pop(context);
+                if (_errorMessage.isEmpty) {
+                  await _guardarObjetivoMensual();
+                  Navigator.pop(context);
+                } else {
+                  // Mostrar el SnackBar con el mensaje de error
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(_errorMessage),
+                    ),
+                  );
+                }
               },
               child: Text('Guardar'),
             ),
@@ -254,6 +265,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
       },
     );
   }
+
 
   Widget _buildBookerDelMes() {
     return Container(

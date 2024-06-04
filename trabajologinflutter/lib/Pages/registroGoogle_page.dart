@@ -37,7 +37,6 @@ class _RegistroGooglePageState extends State<RegistroGooglePage> {
       _validador = true;
     });
 
-    // Validación de peso
     if (_pesoController.text.isEmpty) {
       _mostrarErrorDialog("Ingrese su peso");
       setState(() {
@@ -55,7 +54,6 @@ class _RegistroGooglePageState extends State<RegistroGooglePage> {
       return;
     }
 
-    // Validación de altura
     if (_alturaController.text.isEmpty) {
       _mostrarErrorDialog("Ingrese su altura");
       setState(() {
@@ -73,7 +71,6 @@ class _RegistroGooglePageState extends State<RegistroGooglePage> {
       return;
     }
 
-    // Validación de teléfono
     if (_telefonoController.text.isEmpty) {
       _mostrarErrorDialog("Ingrese su teléfono");
       setState(() {
@@ -101,15 +98,14 @@ class _RegistroGooglePageState extends State<RegistroGooglePage> {
     final String peso = _pesoController.text;
     final String altura = _alturaController.text;
     final String telefono = _telefonoController.text;
-    final String kcalMensual = "0"; // Valor predeterminado para kcalMensual
-    final String estrellas = "0"; // Valor predeterminado para estrellas
-    final String imageUrl = ""; // Se establece la URL de la imagen en vacío
+    final String kcalMensual = "0";
+    final String estrellas = "0";
+    final String imageUrl = "";
 
-    // Aquí debes establecer el idgimnasio y el objetivomensual según tu lógica de negocio
-    final String idgimnasio = "1"; // Por ejemplo, se establece el idgimnasio en "1"
-    final String objetivomensual = "0"; // Por ejemplo, se establece el objetivomensual en "0"
+    final String idgimnasio = "1";
+    final String objetivomensual = "0";
 
-    // Sube la imagen a Firebase Storage si es necesario
+
 
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes.json';
 
@@ -122,7 +118,7 @@ class _RegistroGooglePageState extends State<RegistroGooglePage> {
       "kcalMensual": kcalMensual,
       "estrellas": estrellas,
       "imagenUrl": imageUrl,
-      "amigos": [], // Lista de amigos inicialmente vacía
+      "amigos": [],
       "objetivomensual": objetivomensual,
       "idgimnasio": idgimnasio,
     };
@@ -156,7 +152,7 @@ class _RegistroGooglePageState extends State<RegistroGooglePage> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.of(context).pop(); // Volver a la pantalla de inicio de sesión
+                Navigator.of(context).pop();
               },
               child: Text('OK'),
             ),

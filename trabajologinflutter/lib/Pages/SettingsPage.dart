@@ -34,10 +34,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Configuración para ${_cliente.correo}'),
-        backgroundColor: Colors.black,
-      ),
       body: FutureBuilder(
         future: _initialization,
         builder: (context, snapshot) {
@@ -54,46 +50,72 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildSettingsPage(BuildContext context) {
-    return Container(
-      color: Colors.black,
-      child: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: <Widget>[
-          _buildAccountExpansionTile(context),
-          SizedBox(height: 16.0),
-          _buildSettingsCard(
-            context,
-            icon: Icons.notifications,
-            title: 'Configuración de Notificaciones',
-            description: 'Controla tus preferencias de notificación',
-            onTap: () {
-              // Acción para la configuración de notificaciones
-            },
+    return SingleChildScrollView(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF2A0000),
+              Color(0xFF460303),
+              Color(0xFF730000),
+              Color(0xFFA80000),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          SizedBox(height: 16.0),
-          _buildSettingsCard(
-            context,
-            icon: Icons.security,
-            title: 'Privacidad y Seguridad',
-            description: 'Ajusta configuraciones de privacidad y seguridad',
-            onTap: () {
-              // Acción para privacidad y seguridad
-            },
-          ),
-          SizedBox(height: 16.0),
-          _buildSettingsCard(
-            context,
-            icon: Icons.help_outline,
-            title: 'Ayuda y Soporte',
-            description: 'Obtén ayuda y soporte',
-            onTap: () {
-              Navigator.pushReplacement(
+        ),
+        padding: EdgeInsets.all(20),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 20),
+              Text(
+                'Configuración',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 20),
+              _buildAccountExpansionTile(context),
+              SizedBox(height: 16.0),
+              _buildSettingsCard(
                 context,
-                MaterialPageRoute(builder: (context) => SupportPage()),
-              );
-            },
+                icon: Icons.notifications,
+                title: 'Configuración de Notificaciones',
+                description: 'Controla tus preferencias de notificación',
+                onTap: () {
+                  // Acción para la configuración de notificaciones
+                },
+              ),
+              SizedBox(height: 16.0),
+              _buildSettingsCard(
+                context,
+                icon: Icons.security,
+                title: 'Privacidad y Seguridad',
+                description: 'Ajusta configuraciones de privacidad y seguridad',
+                onTap: () {
+                  // Acción para privacidad y seguridad
+                },
+              ),
+              SizedBox(height: 16.0),
+              _buildSettingsCard(
+                context,
+                icon: Icons.help_outline,
+                title: 'Ayuda y Soporte',
+                description: 'Obtén ayuda y soporte',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SupportPage()),
+                  );
+                },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -186,7 +208,7 @@ class _SettingsPageState extends State<SettingsPage> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: ListTile(
-        leading: Icon(icon, size: 40, color: Colors.orange),
+        leading: Icon(icon, size: 40, color: Colors.redAccent),
         title: Text(
           title,
           style: TextStyle(

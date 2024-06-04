@@ -15,6 +15,8 @@ class _CambiarFotoDePerfilPageState extends State<CambiarFotoDePerfilPage> {
   late Cliente _cliente;
   final List<String> imageUrls = [
     'https://i.psnprofiles.com/avatars/m/G08aacb7cb.png',
+    'https://static.vecteezy.com/system/resources/thumbnails/035/941/151/small/cartoon-smiling-female-lady-profile-avatar-3d-character-illustration-png.png',
+    'https://static.vecteezy.com/system/resources/previews/009/314/126/non_2x/default-avatar-profile-in-flat-design-free-png.png',
     'https://i.psnprofiles.com/avatars/m/G9a5c1e2a3.png',
     'https://i.psnprofiles.com/avatars/m/Gfba90ec21.png',
     'https://i.psnprofiles.com/avatars/m/G4613a5e4c.png',
