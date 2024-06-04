@@ -120,6 +120,7 @@ class _GymPageState extends State<GymPage> {
               child: Text('Sí'),
               onPressed: () {
                 GestorClientes.actualizarGymCliente(cliente.id, gimnasio.id);
+                cliente.idgimnasio =gimnasio.id;
                 Navigator.push(
                 context,
                 MaterialPageRoute(
