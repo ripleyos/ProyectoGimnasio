@@ -255,8 +255,11 @@ Future<void> enviarReservas() async {
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
-                  onPressed: enviarReservas,
-                  child: Text('Enviar Reservas'),
+                  onPressed: () async { 
+                    enviarReservas();
+                    await cargarDatos();
+                  
+                  }, child: Text('Enviar Reservas'),
                 ),
               );
             }

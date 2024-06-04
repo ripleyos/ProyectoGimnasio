@@ -41,30 +41,31 @@ class AuthService extends ChangeNotifier{
     }
 
   }
-    Future<String?> signup( String email, String password ) async {
+Future<String?> signup(String email, String password) async {
+  final Map<String, dynamic> authData = {
+    'email': email,
+    'password': password,
+    'returnSecureToken': true
+  };
 
+  final url = Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$_firebaseToken');
 
-    final Map<String, dynamic> authData = {
-      'email': email,
-      'password': password,
-      'returnSecureToken': true
-    };
+  final resp = await http.post(url, body: json.encode(authData));
 
-    final url = Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$_firebaseToken');
+  final Map<String, dynamic> decodedResp = json.decode(resp.body);
 
-    final resp = await http.post(url, body: json.encode(authData));
-
-    final Map<String, dynamic> decodedResp = json.decode( resp.body );
-
-    if ( decodedResp.containsKey('idToken') ) {
-      print(decodedResp['idToken']);
-      await storage.write(key: 'token', value: decodedResp['idToken']);
-      return null;
-    } else {
-      return decodedResp['error']['message'];
-    }
-
+  if (decodedResp.containsKey('idToken')) {
+    print(decodedResp['idToken']);
+    await storage.write(key: 'token', value: decodedResp['idToken']);
+    return null;
+  } else {
+    return decodedResp['error']['message'];
   }
+}
+  Future<void> sendEmailVerification(String email) async {
+  final user = FirebaseAuth.instance.currentUser;
+  await user?.sendEmailVerification();
+}
   Future<String?> signin(String email, String password) async {
     final Map<String, dynamic> authData = {
       'email': email,
@@ -104,6 +105,14 @@ class AuthService extends ChangeNotifier{
 
     return await storage.read(key: 'token') ?? '';
 
+  }
+
+  Future<void> sendEmailVerificationLink() async{
+    try{
+      await _auth.currentUser?.sendEmailVerification();
+    }catch(e){
+      print(e);
+    }
   }
 
   Future<void> sendPasswordResetEmail(String email) async {
