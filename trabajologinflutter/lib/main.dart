@@ -1,11 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:trabajologinflutter/Pages/PerfilPage.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:trabajologinflutter/pages/login_page.dart';
 import 'package:provider/provider.dart';
+import 'package:trabajologinflutter/services/firebase_options.dart';
 
-void main() => runApp(gesApp());
+void main() async { // Agrega async a main()
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp( // Inicializa Firebase aquí
+    options: DefaultFirebaseOptions.currentPlatform,
+  ); 
+  runApp(gesApp()); 
+}
 
 class gesApp extends StatelessWidget {
 

@@ -9,6 +9,7 @@ import 'package:trabajologinflutter/services/auth_service.dart';
 import 'package:trabajologinflutter/Gestores/GestorClientes.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
 import 'registro_page.dart';
+import 'package:trabajologinflutter/Pages/Settings/RestablecerContraseña.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -277,7 +278,12 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 20),
               TextButton(
                 onPressed: () {
-                  // Lógica para restablecer la contraseña
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangePasswordPage(),
+                     ),
+                   );
                 },
                 child: Text(
                   "¿Olvidaste tu contraseña?",
