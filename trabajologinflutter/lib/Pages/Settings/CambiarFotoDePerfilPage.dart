@@ -95,15 +95,20 @@ class _CambiarFotoDePerfilPageState extends State<CambiarFotoDePerfilPage> {
 
   void _updateProfilePicture(BuildContext context, String imageUrl) async {
     print("Intentando actualizar imagen a: $imageUrl");
-    print(_cliente.id);
+    print("ID del cliente: ${_cliente.id}");
+
+    // Intentar actualizar la imagen en el servidor
     _cliente.imagenUrl=imageUrl;
     bool result = await GestorClientes.actualizarImagenCliente(_cliente.id, imageUrl);
+
     if (result) {
+      print("¡Imagen actualizada con éxito!");
       _showSuccessDialog(context);
     } else {
       print("Error al actualizar la imagen del cliente");
     }
   }
+
 
   void _showSuccessDialog(BuildContext context) {
     showDialog(

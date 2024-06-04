@@ -129,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
 
 
   Future<void> _signIn() async {
-    String email = _emailController.text;
+    String email = _emailController.text.toLowerCase();
     String password = _passwordController.text;
 
     String? errorMessage = await _authService.signin(email, password);

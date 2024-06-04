@@ -1,16 +1,16 @@
 class Cliente {
-  final String id;
-  final nombre;
-  final String correo;
-  late final String imagenUrl;
-  final String peso;
-  final String kcalMensual;
-  final String estrellas;
-  final List<String> amigos;
-  final List<String> amigosPendientes;
+  String id;
+  String nombre;
+  String correo;
+  String imagenUrl;
+  String peso;
+  String kcalMensual;
+  String estrellas;
+  List<String> amigos;
+  List<String> amigosPendientes;
   String objetivomensual;
-  final String idgimnasio;
-  final String altura;
+  String idgimnasio;
+  String altura;
 
   Cliente({
     required this.id,

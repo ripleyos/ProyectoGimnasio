@@ -16,12 +16,15 @@ class EstadisticasPage extends StatefulWidget {
 class _EstadisticasPageState extends State<EstadisticasPage> {
   late Cliente _cliente;
   Map<String, int> amigosCalorias = {};
+  String bookerNombre = '';
+  int bookerKcal = 0;
 
   @override
   void initState() {
     super.initState();
     _cliente = widget.cliente;
     _cargarCaloriasAmigos();
+    _determinarBookerDelMes();
   }
 
   Future<void> _cargarCaloriasAmigos() async {
@@ -33,6 +36,20 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
         });
       }
     }
+  }
+
+  Future<void> _determinarBookerDelMes() async {
+    List<Cliente> todosLosClientes = await GestorClientes.cargarClientes();
+
+    for (Cliente cliente in todosLosClientes) {
+      int kcal = int.parse(cliente.kcalMensual);
+      if (kcal > bookerKcal) {
+        bookerNombre = cliente.nombre;
+        bookerKcal = kcal;
+      }
+    }
+
+    setState(() {});
   }
 
   Future<void> _guardarObjetivoMensual() async {
@@ -71,7 +88,23 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 20),
-                _buildPieChartAmigos(),
+                Text(
+                  'Estadísticas',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(child: _buildPieChartAmigos()),
+                    SizedBox(width: 20),
+                    Flexible(child: _buildPieChartObjetivo()),
+                  ],
+                ),
                 SizedBox(height: 20),
                 EstadisticaItem(
                   titulo: 'Tus Calorías',
@@ -81,7 +114,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
                 SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.white.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: ExpansionTile(
@@ -99,14 +132,14 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                _buildPieChartObjetivo(),
-                SizedBox(height: 20),
                 EstadisticaItem(
                   titulo: 'Objetivo Mensual',
                   valor: int.parse(_cliente.objetivomensual),
                   icono: Icons.calendar_today,
                   onTap: _ajustarObjetivoMensual,
                 ),
+                SizedBox(height: 20),
+                _buildBookerDelMes(),
                 SizedBox(height: 20),
               ],
             ),
@@ -122,32 +155,37 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
         color: Colors.blue,
         value: double.parse(_cliente.kcalMensual),
         title: 'Tú',
+        radius: 50,
+        titleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     ];
 
     amigosCalorias.forEach((nombre, kcal) {
       sections.add(PieChartSectionData(
-        color: _getColorForAmigo(),
+        color: _getColorForAmigo(nombre),
         value: kcal.toDouble(),
         title: nombre,
+        radius: 50,
+        titleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
       ));
     });
 
-    return SizedBox(
-      width: 200,
-      height: 200,
+    return AspectRatio(
+      aspectRatio: 1,
       child: PieChart(
         PieChartData(
           sections: sections,
+          borderData: FlBorderData(show: false),
+          sectionsSpace: 0,
+          centerSpaceRadius: 40,
         ),
       ),
     );
   }
 
   Widget _buildPieChartObjetivo() {
-    return SizedBox(
-      width: 200,
-      height: 200,
+    return AspectRatio(
+      aspectRatio: 1,
       child: PieChart(
         PieChartData(
           sections: [
@@ -155,21 +193,28 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
               color: Colors.blue,
               value: double.parse(_cliente.kcalMensual),
               title: 'Tú',
+              radius: 50,
+              titleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             PieChartSectionData(
               color: Colors.red,
               value: double.parse(_cliente.objetivomensual),
-              title: 'Objetivo Mensual',
+              title: 'Objetivo',
+              radius: 50,
+              titleStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
             ),
           ],
+          borderData: FlBorderData(show: false),
+          sectionsSpace: 0,
+          centerSpaceRadius: 40,
         ),
       ),
     );
   }
 
-  Color _getColorForAmigo() {
-    List<Color> colors = [Colors.green, Colors.yellow, Colors.orange, Colors.purple, Colors.cyan];
-    return colors[amigosCalorias.length % colors.length];
+  Color _getColorForAmigo(String amigoNombre) {
+    int hashCode = amigoNombre.hashCode.abs();
+    return Color((hashCode & 0xFFFFFF).toInt()).withOpacity(1.0);
   }
 
   void _ajustarObjetivoMensual() {
@@ -187,6 +232,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
             },
             decoration: InputDecoration(
               hintText: 'Nuevo Objetivo Mensual',
+              border: OutlineInputBorder(),
             ),
           ),
           actions: [
@@ -206,6 +252,45 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildBookerDelMes() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Text(
+            'Booker del Mes',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            bookerNombre,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 5),
+          Text(
+            '$bookerKcal kcal',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

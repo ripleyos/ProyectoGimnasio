@@ -18,15 +18,17 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   late Cliente _cliente;
   final _authService = AuthService();
+  late Future<void> _initialization;
 
   @override
   void initState() {
     super.initState();
-    Firebase.initializeApp().whenComplete(() {
-      print("completed");
-      _cliente=widget.cliente;
-      setState(() {});
-    });
+    _initialization = initializeFirebase();
+    _cliente = widget.cliente;
+  }
+
+  Future<void> initializeFirebase() async {
+    await Firebase.initializeApp();
   }
 
   @override
@@ -36,47 +38,62 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text('Configuración para ${_cliente.correo}'),
         backgroundColor: Colors.black,
       ),
-      body: Container(
-        color: Colors.black,
-        child: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: <Widget>[
-            _buildAccountExpansionTile(context),
-            SizedBox(height: 16.0),
-            _buildSettingsCard(
-              context,
-              icon: Icons.notifications,
-              title: 'Configuración de Notificaciones',
-              description: 'Controla tus preferencias de notificación',
-              onTap: () {
-                // Acción para la configuración de notificaciones
-              },
-            ),
-            SizedBox(height: 16.0),
-            _buildSettingsCard(
-              context,
-              icon: Icons.security,
-              title: 'Privacidad y Seguridad',
-              description: 'Ajusta configuraciones de privacidad y seguridad',
-              onTap: () {
-                // Acción para privacidad y seguridad
-              },
-            ),
-            SizedBox(height: 16.0),
-            _buildSettingsCard(
-              context,
-              icon: Icons.help_outline,
-              title: 'Ayuda y Soporte',
-              description: 'Obtén ayuda y soporte',
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => SupportPage()),
-                );
-              },
-            ),
-          ],
-        ),
+      body: FutureBuilder(
+        future: _initialization,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return _buildSettingsPage(context);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildSettingsPage(BuildContext context) {
+    return Container(
+      color: Colors.black,
+      child: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: <Widget>[
+          _buildAccountExpansionTile(context),
+          SizedBox(height: 16.0),
+          _buildSettingsCard(
+            context,
+            icon: Icons.notifications,
+            title: 'Configuración de Notificaciones',
+            description: 'Controla tus preferencias de notificación',
+            onTap: () {
+              // Acción para la configuración de notificaciones
+            },
+          ),
+          SizedBox(height: 16.0),
+          _buildSettingsCard(
+            context,
+            icon: Icons.security,
+            title: 'Privacidad y Seguridad',
+            description: 'Ajusta configuraciones de privacidad y seguridad',
+            onTap: () {
+              // Acción para privacidad y seguridad
+            },
+          ),
+          SizedBox(height: 16.0),
+          _buildSettingsCard(
+            context,
+            icon: Icons.help_outline,
+            title: 'Ayuda y Soporte',
+            description: 'Obtén ayuda y soporte',
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => SupportPage()),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -189,66 +206,5 @@ class _SettingsPageState extends State<SettingsPage> {
         onTap: onTap,
       ),
     );
-  }
-
-  void _showPasswordDialog(BuildContext context) {
-    final TextEditingController _passwordController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirmar eliminación'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text('Por favor, ingresa tu contraseña para confirmar:'),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Contraseña',
-                ),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Eliminar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _deleteAccount(_passwordController.text);
-                _authService.sendPasswordResetEmail(_cliente.correo);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _deleteAccount(String password) async {
-    try {
-      await _authService.reauthenticateAndDelete(_cliente.correo, password);
-      // await GestorClientes.eliminarCliente(_cliente.id);
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
-            (Route<dynamic> route) => false,
-      );
-    } catch (e) {
-      // Manejar el error, mostrar mensaje al usuario, etc.
-      print("Error al eliminar la cuenta: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error al eliminar la cuenta: $e")),
-      );
-    }
   }
 }

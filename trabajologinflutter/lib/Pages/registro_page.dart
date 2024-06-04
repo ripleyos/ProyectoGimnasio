@@ -89,93 +89,92 @@ class _RegistroPageState extends State<RegistroPage> {
 
   Widget _buildForm() {
     return Card(
-        shape: RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
-    ),
-    color: Colors.white,
-    child: Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-    _buildInputField(
-    controller: _emailController,
-    labelText: 'Correo electrónico',
-    icon: Icons.email,
-    ),
-    SizedBox(height: 16),
-    _buildInputField(
-    controller: _passwordController,
-    labelText: 'Contraseña',
-    icon: Icons.lock,
-    isPassword: true,
-    ),
-    SizedBox(height: 16),
-    _buildInputField(
-    controller: _confirmPasswordController,
-    labelText: 'Confirmar Contraseña',
-    icon: Icons.lock,
-    isPassword: true,
-    ),
-    SizedBox(height: 16),
-    _buildInputField(
-    controller: _nombreController,
-    labelText: 'Nombre',
-    icon: Icons.person,
-    ),
-    SizedBox(height: 16),
-    _buildInputField(
-    controller: _pesoController,
-    labelText: 'Peso (kg)',
-    icon: Icons.fitness_center,
-    keyboardType: TextInputType.numberWithOptions(decimal: true),
-    ),
-    SizedBox(height: 16),
-    _buildInputField(
-    controller: _alturaController,
-    labelText: 'Altura (cm)',
-    icon: Icons.height,
-    keyboardType: TextInputType.numberWithOptions(decimal: true),
-    ),
-    SizedBox(height: 16),
-    _buildInputField(
-    controller: _telefonoController,
-    labelText: 'Teléfono',
-    icon: Icons.phone,
-    keyboardType: TextInputType.phone,
-    ),
-    SizedBox(height: 16),
-    SizedBox(height: 32),
-    _validador
-    ? CircularProgressIndicator(
-    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFA80000)),
-    )
-        : Center(
-    child: ElevatedButton(
-    onPressed: _register,
-    child: Padding(
-    padding: EdgeInsets.symmetric(vertical: 12),
-    child: Text(
-    'Registrarse',
-    style: TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
-    ),
-    ),
-    ),
-    style: ElevatedButton.styleFrom(
-    primary: Color(0xFFA80000),
-    shape: RoundedRectangleBorder(
-    borderRadius:
-    BorderRadius.circular(30),
-    ),
-    ),
-    ),
-    ),
-    ],
-    ),
-    ),
+      ),
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildInputField(
+              controller: _emailController,
+              labelText: 'Correo electrónico',
+              icon: Icons.email,
+            ),
+            SizedBox(height: 16),
+            _buildInputField(
+              controller: _passwordController,
+              labelText: 'Contraseña',
+              icon: Icons.lock,
+              isPassword: true,
+            ),
+            SizedBox(height: 16),
+            _buildInputField(
+              controller: _confirmPasswordController,
+              labelText: 'Confirmar Contraseña',
+              icon: Icons.lock,
+              isPassword: true,
+            ),
+            SizedBox(height: 16),
+            _buildInputField(
+              controller: _nombreController,
+              labelText: 'Nombre',
+              icon: Icons.person,
+            ),
+            SizedBox(height: 16),
+            _buildInputField(
+              controller: _pesoController,
+              labelText: 'Peso (kg)',
+              icon: Icons.fitness_center,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+            ),
+            SizedBox(height: 16),
+            _buildInputField(
+              controller: _alturaController,
+              labelText: 'Altura (cm)',
+              icon: Icons.height,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+            ),
+            SizedBox(height: 16),
+            _buildInputField(
+              controller: _telefonoController,
+              labelText: 'Teléfono',
+              icon: Icons.phone,
+              keyboardType: TextInputType.phone,
+            ),
+            SizedBox(height: 16),
+            SizedBox(height: 32),
+            _validador
+                ? CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFA80000)),
+            )
+                : Center(
+              child: ElevatedButton(
+                onPressed: _register,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    'Registrarse',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Color(0xFFA80000),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -228,7 +227,36 @@ class _RegistroPageState extends State<RegistroPage> {
       return;
     }
 
-    // Aquí puedes agregar más validaciones según tus requisitos
+    // Validar formato de peso
+    if (!RegExp(r'^\d{1,3}(\.\d{1,2})?$').hasMatch(_pesoController.text)) {
+      _mostrarErrorDialog("Formato de peso inválido. Debe ser '00.00'.");
+      setState(() {
+        _validador = false;
+      });
+      return;
+    }
+
+    // Validar formato de altura
+    int altura = int.tryParse(_alturaController.text) ?? 0;
+    if (altura < 140 || altura > 210) {
+      _mostrarErrorDialog("La altura debe ser un número entero entre 140 y 210.");
+      setState(() {
+        _validador = false;
+      });
+      return;
+    }
+
+    // Validar formato de número de teléfono
+    if (!RegExp(r'^\d{9}$').hasMatch(_telefonoController.text)) {
+      _mostrarErrorDialog("Formato de número de teléfono inválido. Debe tener 9 dígitos.");
+      setState(() {
+        _validador = false;
+      });
+      return;
+    }
+
+    // Convertir el correo electrónico a minúsculas
+    String email = _emailController.text.toLowerCase();
 
     setState(() {
       _validador = false;
@@ -236,20 +264,23 @@ class _RegistroPageState extends State<RegistroPage> {
 
     // Si todos los campos son válidos, procedemos con el registro
     String? errorMessage = await _authService.signup(
-      _emailController.text,
+      email, // Usar el correo electrónico convertido a minúsculas
       _passwordController.text,
     );
 
     if (errorMessage == null) {
       _mostrarSuccessDialog();
-      await _insertarNuevoCliente();
+      await _insertarNuevoCliente(email); // Pasar el correo electrónico a la función de inserción
     } else {
       _mostrarErrorDialog(errorMessage);
     }
   }
 
-  Future<void> _insertarNuevoCliente() async {
-    final String correo = _emailController.text;
+
+  Future <void> _insertarNuevoCliente(String email) async {
+    // Convertir el correo electrónico a minúsculas
+    String correo = email.toLowerCase();
+
     final String nombre = _nombreController.text;
     final String peso = _pesoController.text;
     final String altura = _alturaController.text;
@@ -334,3 +365,4 @@ class _RegistroPageState extends State<RegistroPage> {
     );
   }
 }
+

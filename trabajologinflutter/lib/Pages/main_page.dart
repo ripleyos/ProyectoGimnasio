@@ -58,7 +58,7 @@ class _MainPageState extends State<MainPage> {
               hoverColor: Colors.grey[700] ?? Colors.black, // Color cuando se pasa el mouse
               haptic: true, // Feedback táctil
               tabBorderRadius: 15,
-              tabActiveBorder: Border.all(color: Colors.orange, width: 1),
+              tabActiveBorder: Border.all(color: Colors.black38, width: 1),
               tabBorder: Border.all(color: Colors.grey[300]!, width: 1),
               tabShadow: [
                 BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 8)
@@ -67,7 +67,7 @@ class _MainPageState extends State<MainPage> {
               duration: Duration(milliseconds: 900),
               gap: 8, // Espacio entre el icono y el texto
               color: Colors.white, // Color del icono no seleccionado
-              activeColor: Colors.orange, // Color del icono y texto seleccionado
+              activeColor: Colors.red, // Color del icono y texto seleccionado
               iconSize: 24, // Tamaño del icono
               tabBackgroundColor: Colors.orange.withOpacity(0.1), // Color de fondo de la pestaña seleccionada
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5), // Padding del nav bar

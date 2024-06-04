@@ -139,24 +139,47 @@ class GestorClientes {
 
   static Future<bool> actualizarImagenCliente(String id, String nuevaImagenUrl) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
-    print(url);
-    print(nuevaImagenUrl);
-    final response = await http.patch(
-      Uri.parse(url),
-      body: json.encode({'imagenUrl': nuevaImagenUrl}),
-    );
+    print('URL de la solicitud: $url');
+    print('Nueva URL de imagen: $nuevaImagenUrl');
 
-    if (response.statusCode == 200) {
-      print("Imagen del cliente actualizada con éxito: $id");
-      return true;
-    } else {
-      print("Error al actualizar la imagen del cliente: ${response.statusCode}");
-      print("Respuesta del servidor: ${response.body}");
+    try {
+      final response = await http.patch(
+        Uri.parse(url),
+        body: json.encode({'imagenUrl': nuevaImagenUrl}),
+      );
+
+      print('Código de estado de la respuesta: ${response.statusCode}');
+      print('Cuerpo de la respuesta: ${response.body}');
+
+      if (response.statusCode == 200) {
+        print("Imagen del cliente actualizada con éxito: $id");
+        return true;
+      } else {
+        print("Error al actualizar la imagen del cliente: ${response.statusCode}");
+        print("Respuesta del servidor: ${response.body}");
+        return false;
+      }
+    } catch (error) {
+      print("Excepción durante la solicitud HTTP: $error");
       return false;
     }
   }
+  static Future<Cliente?> obtenerBookerDelMes() async {
+    try {
+      List<Cliente> clientes = await cargarClientes();
+      if (clientes.isNotEmpty) {
+        clientes.sort((a, b) => int.parse(b.kcalMensual).compareTo(int.parse(a.kcalMensual)));
+        return clientes.first;
+      }
+      return null;
+    } catch (error) {
+      print("Error obteniendo el Booker del Mes: $error");
+      return null;
+    }
+  }
 
-    static Future<void> actualizarPuntosCliente(String id, String puntos) async {
+
+  static Future<void> actualizarPuntosCliente(String id, String puntos) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
     final response = await http.patch(
       Uri.parse(url),

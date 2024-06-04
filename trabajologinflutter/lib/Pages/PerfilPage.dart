@@ -26,29 +26,26 @@ class _PerfilPageState extends State<PerfilPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF2A0000),
-              Color(0xFF460303),
-              Color(0xFF730000),
-              Color(0xFFA80000),
-            ],
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF2A0000),
+                Color(0xFF460303),
+                Color(0xFF730000),
+                Color(0xFFA80000),
+              ],
+            ),
           ),
-        ),
-        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildPerfilHeader(_cliente),
-              SizedBox(height: 20),
               _buildAgregarAmigos(),
-              SizedBox(height: 20),
               _buildListaAmigos(),
-              SizedBox(height: 20),
               _buildListaAmigosPendientes(),
             ],
           ),
@@ -205,47 +202,47 @@ class _PerfilPageState extends State<PerfilPage> {
 
   Widget _buildListaAmigos() {
     return FutureBuilder<List<Cliente>>(
-      future: GestorClientes.cargarClientes(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (snapshot.hasData) {
-          List<Cliente> amigos = snapshot.data!
-              .where((cliente) => _cliente.amigos.contains(cliente.correo))
-              .toList();
-          return amigos.isNotEmpty
-              ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'Amigos:',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: amigos.length,
-                itemBuilder: (context, index) {
-                  return _buildAmigoCard(amigos[index]);
-                },
-              ),
-            ],
-          )
-              : SizedBox(); // Si no hay amigos, devolver un contenedor vacío
-        } else {
-          return SizedBox();
-        }
-      },
+        future: GestorClientes.cargarClientes(),
+    builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+    return Center(child: CircularProgressIndicator());
+    } else if (snapshot.hasError) {
+    return Center(child: Text('Error: ${snapshot.error}'));
+    } else if (snapshot.hasData) {
+    List<Cliente> amigos = snapshot.data!
+        .where((cliente) => _cliente.amigos.contains(cliente.correo))
+        .toList();
+    return amigos.isNotEmpty
+    ? Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+    Padding(
+    padding: EdgeInsets.symmetric(horizontal: 20),
+    child: Text(
+    'Amigos:',
+    style: TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+    ),
+    ),
+    ),
+    SizedBox(height: 10),
+      ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: amigos.length,
+        itemBuilder: (context, index) {
+          return _buildAmigoCard(amigos[index]);
+        },
+      ),
+    ],
+    )
+        : _buildNoAmigosWidget(); // Mostramos el widget completo si no hay amigos
+    } else {
+      return _buildNoAmigosWidget();
+    }
+    },
     );
   }
 
@@ -287,11 +284,39 @@ class _PerfilPageState extends State<PerfilPage> {
               ),
             ],
           )
-              : SizedBox(); // Si no hay amigos pendientes, devolver un contenedor vacío
+              : _buildNoAmigosPendientesWidget(); // Mostramos el widget completo si no hay amigos pendientes
         } else {
-          return SizedBox();
+          return _buildNoAmigosPendientesWidget();
         }
       },
+    );
+  }
+
+  Widget _buildNoAmigosWidget() {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Container(
+        child: Center(
+          child: Text(
+            'No tienes amigos agregados aún.',
+            style: TextStyle(fontSize: 18, color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoAmigosPendientesWidget() {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Container(
+        child: Center(
+          child: Text(
+            'No tienes solicitudes de amistad pendientes.',
+            style: TextStyle(fontSize: 18, color: Colors.white),
+          ),
+        ),
+      ),
     );
   }
 
@@ -334,7 +359,6 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
-
   Widget _buildAmigoPendienteCard(Cliente amigoPendiente) {
     return Card(
       color: Colors.white.withOpacity(0.85),
@@ -367,9 +391,7 @@ class _PerfilPageState extends State<PerfilPage> {
                     _cliente.id, _cliente.amigos, _cliente.amigosPendientes);
                 if (exito) {
                   print("Solicitud de amistad aceptada");
-                  // Ahora agregamos el correo del cliente al que se aceptó como amigo
                   amigoPendiente.amigos.add(_cliente.correo);
-                  // Eliminamos al cliente actual de la lista de amigos pendientes del cliente que envió la solicitud
                   amigoPendiente.amigosPendientes.remove(_cliente.correo);
                   bool exitoCliente = await GestorClientes.actualizarAmigos(
                       amigoPendiente.id, amigoPendiente.amigos, amigoPendiente.amigosPendientes);
@@ -403,6 +425,7 @@ class _PerfilPageState extends State<PerfilPage> {
       ),
     );
   }
+
   void _showAmigoDetalleDialog(BuildContext context, Cliente amigo) {
     int estrellas = int.parse(amigo.estrellas);
     Color backgroundColor;
@@ -482,9 +505,6 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
-
-
-
   Widget _buildStarRating(int starCount) {
     List<Widget> stars = List.generate(
       starCount,
@@ -496,3 +516,5 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 }
+
+

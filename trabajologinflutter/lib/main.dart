@@ -36,7 +36,9 @@ class MyApp extends StatelessWidget {
      //   'home' : ( _ ) => MainPage(),
       },
       theme: ThemeData.light().copyWith(
-          scaffoldBackgroundColor: Colors.black87
+        primaryColor: Color(0xFF2A0000), // Color de fondo del app bar
+        scaffoldBackgroundColor: Color(0xFFA80000), // Color de fondo de la pantalla
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
     );
   }
