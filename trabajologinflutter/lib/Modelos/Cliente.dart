@@ -2,14 +2,14 @@ class Cliente {
   final String id;
   final nombre;
   final String correo;
-  late final String imagenUrl;
+  String imagenUrl;
   final String peso;
-  final String kcalMensual;
-  final String estrellas;
+  String kcalMensual;
+  String estrellas;
   final List<String> amigos;
   final List<String> amigosPendientes;
   String objetivomensual;
-  final String idgimnasio;
+  String idgimnasio;
   final String altura;
 
   Cliente({

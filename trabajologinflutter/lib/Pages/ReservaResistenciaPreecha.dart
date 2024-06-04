@@ -18,11 +18,12 @@ class ReservaResistenciaPreechaPage extends StatefulWidget {
 }
 
 class _ReservaResistenciaPreechaPageState extends State<ReservaResistenciaPreechaPage> {
-  late Cliente cliente;
+    late Cliente cliente;
   List<Maquina> maquinasResistencia = [];
   List<Reserva> reservasResistencia = [];
   List<Reserva> reservas = [];
   List<String> filteredOptions = [];
+  List<Reserva> reservasUsuario=[];
 
   GestionMaquinas gestionMaquinas = GestionMaquinas();
   GestionReservas gestionReservas = GestionReservas();
@@ -51,8 +52,14 @@ class _ReservaResistenciaPreechaPageState extends State<ReservaResistenciaPreech
   Future<void> cargarDatos() async {
     await cargarMaquinas();
     await cargarReservas();
+    await cargarReservasUsuario();
     generarReservas();
   }
+
+  int calcularTotalReservasUsuario() {
+  return reservasUsuario.length;
+}
+
 
 Future<void> cargarMaquinas() async {
   try {
@@ -73,6 +80,16 @@ Future<void> cargarMaquinas() async {
       List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
       setState(() {
         reservas = reservasCargadas;
+      });
+    } catch (error) {
+      print('Error al cargar las reservas: $error');
+    }
+  }
+    Future<void> cargarReservasUsuario() async {
+    try {
+      List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
+      setState(() {
+      reservasUsuario = reservasCargadas.where((reserva) => reserva.idCliente == cliente.correo).toList();
       });
     } catch (error) {
       print('Error al cargar las reservas: $error');
@@ -121,8 +138,14 @@ void generarReservas() {
     int maquinaIndex = 0;
     for (var maquina in maquinasResistencia) {
       filtrarReservas(maquina.idMaquina);
-      for (var intervalo in filteredOptions) {
-        if (reservasResistencia.length >= 6) break;
+
+      // Verifica que hay intervalos disponibles antes de intentar acceder al primer elemento
+      if (filteredOptions.isNotEmpty) {
+        var intervalo = filteredOptions.first; // Selecciona el primer intervalo
+        filteredOptions.removeAt(0); // Elimina el primer intervalo de la lista
+
+        if (reservasResistencia.length >= 6) break; // Límite de 6 reservas
+
         reservasResistencia.add(Reserva(
           id: '',
           idMaquina: maquina.idMaquina,
@@ -131,17 +154,44 @@ void generarReservas() {
           intervalo: intervalo,
           idCliente: cliente.correo,
         ));
-        break;
       }
-      if (reservasResistencia.length >= 6) break;
+
       maquinaIndex++;
     }
   });
 }
 
 
-  Future<void> enviarReservas() async {
-    try {
+String siguienteIntervalo(String intervaloActual) {
+  final indiceActual = filteredOptions.indexOf(intervaloActual);
+  final siguienteIndice = (indiceActual + 1) % filteredOptions.length;
+  return filteredOptions[siguienteIndice];
+}
+Future<void> enviarReservas() async {
+  try {
+    // Calcula el total de reservas del usuario
+    final totalReservasUsuario = calcularTotalReservasUsuario();
+
+    // Verifica si la suma de las reservas predefinidas y las reservas del usuario supera el límite de 12
+    if (reservasResistencia.length + totalReservasUsuario > 12) {
+      // Muestra una advertencia si se supera el límite de reservas
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Advertencia'),
+          content: Text('Has superado el límite de reservas activas (12). No se pueden enviar más reservas.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Si no se supera el límite, procede a enviar las reservas
       for (Reserva reserva in reservasResistencia) {
         await gestionReservas.insertarReservaExterna(
           reserva.idMaquina,
@@ -152,17 +202,19 @@ void generarReservas() {
         );
       }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Reservas enviadas a Firebase')));
-    } catch (error) {
-      print('Error al enviar las reservas: $error');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al enviar las reservas')));
     }
+  } catch (error) {
+    print('Error al enviar las reservas: $error');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al enviar las reservas')));
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reservas Preechas de Resistencia'),
+        title: Text('Reservas Preechas de Fuerza'),
       ),
       body: Container(
         decoration: BoxDecoration(

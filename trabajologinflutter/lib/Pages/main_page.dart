@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:trabajologinflutter/Gestores/GestorClientes.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
 import 'package:trabajologinflutter/Pages/pagina_principal.dart';
 import 'package:trabajologinflutter/Pages/PerfilPage.dart';
@@ -19,6 +20,62 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
+  late Cliente cliente;
+  @override
+void initState() {
+  super.initState();
+  reiniciarKcalMensual();
+  cliente = widget.cliente;
+}
+Future<void> reiniciarKcalMensual() async {
+  final DateTime now = DateTime.now();
+  final int dia = now.day;
+  
+  // Verifica si es el primer día del mes
+  if (dia == 1) {
+    try {
+      List<Cliente> clientes = await GestorClientes.cargarClientes();
+      
+        // Compara las kcalMensual del cliente con las de sus amigos
+        int kcalCliente = int.parse(cliente.kcalMensual);
+        bool tieneMasKcalQueTodosLosAmigos = true;
+
+        for (String amigoId in cliente.amigos) {
+          Cliente? amigo = await GestorClientes.buscarClientePorEmail(amigoId);
+          if (amigo != null) {
+            int kcalAmigo = int.parse(amigo.kcalMensual);
+            if (kcalCliente <= kcalAmigo) {
+              tieneMasKcalQueTodosLosAmigos = false;
+              break;
+            }
+          }
+        }
+
+        if (tieneMasKcalQueTodosLosAmigos) {
+          // Si las kcalMensual del cliente son mayores que las de todos sus amigos, suma 1 al atributo estrellas
+          int estrellasParse = int.parse(cliente.estrellas);
+          estrellasParse += 1;
+          await GestorClientes.actualizarCliente(cliente.id, estrellas: estrellasParse.toString());
+          cliente.estrellas= estrellasParse.toString();
+        }
+
+        // Pone a 0 las kcalMensual del cliente
+        await GestorClientes.actualizarCliente(cliente.id, kcalMensual: '1');
+        cliente.kcalMensual = "1";
+
+        // Pone a 0 las kcalMensual de los amigos del cliente
+        for (String amigoId in cliente.amigos) {
+          Cliente? amigo = await GestorClientes.buscarClientePorEmail(amigoId);
+          if (amigo != null) {
+            await GestorClientes.actualizarCliente(amigo.id, kcalMensual: '1');
+          }
+        }
+      
+    } catch (error) {
+      print('Error al reiniciar las kcalMensual: $error');
+    }
+  }
+}
 
   @override
   Widget build(BuildContext context) {

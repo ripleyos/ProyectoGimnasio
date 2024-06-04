@@ -189,29 +189,25 @@ Future<void> eliminarReservasAntiguas() async {
 
 
       var maquinaAsociada = maquinas.firstWhere((maquina) => maquina.idMaquina == reserva.idMaquina);
-      if (maquinaAsociada != null) {
-
-        int puntosAAgregar = 0;
-        if (maquinaAsociada.tipo == "fuerza") {
-          puntosAAgregar = 100;
-        } else if (maquinaAsociada.tipo == "resistencia") {
-          puntosAAgregar = 50;
-        }
-
-
-        Cliente clienteAsociado = cliente;
-
-        
-        int kcalActual = int.parse(clienteAsociado.kcalMensual);
-        int kcalNueva = kcalActual + puntosAAgregar;
-        String nuevaKcal = kcalNueva.toString();
-
-       
-        await GestorClientes.actualizarPuntosCliente(clienteAsociado.id, nuevaKcal);
-      } else {
-        print("Error: No se pudo encontrar la máquina asociada a esta reserva");
+      int puntosAAgregar = 0;
+      if (maquinaAsociada.tipo == "fuerza") {
+        puntosAAgregar = 100;
+      } else if (maquinaAsociada.tipo == "resistencia") {
+        puntosAAgregar = 50;
       }
 
+
+
+
+      
+      int kcalActual = int.parse(cliente.kcalMensual);
+      int kcalNueva = kcalActual + puntosAAgregar;
+      String nuevaKcal = kcalNueva.toString();
+
+     
+      await GestorClientes.actualizarCliente(cliente.id, kcalMensual: nuevaKcal);
+      cliente.kcalMensual=nuevaKcal;
+    
       
       await gestionReservas.eliminarReservaExterna(reserva.id);
     }
@@ -229,6 +225,26 @@ Future<void> eliminarReservasAntiguas() async {
 
     setState(() {
       numRepeticion = List.generate(12 - reservasActuales, (index) => (index + 1).toString());
+      if (numRepeticion.isEmpty) {
+        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Advertencia'),
+                              content: Text('Alcanzaste el numero maximo de reservas activas(12) si quieres hacer una nueva reserva elimina una desde el apartado modificar reserva o modifica las que tengas.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Aceptar'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+        
+      }
     });
   }
 
