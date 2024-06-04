@@ -137,6 +137,66 @@ class GestorClientes {
     }
   }
 
+  static Future<bool> actualizarPesoCliente(String id, String nuevoPeso) async {
+    if (nuevoPeso.isEmpty) {
+      print("El peso no puede estar vacío.");
+      return false;
+    }
+
+    final double peso = double.tryParse(nuevoPeso) ?? 0;
+    if (peso > 150) {
+      return false;
+    }
+    if (peso < 40) {
+      return false;
+    }
+
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
+    final response = await http.patch(
+      Uri.parse(url),
+      body: json.encode({'peso': nuevoPeso}),
+    );
+
+    if (response.statusCode == 200) {
+      print("Peso del cliente actualizado con éxito: $id");
+      return true;
+    } else {
+      print("Error al actualizar el peso del cliente: ${response.statusCode}");
+      return false;
+    }
+  }
+
+  static Future<bool> actualizarAlturaCliente(String id, String nuevaAltura) async {
+    if (nuevaAltura.isEmpty) {
+      print("La altura no puede estar vacía.");
+      return false;
+    }
+
+    final double altura = double.tryParse(nuevaAltura) ?? 0;
+    if (altura < 140) {
+      print("La altura debe ser un número mayor que cero.");
+      return false;
+    }if (altura > 230) {
+      print("La altura debe ser un número mayor que cero.");
+      return false;
+    }
+
+    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
+    final response = await http.patch(
+      Uri.parse(url),
+      body: json.encode({'altura': nuevaAltura}),
+    );
+
+    if (response.statusCode == 200) {
+      print("Altura del cliente actualizada con éxito: $id");
+      return true;
+    } else {
+      print("Error al actualizar la altura del cliente: ${response.statusCode}");
+      return false;
+    }
+  }
+
+
   static Future<bool> actualizarImagenCliente(String id, String nuevaImagenUrl) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
     print('URL de la solicitud: $url');

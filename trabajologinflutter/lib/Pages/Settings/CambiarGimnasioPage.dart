@@ -12,16 +12,16 @@ import 'package:trabajologinflutter/Modelos/maquinas.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class GymPage extends StatefulWidget {
+class CambiarGimnasioPage extends StatefulWidget {
   final Cliente cliente;
 
-  GymPage({required this.cliente});
+  CambiarGimnasioPage({required this.cliente});
 
   @override
-  _GymPageState createState() => _GymPageState();
+  _CambiarGimnasioPageState createState() => _CambiarGimnasioPageState();
 }
 
-class _GymPageState extends State<GymPage> {
+class _CambiarGimnasioPageState extends State<CambiarGimnasioPage> {
   late Cliente cliente;
   Position? _userPosition;
   List<Gimnasio> _gimnasios = [];
@@ -43,7 +43,7 @@ class _GymPageState extends State<GymPage> {
     final dLon = (lon2 - lon1) * (pi / 180);
     final a = sin(dLat / 2) * sin(dLat / 2) +
         cos(lat1 * (pi / 180)) * cos(lat2 * (pi / 180)) *
-        sin(dLon / 2) * sin(dLon / 2);
+            sin(dLon / 2) * sin(dLon / 2);
     final c = 2 * atan2(sqrt(a), sqrt(1 - a));
     final distance = R * c; // Distancia en kilómetros
     return distance;
@@ -114,7 +114,7 @@ class _GymPageState extends State<GymPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Confirmar elección'),
-          content: Text('¿Está seguro de que quiere que ${gimnasio.nombre} sea su gimnasio?'),
+          content: Text('¿Está seguro de que quiere que ${gimnasio.nombre} sea su gimnasio? tenga en cuenta que una vez cambiado el gimnasio se cancelaran todas tus reservas'),
           actions: [
             TextButton(
               child: Text('Sí'),
@@ -122,11 +122,11 @@ class _GymPageState extends State<GymPage> {
                 GestorClientes.actualizarGymCliente(cliente.id, gimnasio.id);
                 cliente.idgimnasio =gimnasio.id;
                 Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MainPage(cliente: cliente),
-                ),
-              );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainPage(cliente: cliente),
+                  ),
+                );
               },
             ),
             TextButton(
@@ -159,64 +159,64 @@ class _GymPageState extends State<GymPage> {
       body: _userPosition == null
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: _gimnasios.length,
-              itemBuilder: (context, index) {
-                Gimnasio gimnasio = _gimnasios[index];
-                double distancia = haversine(
-                  _userPosition!.latitude,
-                  _userPosition!.longitude,
-                  double.parse(gimnasio.latitud),
-                  double.parse(gimnasio.longitud),
-                );
-                return Card(
-                  child: ExpansionTile(
-                    title: Text(gimnasio.nombre),
-                    subtitle: Text('${gimnasio.descripcion}\nDistancia: ${distancia.toStringAsFixed(2)} km'),
-                    children: [
-                      FutureBuilder(
-                        future: _loadMaquinas(gimnasio),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
-                          } else {
-                            List<Maquina>? maquinas = _maquinasPorGimnasio[gimnasio.id];
-                            if (maquinas == null || maquinas.isEmpty) {
+        itemCount: _gimnasios.length,
+        itemBuilder: (context, index) {
+          Gimnasio gimnasio = _gimnasios[index];
+          double distancia = haversine(
+            _userPosition!.latitude,
+            _userPosition!.longitude,
+            double.parse(gimnasio.latitud),
+            double.parse(gimnasio.longitud),
+          );
+          return Card(
+            child: ExpansionTile(
+              title: Text(gimnasio.nombre),
+              subtitle: Text('${gimnasio.descripcion}\nDistancia: ${distancia.toStringAsFixed(2)} km'),
+              children: [
+                FutureBuilder(
+                  future: _loadMaquinas(gimnasio),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      List<Maquina>? maquinas = _maquinasPorGimnasio[gimnasio.id];
+                      if (maquinas == null || maquinas.isEmpty) {
+                        return ListTile(
+                          title: Text('No se encontraron máquinas para este gimnasio.'),
+                        );
+                      } else {
+                        return Column(
+                          children: [
+                            ...maquinas.map((maquina) {
                               return ListTile(
-                                title: Text('No se encontraron máquinas para este gimnasio.'),
+                                title: Text(maquina.nombre),
+                                subtitle: Text('Marca: ${maquina.marca}\nLocalización: ${maquina.localizacion}'),
                               );
-                            } else {
-                              return Column(
-                                children: [
-                                  ...maquinas.map((maquina) {
-                                    return ListTile(
-                                      title: Text(maquina.nombre),
-                                      subtitle: Text('Marca: ${maquina.marca}\nLocalización: ${maquina.localizacion}'),
-                                    );
-                                  }).toList(),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      ElevatedButton(
-                                        onPressed: () => _confirmarEleccion(gimnasio,cliente),
-                                        child: Text('Aceptar'),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () => _abrirGoogleMaps(gimnasio),
-                                        child: Text('Cómo llegar'),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              );
-                            }
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
+                            }).toList(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () => _confirmarEleccion(gimnasio,cliente),
+                                  child: Text('Aceptar'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => _abrirGoogleMaps(gimnasio),
+                                  child: Text('Cómo llegar'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      }
+                    }
+                  },
+                ),
+              ],
             ),
+          );
+        },
+      ),
     );
   }
 }

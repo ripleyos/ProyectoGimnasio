@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:trabajologinflutter/Pages/Settings/CambiarFotoDePerfilPage.dart';
 import 'package:trabajologinflutter/Pages/SupportPage.dart';
 import 'package:trabajologinflutter/Pages/login_page.dart';
+import '../Gestores/GestorClientes.dart';
 import '../Modelos/Cliente.dart';
 import '../services/auth_service.dart';
+import 'Settings/CambiarGimnasioPage.dart';
+import 'Settings/PreguntasYRespuestasPage.dart';
 
 class SettingsPage extends StatefulWidget {
   final Cliente cliente;
@@ -81,6 +84,8 @@ class _SettingsPageState extends State<SettingsPage> {
               SizedBox(height: 20),
               _buildAccountExpansionTile(context),
               SizedBox(height: 16.0),
+              _buildProfileExpansionTile(context),
+              SizedBox(height: 16.0),
               _buildSettingsCard(
                 context,
                 icon: Icons.notifications,
@@ -93,11 +98,14 @@ class _SettingsPageState extends State<SettingsPage> {
               SizedBox(height: 16.0),
               _buildSettingsCard(
                 context,
-                icon: Icons.security,
-                title: 'Privacidad y Seguridad',
-                description: 'Ajusta configuraciones de privacidad y seguridad',
+                icon: Icons.help,
+                title: 'Dudas sobre el funcionamiento de la app',
+                description: 'Encuentra respuestas a tus dudas',
                 onTap: () {
-                  // Acción para privacidad y seguridad
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PreguntasYRespuestasPage()),
+                  );
                 },
               ),
               SizedBox(height: 16.0),
@@ -120,10 +128,10 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildAccountExpansionTile(BuildContext context) {
+  Widget _buildProfileExpansionTile(BuildContext context) {
     return ExpansionTile(
       title: Text(
-        'Configuración de Cuenta',
+        'Personalizar Perfil',
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -132,6 +140,98 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       leading: Icon(Icons.person, color: Colors.white),
       children: <Widget>[
+        _buildAccountOption(
+          context,
+          icon: Icons.line_weight,
+          title: 'Cambiar Peso',
+          onTap: () async {
+            final TextEditingController _pesoController = TextEditingController();
+
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Cambiar Peso'),
+                  content: TextField(
+                    controller: _pesoController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(hintText: 'Nuevo Peso'),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Cancelar'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: Text('Guardar'),
+                      onPressed: () async {
+                        bool success = await GestorClientes.actualizarPesoCliente(_cliente.id, _pesoController.text);
+                        if (success) {
+                          setState(() {
+                            _cliente.peso = _pesoController.text;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Valor de peso no válido')),
+                          );
+                        }
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
+        _buildAccountOption(
+          context,
+          icon: Icons.height,
+          title: 'Cambiar Altura',
+          onTap: () async {
+            final TextEditingController _alturaController = TextEditingController();
+
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Cambiar Altura'),
+                  content: TextField(
+                    controller: _alturaController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(hintText: 'Nueva Altura'),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Cancelar'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: Text('Guardar'),
+                      onPressed: () async {
+                        bool success = await GestorClientes.actualizarAlturaCliente(_cliente.id, _alturaController.text);
+                        if (success) {
+                          setState(() {
+                            _cliente.altura = _alturaController.text;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Valor de altura no válido')),
+                          );
+                        }
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
         _buildAccountOption(
           context,
           icon: Icons.image,
@@ -145,6 +245,22 @@ class _SettingsPageState extends State<SettingsPage> {
             );
           },
         ),
+      ],
+    );
+  }
+
+  Widget _buildAccountExpansionTile(BuildContext context) {
+    return ExpansionTile(
+      title: Text(
+        'Configuración de Cuenta',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+      leading: Icon(Icons.person, color: Colors.white),
+      children: <Widget>[
         _buildAccountOption(
           context,
           icon: Icons.lock,
@@ -166,11 +282,34 @@ class _SettingsPageState extends State<SettingsPage> {
           icon: Icons.delete,
           title: 'Eliminar Cuenta',
           onTap: () {
+        /*    // Acción para eliminar la cuenta
             try {
-              _authService.sendPasswordResetEmail(_cliente.correo);
+              GestorClientes.eliminarCliente(_cliente.id).then((success) {
+                if (success) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Error al eliminar la cuenta")),
+                  );
+                }
+              });
             } catch (e) {
               print(e);
-            }
+            } */
+          },
+        ),
+        _buildAccountOption(
+          context,
+          icon: Icons.store,
+          title: 'Cambiar Gimnasio',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CambiarGimnasioPage(cliente: this._cliente)), // Agrega la navegación a la página CambiarGimnasioPage
+            );
           },
         ),
         _buildAccountOption(

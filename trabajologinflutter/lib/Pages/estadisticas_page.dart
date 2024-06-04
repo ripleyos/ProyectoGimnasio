@@ -109,7 +109,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
                 ),
                 SizedBox(height: 20),
                 EstadisticaItem(
-                  titulo: 'Tus Calorías',
+                  titulo: 'Tus Puntos',
                   valor: int.parse(_cliente.kcalMensual),
                   icono: Icons.person,
                 ),
@@ -120,7 +120,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: ExpansionTile(
-                    title: Text('Calorías de tus Amigos'),
+                    title: Text('Puntos de tus Amigos'),
                     children: amigosCalorias.entries.map((entry) {
                       return Container(
                         margin: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
