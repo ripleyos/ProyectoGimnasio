@@ -64,7 +64,6 @@ class _LoginPageState extends State<LoginPage> {
       print('Error al guardar datos en SharedPreferences: $e');
     }
   }
-  // Dentro del onTap del GestureDetector para iniciar sesión con Google
   void _signInWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -97,7 +96,6 @@ class _LoginPageState extends State<LoginPage> {
         await _saveUserData(user!.email!, '');
 
 
-        // Redirigir a la página principal o realizar otras acciones
             try {
               Cliente? cliente = await GestorClientes.buscarClientePorEmail(user!.email.toString());
               if (cliente != null) {

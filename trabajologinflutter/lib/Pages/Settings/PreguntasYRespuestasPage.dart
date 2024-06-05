@@ -92,9 +92,14 @@ class PreguntasYRespuestasPage extends StatelessWidget {
                 title: 'Sobre las Estadísticas',
                 questionsAnswers: [
                   {
-                    'question': '¿Cómo veo mis estadísticas?',
-                    'answer': 'Puedes ver tus estadísticas en la sección de estadísticas. Aquí podrás ver tu progreso, tus logros y más.',
+                    'question': '¿Que son las estrellas y como las obtengo?',
+                    'answer': 'las estrellas se otorgan al final del mes al usuario que mas puntuaje',
                   },
+                  {
+                    'question': '¿Que es el booker del mes?',
+                    'answer': 'El booker del mes es el usuario de Booking Gym que mas puntos ha hecho en lo que llevamos de mes',
+                  },
+
                   {
                     'question': '¿Puedo compartir mis estadísticas?',
                     'answer': 'Sí, puedes compartir tus estadísticas con tus amigos a través de la función de compartir en la sección de estadísticas.',

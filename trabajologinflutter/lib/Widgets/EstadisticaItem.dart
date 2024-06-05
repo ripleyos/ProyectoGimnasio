@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class EstadisticaItem extends StatelessWidget {
   final String titulo;
   final int valor;
+  final int objetivo;
   final IconData icono;
   final Function()? onTap;
 
@@ -11,6 +12,7 @@ class EstadisticaItem extends StatelessWidget {
     required this.titulo,
     required this.valor,
     required this.icono,
+    required this.objetivo,
     this.onTap,
   });
 
@@ -47,7 +49,7 @@ class EstadisticaItem extends StatelessWidget {
               SizedBox(width: 20),
               Expanded(
                 child: LinearProgressIndicator(
-                  value: valor / 10000, // Cambiar el valor máximo segun el caso d cada cliente
+                  value: valor / objetivo, // Cambiar el valor máximo segun el caso d cada cliente
                   backgroundColor: Colors.grey[300],
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
                 ),

@@ -111,6 +111,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
                 EstadisticaItem(
                   titulo: 'Tus Puntos',
                   valor: int.parse(_cliente.kcalMensual),
+                  objetivo: int.parse(_cliente.objetivomensual),
                   icono: Icons.person,
                 ),
                 SizedBox(height: 10),
@@ -127,6 +128,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
                         child: EstadisticaItem(
                           titulo: entry.key,
                           valor: entry.value,
+                          objetivo: int.parse(_cliente.objetivomensual),
                           icono: Icons.group,
                         ),
                       );
@@ -137,6 +139,7 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
                 EstadisticaItem(
                   titulo: 'Objetivo Mensual',
                   valor: int.parse(_cliente.objetivomensual),
+                  objetivo: int.parse(_cliente.objetivomensual),
                   icono: Icons.calendar_today,
                   onTap: _ajustarObjetivoMensual,
                 ),

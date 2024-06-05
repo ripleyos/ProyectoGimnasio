@@ -1,6 +1,18 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationService {
+  static const _keyNotificationsEnabled = 'notifications_enabled';
+
+  static Future<void> _saveNotificationSettings(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_keyNotificationsEnabled, value);
+  }
+
+  static Future<bool> _loadNotificationSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_keyNotificationsEnabled) ?? true; // Valor predeterminado: true
+  }
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
@@ -19,19 +31,24 @@ class NotificationService {
     required String title,
     required String body,
   }) async {
-    final AndroidNotificationDetails androidDetails =
-    AndroidNotificationDetails(
-      'main_channel',
-      'Main Channel',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
+    bool notificationsEnabled = await _loadNotificationSettings();
 
-    final NotificationDetails details = NotificationDetails(
-      android: androidDetails,
-      iOS: IOSNotificationDetails(),
-    );
+    if (notificationsEnabled) {
+      final AndroidNotificationDetails androidDetails =
+      AndroidNotificationDetails(
+        'main_channel',
+        'Main Channel',
+        importance: Importance.max,
+        priority: Priority.high,
+      );
 
-    await _notificationsPlugin.show(id, title, body, details);
+      final NotificationDetails details = NotificationDetails(
+        android: androidDetails,
+        iOS: IOSNotificationDetails(),
+      );
+
+      await _notificationsPlugin.show(id, title, body, details);
+    }
   }
+
 }

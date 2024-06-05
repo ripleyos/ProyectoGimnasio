@@ -28,9 +28,9 @@ class _CambiarGimnasioPageState extends State<CambiarGimnasioPage> {
   Position? _userPosition;
   List<Gimnasio> _gimnasios = [];
   GestorGimnasio gestorGimnasio = new GestorGimnasio();
+  GestionReservas gestionReservas = new GestionReservas();
   GestionMaquinas gestionMaquinas = new GestionMaquinas();
   Map<String, List<Maquina>> _maquinasPorGimnasio = {};
-  GestionReservas gestionReservas = GestionReservas();
   List<Reserva> reservas = [];
 
   @override
