@@ -10,6 +10,7 @@ import 'dart:math';
 import 'package:trabajologinflutter/Gestores/GestorMaquina.dart';
 import 'package:trabajologinflutter/Modelos/Gimnasio.dart';
 import 'package:trabajologinflutter/Modelos/maquinas.dart';
+import 'package:trabajologinflutter/Modelos/reservas.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,15 +31,38 @@ class _CambiarGimnasioPageState extends State<CambiarGimnasioPage> {
   GestionReservas gestionReservas = new GestionReservas();
   GestionMaquinas gestionMaquinas = new GestionMaquinas();
   Map<String, List<Maquina>> _maquinasPorGimnasio = {};
+  List<Reserva> reservas = [];
 
   @override
   void initState() {
     super.initState();
     cliente =widget.cliente;
     _getUserLocation();
+    cargarReservas();
 
   }
+    Future<void> _eliminarReservasCliente() async {
+    var reservasClienteActual = reservas.where((reserva) => reserva.idCliente == cliente.correo).toList();
 
+    for (var reserva in reservasClienteActual) {
+      await gestionReservas.eliminarReservaExterna(reserva.id);
+    }
+  }
+  Future<void> cargarReservas() async {
+  try {
+    List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
+    setState(() {
+      reservas = reservasCargadas;
+
+      
+      for (var reserva in reservas) {
+        print('Reserva cargada: ${reserva.id}, Fecha: ${reserva.fecha}, Cliente: ${reserva.idCliente}');
+      }
+    });
+  } catch (error) {
+    print('Error al cargar las reservas paco: $error');
+  }
+}
   double haversine(double lat1, double lon1, double lat2, double lon2) {
     const R = 6371; // Radio de la tierra en kilómetros
     final dLat = (lat2 - lat1) * (pi / 180);
@@ -121,9 +145,10 @@ class _CambiarGimnasioPageState extends State<CambiarGimnasioPage> {
             TextButton(
               child: Text('Sí'),
               onPressed: () async {
-                print(cliente.id);
+                await _eliminarReservasCliente();
                 GestorClientes.actualizarGymCliente(cliente.id, gimnasio.id);
                 cliente.idgimnasio =gimnasio.id;
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(

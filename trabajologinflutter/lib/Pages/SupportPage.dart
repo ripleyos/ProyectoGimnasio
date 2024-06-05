@@ -16,7 +16,7 @@ class _SupportPageState extends State<SupportPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Soporte'),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
       ),
       body: Container(
         color: Colors.black,

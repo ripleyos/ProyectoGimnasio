@@ -222,52 +222,61 @@ class _EstadisticasPageState extends State<EstadisticasPage> {
     return Color((hashCode & 0xFFFFFF).toInt()).withOpacity(1.0);
   }
 
-  void _ajustarObjetivoMensual() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Ajustar Objetivo Mensual'),
-          content: TextField(
-            keyboardType: TextInputType.number,
-            onChanged: (value) {
-              setState(() {
-                if (double.tryParse(value) != null) {
+void _ajustarObjetivoMensual() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Ajustar Objetivo Mensual'),
+        content: TextField(
+          keyboardType: TextInputType.number,
+          onChanged: (value) {
+            setState(() {
+              if (value.isNotEmpty && value.length <= 10) {
+                if (value.startsWith('0')) {
+                  _errorMessage = 'El primer dígito no puede ser 0';
+                } else if (double.tryParse(value) != null) {
                   _cliente.objetivomensual = value;
                   _errorMessage = '';
                 } else {
                   _errorMessage = 'Carácter no válido';
                 }
-              });
-            },
-            decoration: InputDecoration(
-              hintText: 'Nuevo Objetivo Mensual',
-              border: OutlineInputBorder(),
-            ),
+              } else if (value.isEmpty) {
+                _errorMessage = 'El campo no puede estar vacío';
+              } else {
+                _errorMessage = 'El número no puede tener más de 10 dígitos';
+              }
+            });
+          },
+          maxLength: 10,
+          decoration: InputDecoration(
+            hintText: 'Nuevo Objetivo Mensual',
+            border: OutlineInputBorder(),
           ),
-          actions: [
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              if (_errorMessage.isEmpty) {
+                await _guardarObjetivoMensual();
+                Navigator.pop(context);
+              } else {
+                // Mostrar el SnackBar con el mensaje de error
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(_errorMessage),
+                  ),
+                );
+              }
+            },
+            child: Text('Guardar'),
+          ),
+        ],
+      );
+    },
+  );
+}
 
-            ElevatedButton(
-              onPressed: () async {
-                if (_errorMessage.isEmpty) {
-                  await _guardarObjetivoMensual();
-                  Navigator.pop(context);
-                } else {
-                  // Mostrar el SnackBar con el mensaje de error
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(_errorMessage),
-                    ),
-                  );
-                }
-              },
-              child: Text('Guardar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
 
   Widget _buildBookerDelMes() {

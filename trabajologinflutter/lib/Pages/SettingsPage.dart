@@ -42,9 +42,7 @@ class _SettingsPageState extends State<SettingsPage> {
         future: _initialization,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return _buildSettingsPage(context);
           } else {
             return _buildSettingsPage(context);
           }

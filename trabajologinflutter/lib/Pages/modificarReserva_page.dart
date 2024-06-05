@@ -168,15 +168,17 @@ class _ModificarReservaPageState extends State<ModificarReservaPage> {
       intervalo: intervaloSeleccionado,
       fecha: fechaSeleccionada,
     );
-    Navigator.pop(context); // Regresar a la pantalla anterior después de modificar
+    Navigator.pop(context,true); // Regresar a la pantalla anterior después de modificar
   }
-
+  Future<bool> _onWillPop() async {
+    Navigator.pop(context, true); // Regresar a la pantalla anterior y devolver true
+    return false; // Evitar la acción predeterminada de retroceso
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Modificar Reserva'),
-      ),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -195,6 +197,16 @@ class _ModificarReservaPageState extends State<ModificarReservaPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                          SizedBox(height: 20),
+                          Text(
+            'Modificacion de reserva',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 20),
                 if (maquinaActual != null && nombreGimnasio != null) // Mostrar el recuadro solo si la máquina actual está cargada
                   Container(
                     padding: EdgeInsets.all(16.0),
@@ -308,6 +320,7 @@ class _ModificarReservaPageState extends State<ModificarReservaPage> {
           ),
         ),
       ),
+    )
     );
   }
 }
