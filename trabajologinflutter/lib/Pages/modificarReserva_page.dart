@@ -45,6 +45,53 @@ class _ModificarReservaPageState extends State<ModificarReservaPage> {
     '19:00 - 19:15', '19:15 - 19:30', '19:30 - 19:45', '19:45 - 20:00',
     '20:00 - 20:15', '20:15 - 20:30',
   ];
+    List<String> options2 = [
+  '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+  '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+  '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+  '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+  '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+  '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+  '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+  '15:00 - 15:15', '15:15 - 15:30', '15:30 - 15:45', '15:45 - 16:00',
+  '16:00 - 16:15', '16:15 - 16:30',
+];
+
+List<String> options3 = [
+  '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+  '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+  '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+  '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+  '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+  '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+  '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+  '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+];
+
+List<String> options4 = [
+  '6:00 - 6:15', '6:15 - 6:30', '6:30 - 6:45', '6:45 - 7:00',
+  '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+  '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+  '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+  '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+  '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+  '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+  '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+  '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+];
+
+List<String> options5 = [
+  '5:00 - 5:15', '5:15 - 5:30', '5:30 - 5:45', '5:45 - 6:00',
+  '6:00 - 6:15', '6:15 - 6:30', '6:30 - 6:45', '6:45 - 7:00',
+  '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+  '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+  '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+  '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+  '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+  '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+  '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+  '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+];
   List<String> filteredOptions = [];
   Map<String, String> nombreToIdMaquina = {};
   Map<String, Maquina> nombreToMaquina = {};
@@ -92,11 +139,33 @@ class _ModificarReservaPageState extends State<ModificarReservaPage> {
 
   void filtrarOpciones(DateTime? selectedDate) {
     var now = DateTime.now();
+          List<String> options;
+
+  switch (cliente.idgimnasio) {
+    case '1':
+      options = intervalosDisponibles;
+      break;
+    case '2':
+      options = options2;
+      break;
+    case '3':
+      options = options3;
+      break;
+    case '4':
+      options = options4;
+      break;
+    case '5':
+      options = options5;
+      break;
+    default:
+      options = intervalosDisponibles; // O una lista vacía o alguna lista predeterminada.
+      break;
+  }
     var oneHourLater = now.add(Duration(hours: 1));
     var formatter = DateFormat('HH:mm');
     filteredOptions.clear();
 
-    for (String interval in intervalosDisponibles) {
+    for (String interval in options) {
       String intervalStart = interval.split(' - ')[0];
       var intervalStartDateTime = formatter.parse(intervalStart);
 
@@ -309,6 +378,23 @@ class _ModificarReservaPageState extends State<ModificarReservaPage> {
                       ElevatedButton(
                         onPressed: () {
                           modificarReserva();
+                          showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Éxito'),
+                              content: Text('La reserva se ha modificado con éxito.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    
+                                  },
+                                  child: Text('Aceptar'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                         },
                         child: Text('Confirmar modificación'),
                       ),

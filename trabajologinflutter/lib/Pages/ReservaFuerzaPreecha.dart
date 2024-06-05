@@ -24,6 +24,7 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
   List<Reserva> reservas = [];
   List<String> filteredOptions = [];
   List<Reserva> reservasUsuario = [];
+  bool isLoading = true;
 
   GestionMaquinas gestionMaquinas = GestionMaquinas();
   GestionReservas gestionReservas = GestionReservas();
@@ -41,6 +42,53 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
     '19:00 - 19:15', '19:15 - 19:30', '19:30 - 19:45', '19:45 - 20:00',
     '20:00 - 20:15', '20:15 - 20:30',
   ];
+  List<String> options2 = [
+    '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+    '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+    '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+    '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+    '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+    '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+    '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+    '15:00 - 15:15', '15:15 - 15:30', '15:30 - 15:45', '15:45 - 16:00',
+    '16:00 - 16:15', '16:15 - 16:30',
+  ];
+
+  List<String> options3 = [
+    '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+    '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+    '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+    '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+    '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+    '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+    '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+    '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+  ];
+
+  List<String> options4 = [
+    '6:00 - 6:15', '6:15 - 6:30', '6:30 - 6:45', '6:45 - 7:00',
+    '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+    '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+    '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+    '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+    '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+    '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+    '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+    '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+  ];
+
+  List<String> options5 = [
+    '5:00 - 5:15', '5:15 - 5:30', '5:30 - 5:45', '5:45 - 6:00',
+    '6:00 - 6:15', '6:15 - 6:30', '6:30 - 6:45', '6:45 - 7:00',
+    '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+    '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+    '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+    '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+    '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+    '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+    '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+    '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+  ];
 
   @override
   void initState() {
@@ -54,6 +102,9 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
     await cargarReservas();
     await cargarReservasUsuario();
     generarReservas();
+    setState(() {
+      isLoading = false;
+    });
   }
 
   int calcularTotalReservasUsuario() {
@@ -65,7 +116,7 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
       List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinasExterna();
       setState(() {
         maquinasFuerza = maquinasCargadas.where((maquina) =>
-          maquina.tipo.contains('fuerza') && maquina.idGimnasio == cliente.idgimnasio
+            maquina.tipo.contains('fuerza') && maquina.idGimnasio == cliente.idgimnasio
         ).toList();
       });
     } catch (error) {
@@ -95,16 +146,35 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
     }
   }
 
-  void filtrarOpciones({bool nextDay = false}) {
+  void filtrarOpciones() {
     var now = DateTime.now();
-    if (nextDay) {
-      now = now.add(Duration(days: 1));
+    List<String> options;
+
+    switch (cliente.idgimnasio) {
+      case '1':
+        options = intervalosDisponibles;
+        break;
+      case '2':
+        options = options2;
+        break;
+      case '3':
+        options = options3;
+        break;
+      case '4':
+        options = options4;
+        break;
+      case '5':
+        options = options5;
+        break;
+      default:
+        options = intervalosDisponibles; // O una lista vacía o alguna lista predeterminada.
+        break;
     }
     var oneHourLater = now.add(Duration(hours: 1));
     var formatter = DateFormat('HH:mm');
     filteredOptions.clear();
 
-    for (String interval in intervalosDisponibles) {
+    for (String interval in options) {
       String intervalStart = interval.split(' - ')[0];
       var intervalStartDateTime = formatter.parse(intervalStart);
       var intervalDateTime = DateTime(now.year, now.month, now.day, intervalStartDateTime.hour, intervalStartDateTime.minute);
@@ -113,18 +183,11 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
         filteredOptions.add(interval);
       }
     }
-    if (filteredOptions.isEmpty && !nextDay) {
-      filtrarOpciones(nextDay: true);
-    }
   }
 
-  void filtrarReservas(String idMaquina, {bool nextDay = false}) {
+  void filtrarReservas(String idMaquina) {
     Set<String> intervalosAEliminar = {};
-    var now = DateTime.now();
-    if (nextDay) {
-      now = now.add(Duration(days: 1));
-    }
-    var today = DateFormat('dd/MM/yyyy').format(now);
+    var today = DateFormat('dd/MM/yyyy').format(DateTime.now());
 
     for (Reserva reserva in reservas) {
       if (reserva.idMaquina == idMaquina && reserva.fecha == today) {
@@ -141,7 +204,6 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
   void generarReservas() {
     setState(() {
       reservasFuerza = [];
-      var now = DateTime.now();
       filtrarOpciones();
 
       int maquinaIndex = 0;
@@ -159,29 +221,10 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
             id: '',
             idMaquina: maquina.idMaquina,
             idGimnasio: widget.cliente.idgimnasio,
-            fecha: DateFormat('dd/MM/yyyy').format(now),
+            fecha: DateFormat('dd/MM/yyyy').format(DateTime.now()),
             intervalo: intervalo,
             idCliente: cliente.correo,
           ));
-        } else {
-          // Si no hay intervalos disponibles para hoy, intenta para mañana
-          filtrarOpciones(nextDay: true);
-          filtrarReservas(maquina.idMaquina, nextDay: true);
-          if (filteredOptions.isNotEmpty) {
-            var intervalo = filteredOptions.first; // Selecciona el primer intervalo
-            filteredOptions.removeAt(0); // Elimina el primer intervalo de la lista
-
-            if (reservasFuerza.length >= 6) break; // Límite de 6 reservas
-
-            reservasFuerza.add(Reserva(
-              id: '',
-              idMaquina: maquina.idMaquina,
-              idGimnasio: widget.cliente.idgimnasio,
-              fecha: DateFormat('dd/MM/yyyy').format(now.add(Duration(days: 1))),
-              intervalo: intervalo,
-              idCliente: cliente.correo,
-            ));
-          }
         }
 
         maquinaIndex++;
@@ -230,7 +273,28 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
           );
         }
         await cargarReservasUsuario();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Reservas enviadas a Firebase')));
+        await cargarMaquinas();
+        await cargarReservas();
+        setState(() {
+          generarReservas(); // Regenerar las reservas para actualizar la UI
+        });
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Éxito'),
+              content: Text('La reserva prehecha se ha realizado con éxito.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Aceptar'),
+                ),
+              ],
+            );
+          },
+        );
       }
     } catch (error) {
       print('Error al enviar las reservas: $error');
@@ -238,72 +302,117 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
     }
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFF2A0000),
-            Color(0xFF460303),
-            Color(0xFF730000),
-            Color(0xFFA80000),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF2A0000),
+              Color(0xFF460303),
+              Color(0xFF730000),
+              Color(0xFFA80000),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
-      ),
-      child: ListView.builder(
-        itemCount: reservasFuerza.length + 2, // Aumentar el tamaño para incluir el título y botón
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return Column(
-              children: [
-                SizedBox(height: 20),
-                Text(
-                  'Reserva prehecha de fuerza',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 20),
-              ],
-            );
-          } else if (index <= reservasFuerza.length) {
-            Reserva reserva = reservasFuerza[index - 1];
-            Maquina maquina = maquinasFuerza.firstWhere((maquina) => maquina.idMaquina == reserva.idMaquina);
-            return Card(
-              margin: EdgeInsets.all(10.0),
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        child: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : reservasFuerza.isEmpty
+                ? Column(
                   children: [
-                    Text('Máquina: ${maquina.nombre}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    Text('Marca: ${maquina.marca}', style: TextStyle(fontSize: 16)),
-                    Text('Localización: ${maquina.localizacion}', style: TextStyle(fontSize: 16)),
-                    Text('Fecha: ${reserva.fecha}', style: TextStyle(fontSize: 16)),
-                    Text('Intervalo: ${reserva.intervalo}', style: TextStyle(fontSize: 16)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0), // Espacio lateral
+                      child: Center(
+                        child: Text(
+                          'No quedan reservas disponibles para hoy',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8.0), // Espacio vertical entre los textos
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0), // Espacio lateral
+                      child: Center(
+                        child: Text(
+                          'Recuerda! Las reservas preechas estan pensadas para que sean del dia actual, asi que si no hay reservas es o porque estan todos los huecos ocupados o el gimnasio ya esta cerrado',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
-                ),
-              ),
-            );
-          } else {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: enviarReservas,
-                child: Text('Enviar Reservas'),
-              ),
-            );
-          }
-        },
+                )
+                : ListView.builder(
+                    itemCount: reservasFuerza.length + 2, // Aumentar el tamaño para incluir el título y botón
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return Column(
+                          children: [
+                            SizedBox(height: 20),
+                            Text(
+                              'Reserva prehecha de fuerza',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'Recuerda! Las reservas preechas estan pensadas para que sean del dia actual, asi que si no hay reservas es o porque estan todos los huecos ocupados o el gimnasio ya esta cerrado',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                        );
+                      } else if (index <= reservasFuerza.length) {
+                        Reserva reserva = reservasFuerza[index - 1];
+                        Maquina maquina = maquinasFuerza.firstWhere((maquina) => maquina.idMaquina == reserva.idMaquina);
+                        return Card(
+                          margin: EdgeInsets.all(10.0),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Máquina: ${maquina.nombre}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                Text('Marca: ${maquina.marca}', style: TextStyle(fontSize: 16)),
+                                Text('Localización: ${maquina.localizacion}', style: TextStyle(fontSize: 16)),
+                                Text('Fecha: ${reserva.fecha}', style: TextStyle(fontSize: 16)),
+                                Text('Intervalo: ${reserva.intervalo}', style: TextStyle(fontSize: 16)),
+                              ],
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            onPressed: enviarReservas,
+                            child: Text('Enviar Reservas'),
+                          ),
+                        );
+                      }
+                    },
+                  ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }

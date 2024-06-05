@@ -14,16 +14,17 @@ class ReservaResistenciaPreechaPage extends StatefulWidget {
   ReservaResistenciaPreechaPage({required this.cliente});
 
   @override
-  _ReservaResistenciaPreechaPageState createState() => _ReservaResistenciaPreechaPageState();
+  _ReservaResistenciaPreechaPage createState() => _ReservaResistenciaPreechaPage();
 }
 
-class _ReservaResistenciaPreechaPageState extends State<ReservaResistenciaPreechaPage> {
-    late Cliente cliente;
-  List<Maquina> maquinasResistencia = [];
-  List<Reserva> reservasResistencia = [];
+class _ReservaResistenciaPreechaPage extends State<ReservaResistenciaPreechaPage> {
+  late Cliente cliente;
+  List<Maquina> maquinasFuerza = [];
+  List<Reserva> reservasFuerza = [];
   List<Reserva> reservas = [];
   List<String> filteredOptions = [];
-  List<Reserva> reservasUsuario=[];
+  List<Reserva> reservasUsuario = [];
+  bool isLoading = true;
 
   GestionMaquinas gestionMaquinas = GestionMaquinas();
   GestionReservas gestionReservas = GestionReservas();
@@ -41,6 +42,53 @@ class _ReservaResistenciaPreechaPageState extends State<ReservaResistenciaPreech
     '19:00 - 19:15', '19:15 - 19:30', '19:30 - 19:45', '19:45 - 20:00',
     '20:00 - 20:15', '20:15 - 20:30',
   ];
+  List<String> options2 = [
+    '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+    '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+    '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+    '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+    '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+    '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+    '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+    '15:00 - 15:15', '15:15 - 15:30', '15:30 - 15:45', '15:45 - 16:00',
+    '16:00 - 16:15', '16:15 - 16:30',
+  ];
+
+  List<String> options3 = [
+    '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+    '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+    '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+    '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+    '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+    '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+    '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+    '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+  ];
+
+  List<String> options4 = [
+    '6:00 - 6:15', '6:15 - 6:30', '6:30 - 6:45', '6:45 - 7:00',
+    '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+    '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+    '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+    '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+    '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+    '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+    '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+    '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+  ];
+
+  List<String> options5 = [
+    '5:00 - 5:15', '5:15 - 5:30', '5:30 - 5:45', '5:45 - 6:00',
+    '6:00 - 6:15', '6:15 - 6:30', '6:30 - 6:45', '6:45 - 7:00',
+    '7:00 - 7:15', '7:15 - 7:30', '7:30 - 7:45', '7:45 - 8:00',
+    '8:00 - 8:15', '8:15 - 8:30', '8:30 - 8:45', '8:45 - 9:00',
+    '9:00 - 9:15', '9:15 - 9:30', '9:30 - 9:45', '9:45 - 10:00',
+    '10:00 - 10:15', '10:15 - 10:30', '10:30 - 10:45', '10:45 - 11:00',
+    '11:00 - 11:15', '11:15 - 11:30', '11:30 - 11:45', '11:45 - 12:00',
+    '12:00 - 12:15', '12:15 - 12:30', '12:30 - 12:45', '12:45 - 13:00',
+    '13:00 - 13:15', '13:15 - 13:30', '13:30 - 13:45', '13:45 - 14:00',
+    '14:00 - 14:15', '14:15 - 14:30', '14:30 - 14:45', '14:45 - 15:00',
+  ];
 
   @override
   void initState() {
@@ -54,26 +102,27 @@ class _ReservaResistenciaPreechaPageState extends State<ReservaResistenciaPreech
     await cargarReservas();
     await cargarReservasUsuario();
     generarReservas();
+    setState(() {
+      isLoading = false;
+    });
   }
 
   int calcularTotalReservasUsuario() {
-  return reservasUsuario.length;
-}
-
-
-Future<void> cargarMaquinas() async {
-  try {
-    List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinasExterna();
-    setState(() {
-      maquinasResistencia = maquinasCargadas.where((maquina) => 
-        maquina.tipo.contains('resistencia') && maquina.idGimnasio == cliente.idgimnasio
-      ).toList();
-    });
-  } catch (error) {
-    print('Error al cargar las máquinas: $error');
+    return reservasUsuario.length;
   }
-}
 
+  Future<void> cargarMaquinas() async {
+    try {
+      List<Maquina> maquinasCargadas = await gestionMaquinas.cargarMaquinasExterna();
+      setState(() {
+        maquinasFuerza = maquinasCargadas.where((maquina) =>
+            maquina.tipo.contains('resistencia') && maquina.idGimnasio == cliente.idgimnasio
+        ).toList();
+      });
+    } catch (error) {
+      print('Error al cargar las máquinas: $error');
+    }
+  }
 
   Future<void> cargarReservas() async {
     try {
@@ -85,34 +134,56 @@ Future<void> cargarMaquinas() async {
       print('Error al cargar las reservas: $error');
     }
   }
-    Future<void> cargarReservasUsuario() async {
+
+  Future<void> cargarReservasUsuario() async {
     try {
       List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
       setState(() {
-      reservasUsuario = reservasCargadas.where((reserva) => reserva.idCliente == cliente.correo).toList();
+        reservasUsuario = reservasCargadas.where((reserva) => reserva.idCliente == cliente.correo).toList();
       });
     } catch (error) {
       print('Error al cargar las reservas: $error');
     }
   }
 
-void filtrarOpciones() {
-  var now = DateTime.now();
-  var oneHourLater = now.add(Duration(hours: 1));
-  var formatter = DateFormat('HH:mm');
-  filteredOptions.clear();
+  void filtrarOpciones() {
+    var now = DateTime.now();
+    List<String> options;
 
-  for (String interval in intervalosDisponibles) {
-    String intervalStart = interval.split(' - ')[0];
-    var intervalStartDateTime = formatter.parse(intervalStart);
-    var intervalDateTime = DateTime(now.year, now.month, now.day, intervalStartDateTime.hour, intervalStartDateTime.minute);
+    switch (cliente.idgimnasio) {
+      case '1':
+        options = intervalosDisponibles;
+        break;
+      case '2':
+        options = options2;
+        break;
+      case '3':
+        options = options3;
+        break;
+      case '4':
+        options = options4;
+        break;
+      case '5':
+        options = options5;
+        break;
+      default:
+        options = intervalosDisponibles; // O una lista vacía o alguna lista predeterminada.
+        break;
+    }
+    var oneHourLater = now.add(Duration(hours: 1));
+    var formatter = DateFormat('HH:mm');
+    filteredOptions.clear();
 
-    if (intervalDateTime.isAfter(oneHourLater)) {
-      filteredOptions.add(interval);
+    for (String interval in options) {
+      String intervalStart = interval.split(' - ')[0];
+      var intervalStartDateTime = formatter.parse(intervalStart);
+      var intervalDateTime = DateTime(now.year, now.month, now.day, intervalStartDateTime.hour, intervalStartDateTime.minute);
+
+      if (intervalDateTime.isAfter(oneHourLater)) {
+        filteredOptions.add(interval);
+      }
     }
   }
-}
-
 
   void filtrarReservas(String idMaquina) {
     Set<String> intervalosAEliminar = {};
@@ -124,98 +195,116 @@ void filtrarOpciones() {
       }
     }
 
-      setState(() {
-        filteredOptions = filteredOptions.where((intervalo) => !intervalosAEliminar.contains(intervalo)).toSet().toList();
-        print(filteredOptions);
-      });
+    setState(() {
+      filteredOptions = filteredOptions.where((intervalo) => !intervalosAEliminar.contains(intervalo)).toSet().toList();
+      print(filteredOptions);
+    });
   }
 
-void generarReservas() {
-  setState(() {
-    reservasResistencia = [];
-    filtrarOpciones();
+  void generarReservas() {
+    setState(() {
+      reservasFuerza = [];
+      filtrarOpciones();
 
-    int maquinaIndex = 0;
-    for (var maquina in maquinasResistencia) {
-      filtrarReservas(maquina.idMaquina);
+      int maquinaIndex = 0;
+      for (var maquina in maquinasFuerza) {
+        filtrarReservas(maquina.idMaquina);
 
-      // Verifica que hay intervalos disponibles antes de intentar acceder al primer elemento
-      if (filteredOptions.isNotEmpty) {
-        var intervalo = filteredOptions.first; // Selecciona el primer intervalo
-        filteredOptions.removeAt(0); // Elimina el primer intervalo de la lista
+        // Verifica que hay intervalos disponibles antes de intentar acceder al primer elemento
+        if (filteredOptions.isNotEmpty) {
+          var intervalo = filteredOptions.first; // Selecciona el primer intervalo
+          filteredOptions.removeAt(0); // Elimina el primer intervalo de la lista
 
-        if (reservasResistencia.length >= 6) break; // Límite de 6 reservas
+          if (reservasFuerza.length >= 6) break; // Límite de 6 reservas
 
-        reservasResistencia.add(Reserva(
-          id: '',
-          idMaquina: maquina.idMaquina,
-          idGimnasio: widget.cliente.idgimnasio,
-          fecha: DateFormat('dd/MM/yyyy').format(DateTime.now()),
-          intervalo: intervalo,
-          idCliente: cliente.correo,
-        ));
+          reservasFuerza.add(Reserva(
+            id: '',
+            idMaquina: maquina.idMaquina,
+            idGimnasio: widget.cliente.idgimnasio,
+            fecha: DateFormat('dd/MM/yyyy').format(DateTime.now()),
+            intervalo: intervalo,
+            idCliente: cliente.correo,
+          ));
+        }
+
+        maquinaIndex++;
       }
+    });
+  }
 
-      maquinaIndex++;
-    }
-  });
-}
+  String siguienteIntervalo(String intervaloActual) {
+    final indiceActual = filteredOptions.indexOf(intervaloActual);
+    final siguienteIndice = (indiceActual + 1) % filteredOptions.length;
+    return filteredOptions[siguienteIndice];
+  }
 
+  Future<void> enviarReservas() async {
+    try {
+      // Calcula el total de reservas del usuario
+      final totalReservasUsuario = calcularTotalReservasUsuario();
 
-String siguienteIntervalo(String intervaloActual) {
-  final indiceActual = filteredOptions.indexOf(intervaloActual);
-  final siguienteIndice = (indiceActual + 1) % filteredOptions.length;
-  return filteredOptions[siguienteIndice];
-}
-Future<void> enviarReservas() async {
-  try {
-    // Calcula el total de reservas del usuario
-    final totalReservasUsuario = calcularTotalReservasUsuario();
-
-    // Verifica si la suma de las reservas predefinidas y las reservas del usuario supera el límite de 12
-    if (reservasResistencia.length + totalReservasUsuario > 12) {
-      // Muestra una advertencia si se supera el límite de reservas
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Advertencia'),
-          content: Text('Has superado el límite de reservas activas (12). No se pueden enviar más reservas.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
-    } else {
-      // Si no se supera el límite, procede a enviar las reservas
-      for (Reserva reserva in reservasResistencia) {
-        await gestionReservas.insertarReservaExterna(
-          reserva.idMaquina,
-          reserva.idGimnasio,
-          cliente.correo,
-          reserva.intervalo,
-          reserva.fecha,
+      // Verifica si la suma de las reservas predefinidas y las reservas del usuario supera el límite de 12
+      if (reservasFuerza.length + totalReservasUsuario > 12) {
+        // Muestra una advertencia si se supera el límite de reservas
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Advertencia'),
+            content: Text('Has superado el límite de reservas activas (12). No se pueden enviar más reservas.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+      } else {
+        // Si no se supera el límite, procede a enviar las reservas
+        for (Reserva reserva in reservasFuerza) {
+          await gestionReservas.insertarReservaExterna(
+            reserva.idMaquina,
+            reserva.idGimnasio,
+            cliente.correo,
+            reserva.intervalo,
+            reserva.fecha,
+          );
+        }
+        await cargarReservasUsuario();
+        await cargarMaquinas();
+        await cargarReservas();
+        setState(() {
+          generarReservas(); // Regenerar las reservas para actualizar la UI
+        });
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Éxito'),
+              content: Text('La reserva prehecha se ha realizado con éxito.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Aceptar'),
+                ),
+              ],
+            );
+          },
         );
       }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Reservas enviadas a Firebase')));
+    } catch (error) {
+      print('Error al enviar las reservas: $error');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al enviar las reservas')));
     }
-  } catch (error) {
-    print('Error al enviar las reservas: $error');
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error al enviar las reservas')));
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Reservas Preechas de Fuerza'),
-      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -229,42 +318,100 @@ Future<void> enviarReservas() async {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: ListView.builder(
-          itemCount: reservasResistencia.length + 1,
-          itemBuilder: (context, index) {
-            if (index < reservasResistencia.length) {
-              Reserva reserva = reservasResistencia[index];
-              Maquina maquina = maquinasResistencia.firstWhere((maquina) => maquina.idMaquina == reserva.idMaquina);
-              return Card(
-                margin: EdgeInsets.all(10.0),
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Máquina: ${maquina.nombre}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      Text('Marca: ${maquina.marca}', style: TextStyle(fontSize: 16)),
-                      Text('Localización: ${maquina.localizacion}', style: TextStyle(fontSize: 16)),
-                      Text('Fecha: ${reserva.fecha}', style: TextStyle(fontSize: 16)),
-                      Text('Intervalo: ${reserva.intervalo}', style: TextStyle(fontSize: 16)),
-                    ],
+        child: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : reservasFuerza.isEmpty
+                ? Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0), // Espacio lateral
+                      child: Center(
+                        child: Text(
+                          'No quedan reservas disponibles para hoy',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8.0), // Espacio vertical entre los textos
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0), // Espacio lateral
+                      child: Center(
+                        child: Text(
+                          'Recuerda! Las reservas preechas estan pensadas para que sean del dia actual, asi que si no hay reservas es o porque estan todos los huecos ocupados o el gimnasio ya esta cerrado',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+                : ListView.builder(
+                    itemCount: reservasFuerza.length + 2, // Aumentar el tamaño para incluir el título y botón
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return Column(
+                          children: [
+                            SizedBox(height: 20),
+                            Text(
+                              'Reserva prehecha de resistencia',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'Recuerda! Las reservas preechas estan pensadas para que sean del dia actual, asi que si no hay reservas es o porque estan todos los huecos ocupados o el gimnasio ya esta cerrado',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                        );
+                      } else if (index <= reservasFuerza.length) {
+                        Reserva reserva = reservasFuerza[index - 1];
+                        Maquina maquina = maquinasFuerza.firstWhere((maquina) => maquina.idMaquina == reserva.idMaquina);
+                        return Card(
+                          margin: EdgeInsets.all(10.0),
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Máquina: ${maquina.nombre}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                Text('Marca: ${maquina.marca}', style: TextStyle(fontSize: 16)),
+                                Text('Localización: ${maquina.localizacion}', style: TextStyle(fontSize: 16)),
+                                Text('Fecha: ${reserva.fecha}', style: TextStyle(fontSize: 16)),
+                                Text('Intervalo: ${reserva.intervalo}', style: TextStyle(fontSize: 16)),
+                              ],
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            onPressed: enviarReservas,
+                            child: Text('Enviar Reservas'),
+                          ),
+                        );
+                      }
+                    },
                   ),
-                ),
-              );
-            } else {
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton(
-                  onPressed: () async { 
-                    enviarReservas();
-                    await cargarDatos();
-                  
-                  }, child: Text('Enviar Reservas'),
-                ),
-              );
-            }
-          },
-        ),
       ),
     );
   }

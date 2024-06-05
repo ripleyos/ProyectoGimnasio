@@ -612,7 +612,7 @@ Future<void> eliminarReservasAntiguas() async {
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },
-                                  child: Text('Aceptar'),
+                                  child: Text('Cerrar'),
                                 ),
                               ],
                             );

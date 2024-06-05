@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:trabajologinflutter/Gestores/GestorReserva.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
+import 'package:trabajologinflutter/Modelos/reservas.dart';
 import 'package:trabajologinflutter/Pages/ReservaFuerzaPreecha.dart';
 import 'package:trabajologinflutter/Pages/ReservaResistenciaPreecha.dart';
 import 'package:trabajologinflutter/Pages/modificacion_page.dart';
 import 'package:trabajologinflutter/Pages/reserva_page.dart';
+import 'package:trabajologinflutter/services/notification_service.dart';
 import '../Gestores/GestorMaquina.dart';
 import '../Widgets/RoundedBox.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 class PaginaPrincipal extends StatefulWidget {
   late final Cliente cliente;
   PaginaPrincipal({required this.cliente});
@@ -15,6 +19,55 @@ class PaginaPrincipal extends StatefulWidget {
 }
 
 class _PaginaPrincipalState extends State<PaginaPrincipal> {
+    GestionReservas gestionReservas = GestionReservas();
+      List<Reserva> reservas = [];
+       
+  @override
+  void initState() {
+    super.initState();
+    verificarReservas();
+    verificarSolicitudesAmigos();
+  }
+
+
+  Future<void> cargarReservas() async {
+    List<Reserva> reservasCargadas = await gestionReservas.cargarReservasExterna();
+    setState(() {
+      reservas = reservasCargadas.where((reserva) => reserva.idCliente == widget.cliente.correo).toList();
+    });
+  }
+
+  Future<void> verificarReservas() async {
+    await cargarReservas();
+    final DateTime ahora = DateTime.now();
+    final DateFormat formato = DateFormat('HH:mm');
+
+    for (Reserva reserva in reservas) {
+      final List<String> intervalo = reserva.intervalo.split(' - ');
+      final DateTime horaInicio = formato.parse(intervalo[0]);
+
+      if (horaInicio.isAfter(ahora) && horaInicio.isBefore(ahora.add(Duration(minutes: 10)))) {
+        await NotificationService.showNotification(
+          id: 0, 
+          title: "Tu reserva es en 10 minutos",
+          body: "Si no estás cerca de tu gimnasio, ¡date prisa!",
+        );
+        break; // Asumimos que solo queremos una notificación
+      }
+    }
+  }
+    Future<void> verificarSolicitudesAmigos() async {
+    int numSolicitudesPendientes = widget.cliente.amigosPendientes.length;
+
+    if (numSolicitudesPendientes > 0) {
+      await NotificationService.showNotification(
+        id: 1, 
+        title: "Solicitudes de amigos pendientes",
+        body: "Tienes $numSolicitudesPendientes solicitudes de amigos pendientes.",
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -75,6 +75,7 @@ class _ModificacionReservaPageState extends State<ModificacionReservaPage> {
   Maquina obtenerMaquina(String idMaquina) {
     return maquinas.firstWhere((maquina) => maquina.idMaquina == idMaquina);
   }
+
   Future<void> navigateToModificarReservaPage(Reserva reserva) async {
     final result = await Navigator.push(
       context,
@@ -88,90 +89,101 @@ class _ModificacionReservaPageState extends State<ModificacionReservaPage> {
     }
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFF2A0000),
-            Color(0xFF460303),
-            Color(0xFF730000),
-            Color(0xFFA80000),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: Column(
-        children: [
-          SizedBox(height: 20),
-          Text(
-            'Reservas de ${widget.cliente.nombre}',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF2A0000),
+              Color(0xFF460303),
+              Color(0xFF730000),
+              Color(0xFFA80000),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          SizedBox(height: 20),
-          Expanded(
-            child: isLoading
-              ? Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  itemCount: reservas.length,
-                  itemBuilder: (context, index) {
-                    final reserva = reservas[index];
-                    final maquina = obtenerMaquina(reserva.idMaquina);
-                    final nombreGimnasio = obtenerNombreGimnasio(reserva.idGimnasio);
-                    return ReservaCard(
-                      reserva: reserva,
-                      reservaNumero: index + 1, // Número de reserva
-                      maquinaNombre: maquina.nombre,
-                      maquinaLocalizacion: maquina.localizacion,
-                      maquinaMarca: maquina.marca,
-                      nombreGimnasio: nombreGimnasio,
-                      onModify: () => navigateToModificarReservaPage(reserva),
-                      onDelete: () async {
-                        bool confirmacion = await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Eliminar Reserva'),
-                              content: Text('¿Estás seguro de que quieres eliminar esta reserva?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop(false);
+        ),
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            Text(
+              'Reservas de ${widget.cliente.nombre}',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(height: 20),
+            Expanded(
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : reservas.isEmpty
+                      ? Center(
+                          child: Text(
+                            'Vaya, no tienes reservas. ¡Haz una en el apartado de Haz una reserva! o coge una ya prehecha!',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: reservas.length,
+                          itemBuilder: (context, index) {
+                            final reserva = reservas[index];
+                            final maquina = obtenerMaquina(reserva.idMaquina);
+                            final nombreGimnasio = obtenerNombreGimnasio(reserva.idGimnasio);
+                            return ReservaCard(
+                              reserva: reserva,
+                              reservaNumero: index + 1, // Número de reserva
+                              maquinaNombre: maquina.nombre,
+                              maquinaLocalizacion: maquina.localizacion,
+                              maquinaMarca: maquina.marca,
+                              nombreGimnasio: nombreGimnasio,
+                              onModify: () => navigateToModificarReservaPage(reserva),
+                              onDelete: () async {
+                                bool confirmacion = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Eliminar Reserva'),
+                                      content: Text('¿Estás seguro de que quieres eliminar esta reserva?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(false);
+                                          },
+                                          child: Text('Cancelar', style: TextStyle(color: Colors.red)),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            bool exito = await gestionReservas.eliminarReservaExterna(reserva.id);
+                                            if (exito) {
+                                              setState(() {
+                                                reservas.removeWhere((r) => r.id == reserva.id);
+                                              });
+                                            }
+                                            Navigator.of(context).pop(true);
+                                          },
+                                          child: Text('Eliminar', style: TextStyle(color: Colors.green)),
+                                        ),
+                                      ],
+                                    );
                                   },
-                                  child: Text('Cancelar', style: TextStyle(color: Colors.red)),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    bool exito = await gestionReservas.eliminarReservaExterna(reserva.id);
-                                    if (exito) {
-                                      setState(() {
-                                        reservas.removeWhere((r) => r.id == reserva.id);
-                                      });
-                                    }
-                                    Navigator.of(context).pop(true);
-                                  },
-                                  child: Text('Eliminar', style: TextStyle(color: Colors.green)),
-                                ),
-                              ],
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                    );
-                  },
-                ),
-          ),
-        ],
+                        ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }
