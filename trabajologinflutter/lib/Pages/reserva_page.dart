@@ -21,6 +21,7 @@ class ReservaPage extends StatefulWidget {
 
 class _ReservaPageState extends State<ReservaPage> {
   late Cliente cliente;
+  bool isLoading = true;
 @override
 void initState() {
   super.initState();
@@ -29,9 +30,17 @@ void initState() {
 }
 
 Future<void> inicializarDatos() async {
-  await cargarMaquinas();
-  await cargarReservas();
-  await eliminarReservasAntiguas();
+    setState(() {
+      isLoading = true;  // Mostrar el indicador de carga al iniciar la carga de datos
+    });
+
+    await cargarMaquinas();
+    await cargarReservas();
+    await eliminarReservasAntiguas();
+
+    setState(() {
+      isLoading = false;  // Ocultar el indicador de carga cuando los datos se hayan cargado
+    });
 }
 
   List<Reserva> reservas = [];
@@ -340,10 +349,22 @@ Future<void> eliminarReservasAntiguas() async {
             ),
           ),
           child: Center(
-            child: SingleChildScrollView(
+            child: isLoading
+            ? CircularProgressIndicator() // Mostrar indicador de carga si isLoading es true
+            : SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                SizedBox(height: 20),
+                Text(
+                  'Creacion de reservas',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 20),
                   Container(
                     padding: EdgeInsets.all(10),
                           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -569,7 +590,8 @@ Future<void> eliminarReservasAntiguas() async {
                           String? intervalo = repeticionData.intervaloSeleccion;
                           String fecha = repeticionData.fechaSeleccionada!;
                           String clienteId = cliente.correo;
-                          await gestionReservas.insertarReservaExterna(repeticionData.idMaquinaSeleccionada!, "1", clienteId, intervalo!, fecha);
+                          String clientegym= cliente.idgimnasio;
+                          await gestionReservas.insertarReservaExterna(repeticionData.idMaquinaSeleccionada!, clientegym, clienteId, intervalo!, fecha);
                         }
 
                         setState(() {
@@ -600,6 +622,7 @@ Future<void> eliminarReservasAntiguas() async {
                     },
                     child: Text('Confirmar selección'),
                   ),
+                  SizedBox(height: 10),
                 ],
               ),
             ),

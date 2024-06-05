@@ -36,7 +36,7 @@ class PreguntasYRespuestasPage extends StatelessWidget {
                   },
                   {
                     'question': '¿Cuantas reservas puedo tener activas?',
-                    'answer': 'puedes tener hasta un maximo de 10 reservas activas a la vez',
+                    'answer': 'puedes tener hasta un maximo de 12 reservas activas a la vez',
                   },
                   {
                     'question': '¿Cual es el tiempo de antelación que tengo para realizar una reserva?',
@@ -55,7 +55,7 @@ class PreguntasYRespuestasPage extends StatelessWidget {
                   },
                   {
                     'question': '¿Cual es el dia mas lejano en el que puedo reservar?',
-                    'answer': 'Nuestras reservas están configuradas para que te permitan reservar desde el dia en que te encuentras hasta 30 dias despues',
+                    'answer': 'Nuestras reservas están configuradas para que te permitan reservar desde el dia en que te encuentras hasta 28 dias despues',
                   },
                 ],
               ),

@@ -19,10 +19,6 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Página con ventanas emergentes'),
-          backgroundColor: Color(0xFFB71C1C), // Rojo oscuro
-        ),
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -38,8 +34,18 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
           ),
           padding: EdgeInsets.all(20.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+                SizedBox(height: 20),
+                Text(
+                  'Reservas',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 20),
               Expanded(
                   flex: 2, 
                   child: RoundedBox(
