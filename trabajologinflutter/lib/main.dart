@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:trabajologinflutter/pages/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:trabajologinflutter/services/firebase_options.dart';
+import 'package:trabajologinflutter/services/notification_service.dart';
 
 void main() async { // Agrega async a main()
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp( // Inicializa Firebase aquí
     options: DefaultFirebaseOptions.currentPlatform,
-  ); 
+  );
+  await NotificationService.initialize();
   runApp(gesApp()); 
 }
 
