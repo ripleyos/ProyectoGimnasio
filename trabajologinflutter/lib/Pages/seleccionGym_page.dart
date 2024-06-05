@@ -9,6 +9,7 @@ import 'dart:math';
 import 'package:trabajologinflutter/Gestores/GestorMaquina.dart';
 import 'package:trabajologinflutter/Modelos/Gimnasio.dart';
 import 'package:trabajologinflutter/Modelos/maquinas.dart';
+import 'package:trabajologinflutter/Pages/InfoSobreLaApp.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -124,7 +125,7 @@ class _GymPageState extends State<GymPage> {
                 Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MainPage(cliente: cliente),
+                  builder: (context) => InfoSobreLaApp(cliente: cliente),
                 ),
               );
               },

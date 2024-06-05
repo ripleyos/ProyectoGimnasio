@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:trabajologinflutter/Pages/InfoSobreLaApp.dart';
 import 'package:trabajologinflutter/Pages/PerfilPage.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:trabajologinflutter/services/auth_service.dart';
