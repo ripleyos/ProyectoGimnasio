@@ -26,9 +26,10 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _initialization = initializeFirebase();
+    _initialization=initializeFirebase();
     _cliente = widget.cliente;
   }
+
 
   Future<void> initializeFirebase() async {
     await Firebase.initializeApp();
@@ -217,6 +218,52 @@ class _SettingsPageState extends State<SettingsPage> {
                         if (success) {
                           setState(() {
                             _cliente.altura = _alturaController.text;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Valor de altura no válido')),
+                          );
+                        }
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        ),
+        _buildAccountOption(
+          context,
+          icon: Icons.abc,
+          title: 'Cambiar Nombre',
+          onTap: () async {
+            final TextEditingController _nombreController = TextEditingController();
+
+            await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Cambiar Nombre'),
+                  content: TextField(
+                    controller: _nombreController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(hintText: 'Nuevo nombre'),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Cancelar'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: Text('Guardar'),
+                      onPressed: () async {
+                        bool success = await GestorClientes.actualizarNombreCliente(_cliente.id, _nombreController.text);
+                        if (success) {
+                          setState(() {
+                            _cliente.nombre = _nombreController.text;
                           });
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(

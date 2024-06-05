@@ -51,6 +51,7 @@ Future<List<Reserva>> cargarReservasExterna() async {
   return [];
 }
 
+
 Future<bool> eliminarReservaExterna(String id) async {
   final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/reservas/$id.json';
 

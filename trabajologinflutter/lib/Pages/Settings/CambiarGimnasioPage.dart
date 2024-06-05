@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:trabajologinflutter/Gestores/GestorClientes.dart';
 import 'package:trabajologinflutter/Gestores/GestorGimnasio.dart';
+import 'package:trabajologinflutter/Gestores/GestorReserva.dart';
 import 'package:trabajologinflutter/Modelos/Cliente.dart';
 import 'dart:math';
 import 'package:trabajologinflutter/Gestores/GestorMaquina.dart';
@@ -26,6 +27,7 @@ class _CambiarGimnasioPageState extends State<CambiarGimnasioPage> {
   Position? _userPosition;
   List<Gimnasio> _gimnasios = [];
   GestorGimnasio gestorGimnasio = new GestorGimnasio();
+  GestionReservas gestionReservas = new GestionReservas();
   GestionMaquinas gestionMaquinas = new GestionMaquinas();
   Map<String, List<Maquina>> _maquinasPorGimnasio = {};
 
@@ -118,7 +120,8 @@ class _CambiarGimnasioPageState extends State<CambiarGimnasioPage> {
           actions: [
             TextButton(
               child: Text('Sí'),
-              onPressed: () {
+              onPressed: () async {
+                print(cliente.id);
                 GestorClientes.actualizarGymCliente(cliente.id, gimnasio.id);
                 cliente.idgimnasio =gimnasio.id;
                 Navigator.push(

@@ -205,6 +205,11 @@ class _PerfilPageState extends State<PerfilPage> {
                     bool exito = await GestorClientes.actualizarAmigos(cliente.id, cliente.amigos, cliente.amigosPendientes);
                     if (exito) {
                       print("Solicitud enviada al cliente");
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Solicitud enviada con éxito'),
+                        ),
+                      );
                     } else {
                       print("Error al enviar la solicitud al cliente");
                     }
@@ -213,6 +218,11 @@ class _PerfilPageState extends State<PerfilPage> {
                   }
                 } else {
                   print("Cliente no encontrado");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('El cliente no existe'),
+                    ),
+                  );
                 }
               }
             },
@@ -524,6 +534,16 @@ class _PerfilPageState extends State<PerfilPage> {
                     _cliente.id, _cliente.amigos, _cliente.amigosPendientes);
                 if (exito) {
                   print("Amigo eliminado");
+
+                  // Eliminar al usuario actual de la lista de amigos del amigo eliminado
+                  amigo.amigos.remove(_cliente.correo);
+                  bool exitoAmigo = await GestorClientes.actualizarAmigos(
+                      amigo.id, amigo.amigos, amigo.amigosPendientes);
+                  if (exitoAmigo) {
+                    print("Usuario eliminado de la lista de amigos del amigo");
+                  } else {
+                    print("Error al eliminar al usuario de la lista de amigos del amigo");
+                  }
                 } else {
                   print("Error al eliminar al amigo");
                 }
@@ -535,6 +555,7 @@ class _PerfilPageState extends State<PerfilPage> {
       },
     );
   }
+
 
   Widget _buildStarRating(int starCount) {
     List<Widget> stars = List.generate(
