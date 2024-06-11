@@ -62,6 +62,30 @@ Future<String?> signup(String email, String password) async {
     return decodedResp['error']['message'];
   }
 }
+
+  Future<User?> loginUserWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      final cred = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return cred.user;
+    } catch (e) {
+      print('error');
+    }
+    return null;
+  }
+  Future<User?> createUserWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      final cred = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return cred.user;
+    } catch (e) {
+      print("error");
+    }
+    return null;
+  }
+
   Future<void> sendEmailVerification(String email) async {
   final user = FirebaseAuth.instance.currentUser;
   await user?.sendEmailVerification();
@@ -88,7 +112,6 @@ Future<String?> signup(String email, String password) async {
       return decodedResp['error']['message'];
     }
   }
-
 
   Future<User?> getCurrentUser() async {
     return FirebaseAuth.instance.currentUser; // Return the currently authenticated user

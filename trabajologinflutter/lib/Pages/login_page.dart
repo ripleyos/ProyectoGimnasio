@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trabajologinflutter/Pages/SupportPage.dart';
 import 'package:trabajologinflutter/Pages/main_page.dart';
 import 'package:trabajologinflutter/Pages/registroGoogle_page.dart';
 import 'package:trabajologinflutter/Pages/seleccionGym_page.dart';
@@ -121,7 +122,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (error) {
       print('Error al iniciar sesión con Google: $error');
-      // Manejar el error según sea necesario
     }
   }
 
@@ -131,9 +131,10 @@ class _LoginPageState extends State<LoginPage> {
     String email = _emailController.text.toLowerCase();
     String password = _passwordController.text;
 
-    String? errorMessage = await _authService.signin(email, password);
+    final user = await _authService.loginUserWithEmailAndPassword(email, password);
 
-    if (errorMessage == null) {
+    if (user != null) {
+      print('sin error');
       try {
         Cliente? cliente = await GestorClientes.buscarClientePorEmail(email);
         if (cliente != null) {
@@ -149,7 +150,23 @@ class _LoginPageState extends State<LoginPage> {
           );
           }
         } else {
-          print('Cliente no encontrado');
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Error de inicio de sesión'),
+                content: Text("no se pudo iniciar sesion"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
         }
       } catch (error) {
         print('Error buscando cliente: $error');
@@ -160,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Error de inicio de sesión'),
-            content: Text(errorMessage),
+            content: Text("no se pudo iniciar sesiom"),
             actions: <Widget>[
               TextButton(
                 onPressed: () {

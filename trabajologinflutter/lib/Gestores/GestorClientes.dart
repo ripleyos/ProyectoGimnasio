@@ -11,7 +11,7 @@ class GestorClientes {
 
     if (response.statusCode == 200) {
       final dynamic data = json.decode(response.body);
-      print("Clientes data: $data"); // Registro de depuración
+      print("Clientes data: $data");
 
       if (data is Map<String, dynamic>) {
         // Si la respuesta es un objeto JSON que contiene los clientes
@@ -30,11 +30,36 @@ class GestorClientes {
         print("Respuesta del servidor en un formato no reconocido");
       }
 
-      print("Clientes cargados: ${clientes.length}"); // Registro de depuración
+      print("Clientes cargados: ${clientes.length}");
       return clientes;
     } else {
       throw Exception('Error al cargar los clientes: ${response.statusCode}');
     }
+  }
+  static Future<void> insertarNuevoCliente(Cliente nuevoCliente) async {
+    const String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes.json';
+      final response = await http.post(
+        Uri.parse(url),
+        body: json.encode({
+          'nombre': nuevoCliente.nombre,
+          'correo': nuevoCliente.correo,
+          'imagenUrl': nuevoCliente.imagenUrl,
+          'peso': nuevoCliente.peso,
+          'kcalMensual': nuevoCliente.kcalMensual,
+          'estrellas': nuevoCliente.estrellas,
+          'amigos': nuevoCliente.amigos,
+          'amigos_pendientes': nuevoCliente.amigosPendientes,
+          'objetivomensual': nuevoCliente.objetivomensual,
+          'idgimnasio': nuevoCliente.idgimnasio,
+          'altura': nuevoCliente.altura,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print("Cliente insertado con éxito");
+      } else {
+        print("Error al insertar cliente: ${response.statusCode}");
+      }
   }
 
 
@@ -237,6 +262,7 @@ class GestorClientes {
       return null;
     }
   }
+
 
 
   static Future<void> actualizarPuntosCliente(String id, String puntos) async {
