@@ -4,7 +4,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:trabajologinflutter/Pages/login_page.dart';
 
+import '../Gestores/GestorClientes.dart';
+import '../Modelos/Cliente.dart';
 import '../services/auth_service.dart';
 
 class RegistroPage extends StatefulWidget {
@@ -20,6 +23,7 @@ class _RegistroPageState extends State<RegistroPage> {
   final _pesoController = TextEditingController();
   final _alturaController = TextEditingController();
   final _telefonoController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   final _authService = AuthService();
   List<String> _profileImageUrls = [
     "https://store.playstation.com/store/api/chihiro/00_09_000/container/AR/es/19/UT0016-NPUO00020_00-AVAPLUSXTOPDAWG0/image?w=320&h=320&bg_color=000000&opacity=100&_version=00_09_000",
@@ -262,65 +266,52 @@ class _RegistroPageState extends State<RegistroPage> {
       _validador = false;
     });
 
-    // Si todos los campos son válidos, procedemos con el registro
-    String? errorMessage = await _authService.signup(
-      email, // Usar el correo electrónico convertido a minúsculas
-      _passwordController.text,
-    );
+    final user = await _authService.createUserWithEmailAndPassword(email, _passwordController.text);
 
-    if (errorMessage == null) {
-      _mostrarSuccessDialog();
-      await _insertarNuevoCliente(email); // Pasar el correo electrónico a la función de inserción
+    if (user != null) {
+      await _registrarCliente();
+      _mostrarSuccessDialog();// Pasar el correo electrónico a la función de inserción
     } else {
-      _mostrarErrorDialog(errorMessage);
+      _mostrarErrorDialog("error");
     }
   }
 
+  Future<void> _registrarCliente() async {
+      try {
+        final String nombre = _nombreController.text;
+        final String correo = _emailController.text.toLowerCase();
+        final String peso = _pesoController.text;
+        final String altura = _alturaController.text;
+        final String telefono = _telefonoController.text;
+        final String kcalMensual = "1";
+        final String estrellas = "0";
+        final String imageUrl = "https://static.vecteezy.com/system/resources/previews/009/314/126/non_2x/default-avatar-profile-in-flat-design-free-png.png";
+        final String idgimnasio = "0";
+        final String objetivomensual = "5000";
 
-  Future <void> _insertarNuevoCliente(String email) async {
+        final nuevoCliente = Cliente(
+          id: '', // Asigna un id adecuado si es necesario
+          nombre: nombre,
+          correo: correo,
+          imagenUrl: imageUrl,
+          peso: peso,
+          kcalMensual: kcalMensual,
+          estrellas: estrellas,
+          amigos: [], // Lista inicial de amigos
+          amigosPendientes: [], // Lista inicial de amigos pendientes
+          objetivomensual: objetivomensual,
+          idgimnasio: idgimnasio,
+          altura: altura,
+        );
 
-    String correo = email.toLowerCase();
-
-    final String nombre = _nombreController.text;
-    final String peso = _pesoController.text;
-    final String altura = _alturaController.text;
-    final String telefono = _telefonoController.text;
-    final String kcalMensual = "1";
-    final String estrellas = "0";
-    final String imageUrl = "https://static.vecteezy.com/system/resources/previews/009/314/126/non_2x/default-avatar-profile-in-flat-design-free-png.png";
-
-    final String idgimnasio = "0";
-    final String objetivomensual = "5000";
-
-
-    final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes.json';
-
-    Map<String, dynamic> data = {
-      "correo": correo,
-      "nombre": nombre,
-      "peso": peso,
-      "altura": altura,
-      "telefono": telefono,
-      "kcalMensual": kcalMensual,
-      "estrellas": estrellas,
-      "imagenUrl": imageUrl,
-      "amigos": _amigos, // Lista de amigos inicialmente vacía
-      "amigos_pendientes": _amigosPendientes,
-      "objetivomensual": objetivomensual,
-      "idgimnasio": idgimnasio,
-    };
-
-    try {
-      final response = await http.post(Uri.parse(url), body: json.encode(data));
-
-      if (response.statusCode == 200) {
-        print("Nuevo cliente insertado correctamente");
-      } else {
-        print('Error al agregar nuevo cliente: ${response.statusCode}');
+        await GestorClientes.insertarNuevoCliente(nuevoCliente);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      } catch (e) {
+        print('Error al registrar cliente: $e');
       }
-    } catch (error) {
-      print("Error: $error");
-    }
   }
 
   void _mostrarSuccessDialog() {
@@ -333,7 +324,10 @@ class _RegistroPageState extends State<RegistroPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
               },
               child: Text('OK'),
             ),

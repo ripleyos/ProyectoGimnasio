@@ -535,7 +535,6 @@ class _PerfilPageState extends State<PerfilPage> {
                 if (exito) {
                   print("Amigo eliminado");
 
-                  // Eliminar al usuario actual de la lista de amigos del amigo eliminado
                   amigo.amigos.remove(_cliente.correo);
                   bool exitoAmigo = await GestorClientes.actualizarAmigos(
                       amigo.id, amigo.amigos, amigo.amigosPendientes);

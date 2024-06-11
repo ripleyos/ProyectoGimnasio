@@ -56,15 +56,42 @@ class AuthService extends ChangeNotifier{
 
     final Map<String, dynamic> decodedResp = json.decode( resp.body );
 
-    if ( decodedResp.containsKey('idToken') ) {
-      print(decodedResp['idToken']);
-      await storage.write(key: 'token', value: decodedResp['idToken']);
-      return null;
-    } else {
-      return decodedResp['error']['message'];
-    }
-
+  if (decodedResp.containsKey('idToken')) {
+    print(decodedResp['idToken']);
+    await storage.write(key: 'token', value: decodedResp['idToken']);
+    return null;
+  } else {
+    return decodedResp['error']['message'];
   }
+}
+
+  Future<User?> loginUserWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      final cred = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return cred.user;
+    } catch (e) {
+      print('error');
+    }
+    return null;
+  }
+  Future<User?> createUserWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      final cred = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return cred.user;
+    } catch (e) {
+      print("error");
+    }
+    return null;
+  }
+
+  Future<void> sendEmailVerification(String email) async {
+  final user = FirebaseAuth.instance.currentUser;
+  await user?.sendEmailVerification();
+}
   Future<String?> signin(String email, String password) async {
     final Map<String, dynamic> authData = {
       'email': email,
@@ -87,7 +114,6 @@ class AuthService extends ChangeNotifier{
       return decodedResp['error']['message'];
     }
   }
-
 
   Future<User?> getCurrentUser() async {
     return FirebaseAuth.instance.currentUser; // Return the currently authenticated user
