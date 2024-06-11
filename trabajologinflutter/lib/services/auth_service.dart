@@ -88,9 +88,18 @@ class AuthService extends ChangeNotifier{
     return null;
   }
 
-  Future<void> sendEmailVerification(String email) async {
-  final user = FirebaseAuth.instance.currentUser;
-  await user?.sendEmailVerification();
+  Future<void> sendEmailVerification(User user) async {
+  try {
+  
+    if (user != null) {
+      await user.sendEmailVerification();
+      print("Email de verificación enviado a ${user.email}");
+    } else {
+      print("Error: No hay usuario autenticado.");
+    }
+  } catch (e) {
+    print("Error al enviar el correo de verificación: $e");
+  }
 }
   Future<String?> signin(String email, String password) async {
     final Map<String, dynamic> authData = {

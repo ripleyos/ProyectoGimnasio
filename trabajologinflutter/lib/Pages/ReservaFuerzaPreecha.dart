@@ -283,7 +283,7 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('Éxito'),
-              content: Text('La reserva prehecha se ha realizado con éxito.'),
+              content: Text('La reserva take-away se ha realizado con éxito.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -364,7 +364,7 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
                           children: [
                             SizedBox(height: 20),
                             Text(
-                              'Reserva prehecha de fuerza',
+                              'Reserva take-away de fuerza',
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -372,7 +372,7 @@ class _ReservaFuerzaPreechaPageState extends State<ReservaFuerzaPreechaPage> {
                               ),
                             ),
                             Text(
-                              'Recuerda! Las reservas preechas estan pensadas para que sean del dia actual, asi que si no hay reservas es o porque estan todos los huecos ocupados o el gimnasio ya esta cerrado',
+                              'Recuerda! Las reservas take-away estan pensadas para que sean del dia actual, asi que si no hay reservas es o porque estan todos los huecos ocupados o el gimnasio ya esta cerrado',
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,

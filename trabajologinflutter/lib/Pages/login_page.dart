@@ -142,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
           User? user = FirebaseAuth.instance.currentUser;
           print(user);
           if (user != null && !user.emailVerified) {
-           
+           _authService.sendEmailVerification(user);
             showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -242,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
             children: <Widget>[
               SizedBox(height: 80),
               Text(
-                "Gimnasio Fit",
+                "Booking Gym",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 36,
