@@ -40,7 +40,7 @@ Future<List<Reserva>> cargarReservasExterna() async {
 
     data.forEach((key, value) {
       if (value is Map<String, dynamic>) {
-        reservas.add(Reserva.fromJson(key, value)); // Pasar la clave Firebase como ID
+        reservas.add(Reserva.fromJson(key, value)); 
       }
     });
 

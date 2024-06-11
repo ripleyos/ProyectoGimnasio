@@ -54,13 +54,13 @@ class _GymPageState extends State<GymPage> {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Comprobar si el servicio de ubicación está habilitado
+   
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('El servicio de ubicación está deshabilitado.');
     }
 
-    // Comprobar los permisos de ubicación
+    
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -73,7 +73,7 @@ class _GymPageState extends State<GymPage> {
       return Future.error('Los permisos de ubicación están denegados permanentemente.');
     }
 
-    // Obtener la ubicación del usuario
+    
     Position position = await Geolocator.getCurrentPosition();
     setState(() {
       _userPosition = position;

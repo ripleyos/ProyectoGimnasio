@@ -282,7 +282,7 @@ Future<void> eliminarReservasAntiguas() async {
       options = options5;
       break;
     default:
-      options = options1; // O una lista vacía o alguna lista predeterminada.
+      options = options1; 
       break;
   }
 

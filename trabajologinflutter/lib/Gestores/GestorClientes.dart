@@ -11,7 +11,7 @@ class GestorClientes {
 
     if (response.statusCode == 200) {
       final dynamic data = json.decode(response.body);
-      print("Clientes data: $data"); // Registro de depuración
+       // Registro de depuración
 
       if (data is Map<String, dynamic>) {
         // Si la respuesta es un objeto JSON que contiene los clientes

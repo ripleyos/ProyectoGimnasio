@@ -9,9 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:trabajologinflutter/services/firebase_options.dart';
 import 'package:trabajologinflutter/services/notification_service.dart';
 
-void main() async { // Agrega async a main()
+void main() async { 
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp( // Inicializa Firebase aquí
+  await Firebase.initializeApp( 
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await NotificationService.initialize();

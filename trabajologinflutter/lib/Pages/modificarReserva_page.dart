@@ -158,7 +158,7 @@ List<String> options5 = [
       options = options5;
       break;
     default:
-      options = intervalosDisponibles; // O una lista vacía o alguna lista predeterminada.
+      options = intervalosDisponibles; 
       break;
   }
     var oneHourLater = now.add(Duration(hours: 1));
@@ -237,11 +237,11 @@ List<String> options5 = [
       intervalo: intervaloSeleccionado,
       fecha: fechaSeleccionada,
     );
-    Navigator.pop(context,true); // Regresar a la pantalla anterior después de modificar
+    Navigator.pop(context,true); 
   }
   Future<bool> _onWillPop() async {
-    Navigator.pop(context, true); // Regresar a la pantalla anterior y devolver true
-    return false; // Evitar la acción predeterminada de retroceso
+    Navigator.pop(context, true); 
+    return false; 
   }
   @override
   Widget build(BuildContext context) {
@@ -276,7 +276,7 @@ List<String> options5 = [
             ),
           ),
           SizedBox(height: 20),
-                if (maquinaActual != null && nombreGimnasio != null) // Mostrar el recuadro solo si la máquina actual está cargada
+                if (maquinaActual != null && nombreGimnasio != null) 
                   Container(
                     padding: EdgeInsets.all(16.0),
                     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),

@@ -48,19 +48,6 @@ Future<List<Maquina>> cargarMaquinas(String gimnasioId) async {
   }
   return [];
 }
-  /*Future<void> eliminarMaquina() async {
-    final String url =
-        'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/maquinas.json';
-    try {
-      final response = await http.delete(Uri.parse(url));
-      if (response.statusCode == 200) {
-        print("Máquina eliminada");
-      } else {
-        print('Error al eliminar máquina: ${response.statusCode}');
-      }
-    } catch (error) {
-      print("Error: $error");
-    }
-  }*/
+
 }
 

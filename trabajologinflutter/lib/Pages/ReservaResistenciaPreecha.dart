@@ -167,7 +167,7 @@ class _ReservaResistenciaPreechaPage extends State<ReservaResistenciaPreechaPage
         options = options5;
         break;
       default:
-        options = intervalosDisponibles; // O una lista vacía o alguna lista predeterminada.
+        options = intervalosDisponibles;
         break;
     }
     var oneHourLater = now.add(Duration(hours: 1));
@@ -210,12 +210,11 @@ class _ReservaResistenciaPreechaPage extends State<ReservaResistenciaPreechaPage
       for (var maquina in maquinasFuerza) {
         filtrarReservas(maquina.idMaquina);
 
-        // Verifica que hay intervalos disponibles antes de intentar acceder al primer elemento
-        if (filteredOptions.isNotEmpty) {
-          var intervalo = filteredOptions.first; // Selecciona el primer intervalo
-          filteredOptions.removeAt(0); // Elimina el primer intervalo de la lista
 
-          if (reservasFuerza.length >= 6) break; // Límite de 6 reservas
+        if (filteredOptions.isNotEmpty) {
+          var intervalo = filteredOptions.first; 
+          filteredOptions.removeAt(0); 
+          if (reservasFuerza.length >= 6) break;
 
           reservasFuerza.add(Reserva(
             id: '',
@@ -240,12 +239,12 @@ class _ReservaResistenciaPreechaPage extends State<ReservaResistenciaPreechaPage
 
   Future<void> enviarReservas() async {
     try {
-      // Calcula el total de reservas del usuario
+    
       final totalReservasUsuario = calcularTotalReservasUsuario();
 
-      // Verifica si la suma de las reservas predefinidas y las reservas del usuario supera el límite de 12
+      
       if (reservasFuerza.length + totalReservasUsuario > 12) {
-        // Muestra una advertencia si se supera el límite de reservas
+        
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -262,7 +261,7 @@ class _ReservaResistenciaPreechaPage extends State<ReservaResistenciaPreechaPage
           ),
         );
       } else {
-        // Si no se supera el límite, procede a enviar las reservas
+       
         for (Reserva reserva in reservasFuerza) {
           await gestionReservas.insertarReservaExterna(
             reserva.idMaquina,
@@ -276,7 +275,7 @@ class _ReservaResistenciaPreechaPage extends State<ReservaResistenciaPreechaPage
         await cargarMaquinas();
         await cargarReservas();
         setState(() {
-          generarReservas(); // Regenerar las reservas para actualizar la UI
+          generarReservas(); 
         });
         showDialog(
           context: context,
@@ -339,9 +338,9 @@ class _ReservaResistenciaPreechaPage extends State<ReservaResistenciaPreechaPage
                         ),
                       ),
                     ),
-                    SizedBox(height: 8.0), // Espacio vertical entre los textos
+                    SizedBox(height: 8.0), 
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0), // Espacio lateral
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Center(
                         child: Text(
                           'Recuerda! Las reservas preechas estan pensadas para que sean del dia actual, asi que si no hay reservas es o porque estan todos los huecos ocupados o el gimnasio ya esta cerrado',
@@ -357,7 +356,7 @@ class _ReservaResistenciaPreechaPage extends State<ReservaResistenciaPreechaPage
                   ],
                 )
                 : ListView.builder(
-                    itemCount: reservasFuerza.length + 2, // Aumentar el tamaño para incluir el título y botón
+                    itemCount: reservasFuerza.length + 2, 
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return Column(

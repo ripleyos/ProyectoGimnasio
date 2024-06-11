@@ -91,7 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: 'Configuración de Notificaciones',
                 description: 'Controla tus preferencias de notificación',
                 onTap: () {
-                  // Acción para la configuración de notificaciones
+                  
                 },
               ),
               SizedBox(height: 16.0),

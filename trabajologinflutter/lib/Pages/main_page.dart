@@ -31,15 +31,15 @@ void initState() {
     final DateTime now = DateTime.now();
     final int dia = now.day;
 
-    // Verifica si es el primer día del mes
+
     if (dia == 1) {
       try {
-        // Carga todos los clientes
+
         List<Cliente> clientes = await GestorClientes.cargarClientes();
 
         for (Cliente cliente in clientes) {
           if (cliente.amigos.length >= 3) {
-            // Compara las kcalMensual del cliente con las de sus amigos
+
             int kcalCliente = int.parse(cliente.kcalMensual);
             bool tieneMasKcalQueTodosLosAmigos = true;
 
@@ -55,7 +55,7 @@ void initState() {
             }
 
             if (tieneMasKcalQueTodosLosAmigos) {
-              // Si las kcalMensual del cliente son mayores que las de todos sus amigos, suma 1 al atributo estrellas
+
               int estrellasParse = int.parse(cliente.estrellas);
               estrellasParse += 1;
               await GestorClientes.actualizarCliente(cliente.id, estrellas: estrellasParse.toString());
@@ -63,7 +63,7 @@ void initState() {
             }
           }
 
-          // Pone a 1 las kcalMensual del cliente
+
           await GestorClientes.actualizarCliente(cliente.id, kcalMensual: '1');
           cliente.kcalMensual = '1';
         }
@@ -109,9 +109,9 @@ void initState() {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
             child: GNav(
-              rippleColor: Colors.orange, // Color del ripple cuando se presiona
-              hoverColor: Colors.grey[700] ?? Colors.black, // Color cuando se pasa el mouse
-              haptic: true, // Feedback táctil
+              rippleColor: Colors.orange, 
+              hoverColor: Colors.grey[700] ?? Colors.black,
+              haptic: true, 
               tabBorderRadius: 15,
               tabActiveBorder: Border.all(color: Colors.black38, width: 1),
               tabBorder: Border.all(color: Colors.grey[300]!, width: 1),

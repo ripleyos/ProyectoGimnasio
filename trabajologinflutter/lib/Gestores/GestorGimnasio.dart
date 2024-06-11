@@ -16,7 +16,7 @@ Future<List<Gimnasio>> cargarGimnasios() async {
     data.forEach((key, value) {
       if (value is Map<String, dynamic>) {
         gimnasios.add(Gimnasio.fromJson(value));
-        print("lol $gimnasios"); // Pasar los datos del gimnasio
+        print("lol $gimnasios");
       }
     });
 
