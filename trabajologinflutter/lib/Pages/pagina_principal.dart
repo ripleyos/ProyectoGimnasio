@@ -52,7 +52,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
           title: "Tu reserva es en 10 minutos",
           body: "Si no estás cerca de tu gimnasio, ¡date prisa!",
         );
-        break; // Asumimos que solo queremos una notificación
+        break; 
       }
     }
   }
@@ -115,12 +115,12 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                     alignment: Alignment.center,
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(10), // Bordes redondeados para la imagen
+                        borderRadius: BorderRadius.circular(10), 
                         child: Image.asset(
-                          'lib/images/recepcion.jpeg', // Ruta de la imagen
-                          width: double.infinity, // Ancho de la imagen igual al ancho del RoundedBox
-                          height: double.infinity, // Alto de la imagen igual al alto del RoundedBox
-                          fit: BoxFit.cover, // La imagen cubrirá todo el espacio disponible
+                          'lib/images/recepcion.jpeg', 
+                          width: double.infinity, 
+                          height: double.infinity, 
+                          fit: BoxFit.cover,
                         ),
                       ),
                       Positioned(
@@ -128,14 +128,14 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                             right: 0,
                             bottom: 0,
                             child: Container(
-                            padding: EdgeInsets.all(10), // Ajusta el espaciado del texto según sea necesario
-                            color: Colors.black.withOpacity(0.5), // Color de fondo del texto con opacidad
+                            padding: EdgeInsets.all(10), 
+                            color: Colors.black.withOpacity(0.5),
                             child: Text(
-                             'Modifica tu reserva', // Texto que quieres mostrar
+                             'Mis reservas', 
                             style: TextStyle(
-                            color: Colors.white, // Color del texto
-                            fontSize: 16, // Tamaño de fuente del texto
-                            fontWeight: FontWeight.bold, // Negrita del texto
+                            color: Colors.white, 
+                            fontSize: 16, 
+                            fontWeight: FontWeight.bold, 
                           ),
                         ),
                        ),
@@ -144,7 +144,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                   ),
                 ),
               ),
-              SizedBox(height: 20.0), // Espacio entre las filas de ventanas
+              SizedBox(height: 20.0), 
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,7 +152,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                     Flexible(
                     flex: 1,
                     child: RoundedBox(
-                    color: Color(0xFF66BB6A), // Verde
+                    color: Color(0xFF66BB6A), 
                     onTap: () {
                       Navigator.push(
                     context,
@@ -162,27 +162,27 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                    );
                     },
                     child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10), // Mismo radio de borde que RoundedBox
+                            borderRadius: BorderRadius.circular(10), 
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
                                 Image.asset(
-                                  'lib/images/ejercicio_mujer.jpeg', // Ruta de la imagen
-                                  fit: BoxFit.cover, // La imagen cubrirá todo el espacio disponible
+                                  'lib/images/ejercicio_mujer.jpeg', 
+                                  fit: BoxFit.cover, 
                                 ),
                                 Positioned(
                                   left: 0,
                                   right: 0,
                                   bottom: 0,
                                   child: Container(
-                                    padding: EdgeInsets.all(10), // Ajusta el espaciado del texto según sea necesario
-                                    color: Colors.black.withOpacity(0.5), // Color de fondo del texto con opacidad
+                                    padding: EdgeInsets.all(10), 
+                                    color: Colors.black.withOpacity(0.5), 
                                     child: Text(
-                                      'Reserva prehecha de fuerza', // Texto que quieres mostrar
+                                      'Reserva take-away de fuerza', 
                                       style: TextStyle(
-                                        color: Colors.white, // Color del texto
-                                        fontSize: 16, // Tamaño de fuente del texto
-                                        fontWeight: FontWeight.bold, // Negrita del texto
+                                        color: Colors.white, 
+                                        fontSize: 16, 
+                                        fontWeight: FontWeight.bold, 
                                       ),
                                     ),
                                   ),
@@ -222,7 +222,7 @@ class _PaginaPrincipalState extends State<PaginaPrincipal> {
                                     padding: EdgeInsets.all(10), // Ajusta el espaciado del texto según sea necesario
                                     color: Colors.black.withOpacity(0.5), // Color de fondo del texto con opacidad
                                     child: Text(
-                                      'Reserva prehecha de resistencia', // Texto que quieres mostrar
+                                      'Reserva take-away de resistencia', // Texto que quieres mostrar
                                       style: TextStyle(
                                         color: Colors.white, // Color del texto
                                         fontSize: 16, // Tamaño de fuente del texto

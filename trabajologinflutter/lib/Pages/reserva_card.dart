@@ -3,7 +3,7 @@ import 'package:trabajologinflutter/Modelos/reservas.dart';
 
 class ReservaCard extends StatelessWidget {
   final Reserva reserva;
-  final int reservaNumero; // Nuevo atributo para el número de reserva
+  final int reservaNumero; 
   final String maquinaNombre;
   final String maquinaLocalizacion;
   final String maquinaMarca;
@@ -42,8 +42,8 @@ class ReservaCard extends StatelessWidget {
             SizedBox(height: 8),
             Text('Fecha: ${reserva.fecha}', style: TextStyle(fontSize: 16)),
             Text('Intervalo: ${reserva.intervalo}', style: TextStyle(fontSize: 16)),
-            Text('Máquina: $maquinaNombre', style: TextStyle(fontSize: 16)),
-            Text('Localización: $maquinaLocalizacion', style: TextStyle(fontSize: 16)),
+            Text('Máquina: $maquinaNombre', style: TextStyle(fontSize: 16,color:Color(0xFFFF0000))),
+            Text('Localización: $maquinaLocalizacion', style: TextStyle(fontSize: 16,color:Color(0xFFFF0000))),
             Text('Marca: $maquinaMarca', style: TextStyle(fontSize: 16)),
             Text('Gimnasio: $nombreGimnasio', style: TextStyle(fontSize: 16)),
             SizedBox(height: 8),

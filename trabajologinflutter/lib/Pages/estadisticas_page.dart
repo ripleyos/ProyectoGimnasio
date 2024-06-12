@@ -261,7 +261,6 @@ void _ajustarObjetivoMensual() {
                 await _guardarObjetivoMensual();
                 Navigator.pop(context);
               } else {
-                // Mostrar el SnackBar con el mensaje de error
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(_errorMessage),

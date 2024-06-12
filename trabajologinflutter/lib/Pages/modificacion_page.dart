@@ -27,7 +27,7 @@ class _ModificacionReservaPageState extends State<ModificacionReservaPage> {
   GestionReservas gestionReservas = GestionReservas();
   GestionMaquinas gestionMaquinas = GestionMaquinas();
   GestorGimnasio gestorGimnasio = GestorGimnasio();
-  bool isLoading = true;  // Variable de estado para el indicador de carga
+  bool isLoading = true;  
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _ModificacionReservaPageState extends State<ModificacionReservaPage> {
     await cargarMaquinas();
     await cargarGimnasios();
     setState(() {
-      isLoading = false;  // Datos cargados, ocultar indicador de carga
+      isLoading = false;
     });
   }
 
@@ -85,7 +85,7 @@ class _ModificacionReservaPageState extends State<ModificacionReservaPage> {
     );
 
     if (result == true) {
-      cargarReservas(); // Recargar las reservas si hubo una modificación
+      cargarReservas();
     }
   }
 
@@ -123,7 +123,7 @@ class _ModificacionReservaPageState extends State<ModificacionReservaPage> {
                   : reservas.isEmpty
                       ? Center(
                           child: Text(
-                            'Vaya, no tienes reservas. ¡Haz una en el apartado de Haz una reserva! o coge una ya prehecha!',
+                            'Vaya, no tienes reservas. ¡Haz una en el apartado de Haz una reserva! o coge una take-away!',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -140,7 +140,7 @@ class _ModificacionReservaPageState extends State<ModificacionReservaPage> {
                             final nombreGimnasio = obtenerNombreGimnasio(reserva.idGimnasio);
                             return ReservaCard(
                               reserva: reserva,
-                              reservaNumero: index + 1, // Número de reserva
+                              reservaNumero: index + 1, 
                               maquinaNombre: maquina.nombre,
                               maquinaLocalizacion: maquina.localizacion,
                               maquinaMarca: maquina.marca,

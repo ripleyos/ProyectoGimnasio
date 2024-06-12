@@ -138,16 +138,42 @@ class _LoginPageState extends State<LoginPage> {
       try {
         Cliente? cliente = await GestorClientes.buscarClientePorEmail(email);
         if (cliente != null) {
-          if(cliente.idgimnasio !="0"){
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => MainPage(cliente: cliente)),
-          );
-          }else{
+          // Verificar si el correo electrónico ha sido verificado
+          User? user = FirebaseAuth.instance.currentUser;
+          print(user);
+          if (user != null && !user.emailVerified) {
+           _authService.sendEmailVerification(user);
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Verificación de correo electrónico'),
+                  content: const Text('Se ha enviado un correo de verificación. Por favor, verifica tu correo electrónico antes de continuar.'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
+            return; // Detener la navegación si el correo no está verificado
+          }
+
+          // Navegar a la página correspondiente
+          if (cliente.idgimnasio != "0") {
             Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => GymPage(cliente: cliente)),
-          );
+              context,
+              MaterialPageRoute(builder: (context) => MainPage(cliente: cliente)),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => GymPage(cliente: cliente)),
+            );
           }
         } else {
           showDialog(
@@ -216,7 +242,7 @@ class _LoginPageState extends State<LoginPage> {
             children: <Widget>[
               SizedBox(height: 80),
               Text(
-                "Gimnasio Fit",
+                "Booking Gym",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 36,
