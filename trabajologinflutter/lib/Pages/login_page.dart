@@ -276,7 +276,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 20),
               CheckboxListTile(
-                title: Text("Recordar usuario y contraseña"),
+                title: Text("Recordar usuario y contraseña",style: TextStyle(
+                  color: Colors.white,
+                ),
+                ),
+
                 controlAffinity: ListTileControlAffinity.leading,
                 value: _rememberMe,
                 onChanged: (bool? value) async {
@@ -332,44 +336,6 @@ class _LoginPageState extends State<LoginPage> {
                 thickness: 1,
                 indent: 40,
                 endIndent: 40,
-              ),
-              SizedBox(height: 20),
-              Text(
-                "Iniciar sesión con redes sociales",
-                style: TextStyle(color: Colors.white),
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      _signInWithGoogle();
-                    },
-                    child: CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.white,
-                      child: Image.network(
-                        'https://img.icons8.com/color/48/000000/google-logo.png',
-                        height: 30,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  GestureDetector(
-                    onTap: () {
-                      // Iniciar sesión con Facebook
-                    },
-                    child: CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.white,
-                      child: Image.network(
-                        'https://img.icons8.com/color/48/000000/facebook.png',
-                        height: 30,
-                      ),
-                    ),
-                  ),
-                ],
               ),
               SizedBox(height: 40),
               Row(
