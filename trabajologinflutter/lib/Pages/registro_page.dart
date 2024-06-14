@@ -269,10 +269,10 @@ class _RegistroPageState extends State<RegistroPage> {
     final user = await _authService.createUserWithEmailAndPassword(email, _passwordController.text);
 
     if (user != null) {
-      await _registrarCliente();
-      _mostrarSuccessDialog();// Pasar el correo electrónico a la función de inserción
+      _registrarCliente();
+      _mostrarSuccessDialog();
     } else {
-      _mostrarErrorDialog("error");
+      _mostrarErrorDialog("error, correo ya existente");
     }
   }
 
@@ -305,10 +305,6 @@ class _RegistroPageState extends State<RegistroPage> {
         );
 
         await GestorClientes.insertarNuevoCliente(nuevoCliente);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
       } catch (e) {
         print('Error al registrar cliente: $e');
       }
@@ -320,7 +316,7 @@ class _RegistroPageState extends State<RegistroPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Registro exitoso'),
-          content: Text('¡Bienvenido! Tu registro ha sido exitoso.'),
+          content: Text('¡Bienvenido! Tu registro ha sido exitoso, porfavor compruebe en su email el correo de verificacion'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
