@@ -87,16 +87,6 @@ class _SettingsPageState extends State<SettingsPage> {
               SizedBox(height: 16.0),
               _buildSettingsCard(
                 context,
-                icon: Icons.notifications,
-                title: 'Configuración de Notificaciones',
-                description: 'Controla tus preferencias de notificación',
-                onTap: () {
-                  
-                },
-              ),
-              SizedBox(height: 16.0),
-              _buildSettingsCard(
-                context,
                 icon: Icons.help,
                 title: 'Dudas sobre el funcionamiento de la app',
                 description: 'Encuentra respuestas a tus dudas',

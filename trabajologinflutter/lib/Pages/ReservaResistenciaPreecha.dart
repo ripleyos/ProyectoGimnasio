@@ -344,7 +344,7 @@ class _ReservaResistenciaPreechaPageState extends State<ReservaResistenciaPreech
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Center(
                         child: Text(
-                          'Recuerda! Las reservas preechas estan pensadas para que sean del dia actual, asi que si no hay reservas es o porque estan todos los huecos ocupados o el gimnasio ya esta cerrado',
+                          'Recuerda! Las reservas take-away estan pensadas para que sean del dia actual, asi que si no hay reservas es o porque estan todos los huecos ocupados o el gimnasio ya esta cerrado',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 10,
