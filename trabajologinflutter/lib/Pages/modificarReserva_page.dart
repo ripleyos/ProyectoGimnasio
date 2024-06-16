@@ -237,7 +237,7 @@ List<String> options5 = [
       intervalo: intervaloSeleccionado,
       fecha: fechaSeleccionada,
     );
-    Navigator.pop(context,true); 
+    
   }
   Future<bool> _onWillPop() async {
     Navigator.pop(context, true); 
@@ -378,6 +378,7 @@ List<String> options5 = [
                       ElevatedButton(
                         onPressed: () {
                           modificarReserva();
+                          
                           showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -387,7 +388,7 @@ List<String> options5 = [
                               actions: [
                                 TextButton(
                                   onPressed: () {
-                                    
+                                    Navigator.of(context).pop();
                                   },
                                   child: Text('Aceptar'),
                                 ),
