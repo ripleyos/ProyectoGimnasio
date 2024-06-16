@@ -302,7 +302,11 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 20),
               CheckboxListTile(
-                title: Text("Recordar usuario y contraseña"),
+                title: Text("Recordar usuario y contraseña",style: TextStyle(
+                  color: Colors.white,
+                ),
+                ),
+
                 controlAffinity: ListTileControlAffinity.leading,
                 value: _rememberMe,
                 onChanged: (bool? value) async {
@@ -359,7 +363,6 @@ class _LoginPageState extends State<LoginPage> {
                 indent: 40,
                 endIndent: 40,
               ),
-              SizedBox(height: 20),
               SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
