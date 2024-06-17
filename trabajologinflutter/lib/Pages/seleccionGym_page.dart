@@ -109,38 +109,75 @@ class _GymPageState extends State<GymPage> {
     });
   }
 
-  Future<void> _confirmarEleccion(Gimnasio gimnasio,Cliente cliente) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Confirmar elección'),
-          content: Text('¿Está seguro de que quiere que ${gimnasio.nombre} sea su gimnasio?'),
-          actions: [
-            TextButton(
-              child: Text('Sí'),
-              onPressed: () {
-                GestorClientes.actualizarGymCliente(cliente.id, gimnasio.id);
-                cliente.idgimnasio =gimnasio.id;
-                Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => InfoSobreLaApp(cliente: cliente),
-                ),
-              );
-              },
-            ),
-            TextButton(
-              child: Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+Future<void> _confirmarEleccion(Gimnasio gimnasio, Cliente cliente) async {
+  TextEditingController passwordController = TextEditingController();
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Confirmar elección'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('¿Está seguro de que quiere que ${gimnasio.nombre} sea su gimnasio? Ingrese la contraseña para confirmar.'),
+            TextField(
+              controller: passwordController,
+              obscureText: true, 
+              decoration: InputDecoration(
+                labelText: 'Contraseña del gimnasio',
+              ),
             ),
           ],
-        );
-      },
-    );
-  }
+        ),
+        actions: [
+          TextButton(
+            child: Text('Sí'),
+            onPressed: () async {
+              
+              if (passwordController.text == gimnasio.contra) { 
+                GestorClientes.actualizarGymCliente(cliente.id, gimnasio.id);
+                cliente.idgimnasio = gimnasio.id;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => InfoSobreLaApp(cliente: cliente),
+                  ),
+                );
+              } else {
+                
+                Navigator.of(context).pop();
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Error'),
+                      content: Text('Contraseña incorrecta.'),
+                      actions: [
+                        TextButton(
+                          child: Text('OK'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+          ),
+          TextButton(
+            child: Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   Future<void> _abrirGoogleMaps(Gimnasio gimnasio) async {
     String url = 'https://www.google.com/maps/search/?api=1&query=${gimnasio.latitud},${gimnasio.longitud}';
