@@ -148,7 +148,7 @@ class GestorClientes {
       return false;
     }
   }
-  Future<bool> eliminarCliente(String id) async {
+  static Future<bool> eliminarCliente(String id) async {
     final String url = 'https://gimnasio-bd045-default-rtdb.europe-west1.firebasedatabase.app/Clientes/$id.json';
     print(url);
     final response = await http.delete(Uri.parse(url));

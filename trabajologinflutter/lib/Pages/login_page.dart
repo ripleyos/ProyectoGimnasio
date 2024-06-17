@@ -181,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: const Text('Error de inicio de sesión'),
-                content: Text("no se pudo iniciar sesion"),
+                content: Text("no se pudo iniciar sesion, verifica tus credenciales"),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
@@ -203,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Error de inicio de sesión'),
-            content: Text("no se pudo iniciar sesiom"),
+            content: Text("no se pudo iniciar sesion, verifica tus credenciales"),
             actions: <Widget>[
               TextButton(
                 onPressed: () {

@@ -316,7 +316,7 @@ class _RegistroPageState extends State<RegistroPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Registro exitoso'),
-          content: Text('¡Bienvenido! Tu registro ha sido exitoso, porfavor compruebe en su email el correo de verificacion'),
+          content: Text('¡Bienvenido! Tu registro ha sido exitoso'),
           actions: <Widget>[
             TextButton(
               onPressed: () {

@@ -306,7 +306,7 @@ void _ajustarObjetivoMensual() {
           ),
           SizedBox(height: 5),
           Text(
-            '$bookerKcal kcal',
+            '$bookerKcal puntos',
             style: TextStyle(
               fontSize: 16,
               color: Colors.black,

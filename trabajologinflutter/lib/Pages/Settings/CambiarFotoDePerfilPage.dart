@@ -118,7 +118,7 @@ class _CambiarFotoDePerfilPageState extends State<CambiarFotoDePerfilPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Cambio exitoso'),
-          content: Text('Tus cambios se mostrarán la próxima vez que inicies la app.'),
+          content: Text('Tus cambios se mostrarán la próxima vez que accedas a la seccion perfil'),
           actions: [
             TextButton(
               onPressed: () {

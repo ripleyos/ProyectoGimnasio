@@ -480,7 +480,7 @@ class _PerfilPageState extends State<PerfilPage> {
       message = "${amigo.nombre} sabe lo que se hace, ya tiene $estrellas estrellas.";
     } else if (estrellas > 8) {
       backgroundColor = Colors.amber[300]!;
-      message = "${amigo.nombre} es un veterano del gimnasio, tiene $estrellas estrellas.";
+      message = "${amigo.nombre} es un veterano de Booking Gym, tiene $estrellas estrellas.";
     } else {
       backgroundColor = Colors.white;
       message = "${amigo.nombre} tiene $estrellas estrellas.";

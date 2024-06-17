@@ -235,7 +235,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text('Cambiar Nombre'),
                   content: TextField(
                     controller: _nombreController,
-                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(hintText: 'Nuevo nombre'),
                   ),
                   actions: <Widget>[
@@ -316,24 +315,48 @@ class _SettingsPageState extends State<SettingsPage> {
           context,
           icon: Icons.delete,
           title: 'Eliminar Cuenta',
+          //Esta accion es de pago, sin embargo el codigo ya esta realizado para su correcto funcionamiento
           onTap: () {
-        /*    // Acción para eliminar la cuenta
-            try {
-              GestorClientes.eliminarCliente(_cliente.id).then((success) {
-                if (success) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Error al eliminar la cuenta")),
-                  );
-                }
-              });
-            } catch (e) {
-              print(e);
-            } */
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Confirmación'),
+                  content: Text('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no tiene vuelta atrás, además, no podrás registrarte de vuelta hasta que los Administradores validen tu solicitud'),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Cancelar'),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Cerrar el cuadro de diálogo
+                      },
+                    ),
+                    TextButton(
+                      child: Text('Eliminar'),
+                      onPressed: () {
+                        try {
+                          GestorClientes.eliminarCliente(_cliente.id).then((success) {
+                            Navigator.of(context).pop();
+                            if (success) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => LoginPage()),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("Error al eliminar la cuenta")),
+                              );
+                            }
+                          });
+                        } catch (e) {
+                          Navigator.of(context).pop(); // Cerrar el cuadro de diálogo
+                          print(e);
+                        }
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
           },
         ),
         _buildAccountOption(
